@@ -40,7 +40,8 @@
       line-height: 1.4;
     }
     .tabs {
-      display: flex;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
       gap: 8px;
       margin: 12px 0;
     }
@@ -207,6 +208,199 @@
       color: #c9d7ff;
     }
     .badge.watch { border-color: #8a6a2a; color: var(--warn); }
+    .guide-hero {
+      border: 1px solid rgba(45, 212, 191, 0.28);
+      background:
+        radial-gradient(circle at 88% 8%, rgba(45, 212, 191, 0.18), transparent 30%),
+        linear-gradient(145deg, rgba(139, 92, 246, 0.20), rgba(45, 212, 191, 0.08)),
+        var(--panel);
+      border-radius: 24px;
+      padding: 16px;
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
+      margin-bottom: 10px;
+    }
+    .guide-hero h2 {
+      margin: 0 0 6px;
+      font-size: 1.35rem;
+      letter-spacing: -0.03em;
+    }
+    .guide-hero p {
+      margin: 0;
+      color: #c8d5ff;
+      line-height: 1.45;
+    }
+    .guide-note {
+      display: inline-block;
+      margin-top: 12px;
+      border: 1px solid rgba(247, 199, 109, 0.42);
+      border-radius: 999px;
+      color: var(--warn);
+      background: rgba(247, 199, 109, 0.08);
+      padding: 6px 10px;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+    .guide-list {
+      display: grid;
+      gap: 8px;
+    }
+    .guide-card {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      border-radius: 18px;
+      padding: 12px;
+      display: grid;
+      grid-template-columns: 96px 1fr;
+      gap: 12px;
+      align-items: center;
+      box-shadow: 0 18px 52px rgba(0, 0, 0, 0.22);
+    }
+    .guide-card h3 {
+      margin: 0 0 5px;
+      font-size: 1rem;
+    }
+    .guide-card p {
+      margin: 0;
+      color: #c8d5ff;
+      font-size: 0.86rem;
+      line-height: 1.35;
+    }
+    .guide-art {
+      min-height: 76px;
+      border: 1px solid rgba(148, 163, 184, 0.20);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.04);
+      position: relative;
+      overflow: hidden;
+    }
+    .mini-card {
+      position: absolute;
+      width: 30px;
+      height: 44px;
+      border: 3px solid #d8e2f4;
+      border-radius: 5px;
+      background: linear-gradient(145deg, #263451, #111827);
+      top: 13px;
+    }
+    .mini-card.good { left: 12px; }
+    .mini-card.caution {
+      right: 12px;
+      border-left-width: 8px;
+      border-right-width: 2px;
+    }
+    .guide-label {
+      position: absolute;
+      bottom: 6px;
+      font-size: 0.65rem;
+      font-weight: 800;
+      border-radius: 999px;
+      padding: 2px 6px;
+    }
+    .guide-label.good {
+      left: 8px;
+      color: #b7f7e8;
+      background: rgba(45, 212, 191, 0.18);
+    }
+    .guide-label.caution {
+      right: 5px;
+      color: var(--warn);
+      background: rgba(247, 199, 109, 0.16);
+    }
+    .edge-line {
+      position: absolute;
+      left: 12px;
+      right: 12px;
+      height: 8px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #111827, #334155);
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.20);
+    }
+    .edge-line.clean { top: 22px; }
+    .edge-line.chipped { top: 46px; }
+    .edge-line.chipped::before,
+    .edge-line.chipped::after {
+      content: "";
+      position: absolute;
+      top: 2px;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #f8fafc;
+    }
+    .edge-line.chipped::before { left: 38%; }
+    .edge-line.chipped::after { left: 68%; }
+    .corner {
+      position: absolute;
+      width: 34px;
+      height: 24px;
+      border-top: 4px solid #d8e2f4;
+      border-left: 4px solid #d8e2f4;
+      border-radius: 7px 0 0 0;
+    }
+    .corner.clean { left: 14px; top: 16px; }
+    .corner.bad {
+      right: 14px;
+      bottom: 14px;
+      border-color: #cbd5e1;
+      transform: rotate(180deg);
+    }
+    .corner.bad::after {
+      content: "";
+      position: absolute;
+      right: -6px;
+      top: -6px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #ef4444;
+      box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.25);
+    }
+    .photo-stack {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4px;
+      padding: 15px 8px;
+    }
+    .photo-thumb {
+      height: 38px;
+      border: 1px solid rgba(148, 163, 184, 0.36);
+      border-radius: 8px;
+      background: linear-gradient(145deg, #263451, #111827);
+    }
+    .checklist {
+      border: 1px solid rgba(45, 212, 191, 0.26);
+      background: var(--panel);
+      border-radius: 18px;
+      padding: 14px;
+      margin-top: 8px;
+    }
+    .checklist h3 {
+      margin: 0 0 8px;
+      font-size: 1rem;
+    }
+    .check-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-top: 1px solid rgba(148, 163, 184, 0.12);
+      padding: 9px 0;
+      color: #dbe7ff;
+      font-size: 0.92rem;
+    }
+    .check-row:first-of-type { border-top: 0; }
+    .box {
+      width: 17px;
+      height: 17px;
+      border: 2px solid var(--ok);
+      border-radius: 4px;
+      flex: 0 0 auto;
+    }
+    .guide-disclaimer {
+      margin: 8px 0 0;
+      color: var(--warn);
+      font-size: 0.8rem;
+      line-height: 1.35;
+    }
     .empty, .error {
       border: 1px dashed var(--line);
       border-radius: 12px;
@@ -220,6 +414,9 @@
         max-width: 780px;
         margin: 0 auto;
         padding-top: 24px;
+      }
+      .tabs {
+        grid-template-columns: repeat(4, 1fr);
       }
       .home-grid {
         grid-template-columns: 1fr 1fr;
@@ -239,6 +436,7 @@
     <button type="button" class="tab active" id="tabHome" data-view="home">Home</button>
     <button type="button" class="tab" id="tabFloors" data-view="floors">Floors</button>
     <button type="button" class="tab" id="tabWishlist" data-view="wishlist">Wishlist</button>
+    <button type="button" class="tab" id="tabBuyingGuide" data-view="buying-guide">Buying guide</button>
   </nav>
 
   <div id="viewHome" class="view active">
@@ -259,6 +457,10 @@
       <button type="button" class="action-card" data-go="wishlist">
         <h2>Wishlist <span>›</span></h2>
         <p class="sub">A cleaner share link for family and friends, showing only watched cards and target prices.</p>
+      </button>
+      <button type="button" class="action-card" data-go="buying-guide">
+        <h2>Buying guide <span>›</span></h2>
+        <p class="sub">Simple photo checks for anyone helping buy raw cards from online listings or sellers.</p>
       </button>
     </div>
     <div id="homeError"></div>
@@ -297,6 +499,71 @@
       <p class="stats" id="statsWishlist"></p>
     </div>
     <div id="listWishlist" class="list"></div>
+  </div>
+
+  <div id="viewBuyingGuide" class="view">
+    <section class="guide-hero">
+      <h2>Before you buy a raw card</h2>
+      <p>Open every listing photo and check these 4 things. This is for family helpers, not grading experts.</p>
+      <span class="guide-note">If unsure, skip it. There will be another one.</span>
+    </section>
+    <section class="guide-list" aria-label="Raw card buying photo checks">
+      <article class="guide-card">
+        <div class="guide-art" aria-hidden="true">
+          <span class="mini-card good"></span>
+          <span class="mini-card caution"></span>
+          <span class="guide-label good">Looks good</span>
+          <span class="guide-label caution">Be careful</span>
+        </div>
+        <div>
+          <h3>Is the picture straight?</h3>
+          <p>The card should not look pushed hard to one side. Check the front and the back photos.</p>
+        </div>
+      </article>
+      <article class="guide-card">
+        <div class="guide-art" aria-hidden="true">
+          <span class="edge-line clean"></span>
+          <span class="edge-line chipped"></span>
+        </div>
+        <div>
+          <h3>Are the edges clean?</h3>
+          <p>White dots or chips on the edge usually mean wear. Zoom in before buying.</p>
+        </div>
+      </article>
+      <article class="guide-card">
+        <div class="guide-art" aria-hidden="true">
+          <span class="corner clean"></span>
+          <span class="corner bad"></span>
+        </div>
+        <div>
+          <h3>Are the corners sharp?</h3>
+          <p>Avoid bent, fuzzy, lifted, or crushed corners. Corners are often where damage shows first.</p>
+        </div>
+      </article>
+      <article class="guide-card">
+        <div class="guide-art" aria-hidden="true">
+          <div class="photo-stack">
+            <span class="photo-thumb"></span>
+            <span class="photo-thumb"></span>
+            <span class="photo-thumb"></span>
+            <span class="photo-thumb"></span>
+          </div>
+        </div>
+        <div>
+          <h3>Can you see enough photos?</h3>
+          <p>Good listings show front, back, edges, and corners. If photos are blurry, ask for more or skip.</p>
+        </div>
+      </article>
+    </section>
+    <section class="checklist" aria-label="Quick buying checklist">
+      <h3>Quick buying checklist</h3>
+      <div class="check-row"><span class="box" aria-hidden="true"></span><span>Front photo looks even</span></div>
+      <div class="check-row"><span class="box" aria-hidden="true"></span><span>Back photo looks even</span></div>
+      <div class="check-row"><span class="box" aria-hidden="true"></span><span>No white edge spots</span></div>
+      <div class="check-row"><span class="box" aria-hidden="true"></span><span>Corners look sharp</span></div>
+      <div class="check-row"><span class="box" aria-hidden="true"></span><span>Photos are clear</span></div>
+      <p class="guide-disclaimer">This helps avoid damaged raw cards, but it cannot guarantee a PSA 10.</p>
+    </section>
   </div>
 
   <script>
@@ -366,26 +633,29 @@
 
     function setView(view) {
       activeView = view;
-      const hash = view === "wishlist" ? "#wishlist" : view === "floors" ? "#floors" : "";
+      const hash = view === "buying-guide" ? "#buying-guide" : view === "wishlist" ? "#wishlist" : view === "floors" ? "#floors" : "";
       if (location.hash !== hash) {
         history.replaceState(null, "", hash ? hash : location.pathname);
       }
       document.getElementById("viewHome").classList.toggle("active", view === "home");
       document.getElementById("viewFloors").classList.toggle("active", view === "floors");
       document.getElementById("viewWishlist").classList.toggle("active", view === "wishlist");
+      document.getElementById("viewBuyingGuide").classList.toggle("active", view === "buying-guide");
       document.getElementById("tabHome").classList.toggle("active", view === "home");
       document.getElementById("tabFloors").classList.toggle("active", view === "floors");
       document.getElementById("tabWishlist").classList.toggle("active", view === "wishlist");
-      document.title = view === "wishlist" ? "Toploader — Wishlist" : view === "floors" ? "Toploader — Floors" : "Toploader";
+      document.getElementById("tabBuyingGuide").classList.toggle("active", view === "buying-guide");
+      document.title = view === "buying-guide" ? "Toploader — Buying Guide" : view === "wishlist" ? "Toploader — Wishlist" : view === "floors" ? "Toploader — Floors" : "Toploader";
       if (snapshotData) updateMeta();
       if (view === "home") renderHome();
       else if (view === "floors") renderFloors();
-      else renderWishlist();
+      else if (view === "wishlist") renderWishlist();
     }
 
     function parseHash() {
       const h = (location.hash || "").toLowerCase();
       if (h === "#floors") return "floors";
+      if (h === "#buying-guide") return "buying-guide";
       return h === "#wishlist" ? "wishlist" : "home";
     }
 
@@ -401,6 +671,9 @@
       } else if (activeView === "wishlist") {
         document.getElementById("meta").textContent =
           `${wish.length} wishlist cards · updated ${when}${cacheNote}${errNote}`;
+      } else if (activeView === "buying-guide") {
+        document.getElementById("meta").textContent =
+          `Use this while checking listing photos · updated ${when}${cacheNote}${errNote}`;
       } else {
         document.getElementById("meta").textContent =
           `${all.length} cards · ${wish.length} on wishlist · ${when}${cacheNote}${errNote}`;
@@ -544,6 +817,7 @@
     document.getElementById("tabHome").addEventListener("click", () => setView("home"));
     document.getElementById("tabFloors").addEventListener("click", () => setView("floors"));
     document.getElementById("tabWishlist").addEventListener("click", () => setView("wishlist"));
+    document.getElementById("tabBuyingGuide").addEventListener("click", () => setView("buying-guide"));
     document.querySelectorAll("[data-go]").forEach(el => {
       el.addEventListener("click", () => setView(el.dataset.go));
     });
