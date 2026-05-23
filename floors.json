@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-05-23T20:20:34.509230+00:00",
+  "generated_at_utc": "2026-05-23T20:23:33.701155+00:00",
   "local_date": "2026-05-23",
   "source_db": "C:\\Users\\rache\\OneDrive\\Documents\\mkdir pokemon-tcg-terminal\\tcg_data.db",
   "include_bought": false,
@@ -29,7 +29,8 @@
       "card_show_price_note": "Rules estimate from raw p10+median blend (80 samples); raw/ungraded only \u2014 graded is pressure only.",
       "raw_sample_count": 80,
       "updated_at_utc": "2026-05-23T19:37:03.318184+00:00",
-      "active_status": "active"
+      "active_status": "active",
+      "watchlist_status": 1
     },
     {
       "card_key": "iono's wattrel|231|ascended heroes",
@@ -48,7 +49,8 @@
       "card_show_price_note": "Rules estimate from raw p10+median blend (81 samples); raw/ungraded only \u2014 graded is pressure only.",
       "raw_sample_count": 81,
       "updated_at_utc": "2026-05-23T19:37:18.468175+00:00",
-      "active_status": "active"
+      "active_status": "active",
+      "watchlist_status": 1
     },
     {
       "card_key": "slurpuff|236|ascended heroes",
@@ -67,7 +69,8 @@
       "card_show_price_note": "Rules estimate from raw p10+median blend (82 samples); raw/ungraded only \u2014 graded is pressure only.",
       "raw_sample_count": 82,
       "updated_at_utc": "2026-05-23T19:37:31.864407+00:00",
-      "active_status": "active"
+      "active_status": "active",
+      "watchlist_status": 1
     },
     {
       "card_key": "hop's trevenant|237|ascended heroes",
@@ -86,7 +89,8 @@
       "card_show_price_note": "Rules estimate from raw p10+median blend (98 samples); raw/ungraded only \u2014 graded is pressure only.",
       "raw_sample_count": 98,
       "updated_at_utc": "2026-05-23T19:37:42.214181+00:00",
-      "active_status": "active"
+      "active_status": "active",
+      "watchlist_status": 1
     },
     {
       "card_key": "medicham|241|ascended heroes",
@@ -105,7 +109,8 @@
       "card_show_price_note": "Rules estimate from raw p10+median blend (81 samples); raw/ungraded only \u2014 graded is pressure only.",
       "raw_sample_count": 81,
       "updated_at_utc": "2026-05-23T19:37:47.503365+00:00",
-      "active_status": "active"
+      "active_status": "active",
+      "watchlist_status": 1
     },
     {
       "card_key": "cynthia's spiritomb|244|ascended heroes",
@@ -124,7 +129,8 @@
       "card_show_price_note": "Rules estimate from raw p10+median blend (108 samples); raw/ungraded only \u2014 graded is pressure only.",
       "raw_sample_count": 108,
       "updated_at_utc": "2026-05-23T19:37:51.488358+00:00",
-      "active_status": "active"
+      "active_status": "active",
+      "watchlist_status": 1
     },
     {
       "card_key": "galarian obstagoon|245|ascended heroes",
@@ -143,7 +149,8 @@
       "card_show_price_note": "Rules estimate from raw p10+median blend (109 samples); raw/ungraded only \u2014 graded is pressure only.",
       "raw_sample_count": 109,
       "updated_at_utc": "2026-05-23T19:37:54.913577+00:00",
-      "active_status": "active"
+      "active_status": "active",
+      "watchlist_status": 1
     },
     {
       "card_key": "mawile|246|ascended heroes",
@@ -162,7 +169,8 @@
       "card_show_price_note": "Rules estimate from raw p10+median blend (126 samples); raw/ungraded only \u2014 graded is pressure only.",
       "raw_sample_count": 126,
       "updated_at_utc": "2026-05-23T19:37:58.881112+00:00",
-      "active_status": "active"
+      "active_status": "active",
+      "watchlist_status": 1
     },
     {
       "card_key": "sprigatito ex|251|ascended heroes",
@@ -181,7 +189,8 @@
       "card_show_price_note": "Rules estimate from raw p10+median blend (118 samples); raw/ungraded only \u2014 graded is pressure only.",
       "raw_sample_count": 118,
       "updated_at_utc": "2026-05-23T19:38:02.530801+00:00",
-      "active_status": "active"
+      "active_status": "active",
+      "watchlist_status": 1
     },
     {
       "card_key": "stunfisk ex|252|ascended heroes",
@@ -200,7 +209,8 @@
       "card_show_price_note": "Rules estimate from raw p10+median blend (91 samples); raw/ungraded only \u2014 graded is pressure only.",
       "raw_sample_count": 91,
       "updated_at_utc": "2026-05-23T19:38:06.606195+00:00",
-      "active_status": "active"
+      "active_status": "active",
+      "watchlist_status": 1
     },
     {
       "card_key": "mega gengar ex|269|ascended heroes",
@@ -219,7 +229,8 @@
       "card_show_price_note": "Rules estimate from raw blend (p10 polluted vs median; 126 samples); raw/ungraded only \u2014 graded is pressure only.",
       "raw_sample_count": 126,
       "updated_at_utc": "2026-05-23T19:38:10.056186+00:00",
-      "active_status": "active"
+      "active_status": "active",
+      "watchlist_status": 1
     },
     {
       "card_key": "mega meganium ex|272|ascended heroes",
@@ -238,7 +249,8 @@
       "card_show_price_note": "Rules estimate from raw p10+median blend (81 samples); raw/ungraded only \u2014 graded is pressure only.",
       "raw_sample_count": 81,
       "updated_at_utc": "2026-05-23T19:38:13.615582+00:00",
-      "active_status": "active"
+      "active_status": "active",
+      "watchlist_status": 1
     },
     {
       "card_key": "mega emboar ex|273|ascended heroes",
@@ -257,7 +269,8 @@
       "card_show_price_note": "Rules estimate from raw p10+median blend (127 samples); raw/ungraded only \u2014 graded is pressure only.",
       "raw_sample_count": 127,
       "updated_at_utc": "2026-05-23T19:38:17.759681+00:00",
-      "active_status": "active"
+      "active_status": "active",
+      "watchlist_status": 1
     },
     {
       "card_key": "mega feraligatr ex|274|ascended heroes",
@@ -276,7 +289,8 @@
       "card_show_price_note": "Rules estimate from raw blend (p10 polluted vs median; 114 samples); raw/ungraded only \u2014 graded is pressure only.",
       "raw_sample_count": 114,
       "updated_at_utc": "2026-05-23T19:38:21.568287+00:00",
-      "active_status": "active"
+      "active_status": "active",
+      "watchlist_status": 1
     },
     {
       "card_key": "pikachu ex|276|ascended heroes",
@@ -295,7 +309,8 @@
       "card_show_price_note": "Rules estimate from raw blend (p10 polluted vs median; 130 samples); raw/ungraded only \u2014 graded is pressure only.",
       "raw_sample_count": 130,
       "updated_at_utc": "2026-05-23T19:38:25.083145+00:00",
-      "active_status": "active"
+      "active_status": "active",
+      "watchlist_status": 1
     },
     {
       "card_key": "pikachu ex|277|ascended heroes",
@@ -314,7 +329,8 @@
       "card_show_price_note": "Rules estimate from raw blend (p10 polluted vs median; 135 samples); raw/ungraded only \u2014 graded is pressure only.",
       "raw_sample_count": 135,
       "updated_at_utc": "2026-05-23T19:38:28.581393+00:00",
-      "active_status": "active"
+      "active_status": "active",
+      "watchlist_status": 1
     },
     {
       "card_key": "iono's bellibolt ex|279|ascended heroes",
@@ -333,7 +349,8 @@
       "card_show_price_note": "Rules estimate from raw blend (p10 polluted vs median; 103 samples); raw/ungraded only \u2014 graded is pressure only.",
       "raw_sample_count": 103,
       "updated_at_utc": "2026-05-23T19:38:32.199212+00:00",
-      "active_status": "active"
+      "active_status": "active",
+      "watchlist_status": 1
     },
     {
       "card_key": "lillie's clefairy ex|280|ascended heroes",
@@ -352,7 +369,8 @@
       "card_show_price_note": "Rules estimate from raw blend (p10 polluted vs median; 130 samples); raw/ungraded only \u2014 graded is pressure only.",
       "raw_sample_count": 130,
       "updated_at_utc": "2026-05-23T19:38:35.756650+00:00",
-      "active_status": "active"
+      "active_status": "active",
+      "watchlist_status": 1
     },
     {
       "card_key": "mega gengar ex|284|ascended heroes",
@@ -371,7 +389,8 @@
       "card_show_price_note": "Rules estimate from raw blend (p10 polluted vs median; 228 samples), clean active raw listings lifted suspicious low floor; raw/ungraded only \u2014 graded is pressu",
       "raw_sample_count": 228,
       "updated_at_utc": "2026-05-23T19:38:39.935900+00:00",
-      "active_status": "active"
+      "active_status": "active",
+      "watchlist_status": 1
     },
     {
       "card_key": "mega scrafty ex|285|ascended heroes",
@@ -390,7 +409,8 @@
       "card_show_price_note": "Rules estimate from raw blend (p10 polluted vs median; 188 samples); raw/ungraded only \u2014 graded is pressure only.",
       "raw_sample_count": 188,
       "updated_at_utc": "2026-05-23T19:38:44.332523+00:00",
-      "active_status": "active"
+      "active_status": "active",
+      "watchlist_status": 1
     },
     {
       "card_key": "marnie's grimmsnarl ex|287|ascended heroes",
@@ -409,7 +429,8 @@
       "card_show_price_note": "Rules estimate from raw p10+median blend (158 samples); raw/ungraded only \u2014 graded is pressure only.",
       "raw_sample_count": 158,
       "updated_at_utc": "2026-05-23T19:38:49.347988+00:00",
-      "active_status": "active"
+      "active_status": "active",
+      "watchlist_status": 1
     },
     {
       "card_key": "steven's metagross ex|289|ascended heroes",
@@ -428,7 +449,8 @@
       "card_show_price_note": "Rules estimate from raw p10+median blend (109 samples); raw/ungraded only \u2014 graded is pressure only.",
       "raw_sample_count": 109,
       "updated_at_utc": "2026-05-23T19:38:54.599831+00:00",
-      "active_status": "active"
+      "active_status": "active",
+      "watchlist_status": 1
     },
     {
       "card_key": "mega dragonite ex|290|ascended heroes",
@@ -447,7 +469,8 @@
       "card_show_price_note": "Rules estimate from raw blend (p10 polluted vs median; 156 samples); raw/ungraded only \u2014 graded is pressure only.",
       "raw_sample_count": 156,
       "updated_at_utc": "2026-05-23T19:39:01.547845+00:00",
-      "active_status": "active"
+      "active_status": "active",
+      "watchlist_status": 1
     },
     {
       "card_key": "tympole|103|black bolt",
@@ -466,7 +489,8 @@
       "card_show_price_note": "Rules estimate from raw+lifecycle blend (63 samples, chase); raw/ungraded only \u2014 graded is pressure only.",
       "raw_sample_count": 63,
       "updated_at_utc": "2026-05-23T19:56:01.030478+00:00",
-      "active_status": "active"
+      "active_status": "active",
+      "watchlist_status": 1
     },
     {
       "card_key": "chespin|087|chaos rising",
@@ -485,7 +509,8 @@
       "card_show_price_note": "Rules estimate from raw p10+median blend (44 samples); raw/ungraded only \u2014 graded is pressure only.",
       "raw_sample_count": 44,
       "updated_at_utc": "2026-05-23T19:39:56.443812+00:00",
-      "active_status": "active"
+      "active_status": "active",
+      "watchlist_status": 1
     },
     {
       "card_key": "froakie|088|chaos rising",
@@ -504,7 +529,8 @@
       "card_show_price_note": "Rules estimate from raw p10+median blend (53 samples); raw/ungraded only \u2014 graded is pressure only.",
       "raw_sample_count": 53,
       "updated_at_utc": "2026-05-23T19:40:03.867077+00:00",
-      "active_status": "active"
+      "active_status": "active",
+      "watchlist_status": 1
     },
     {
       "card_key": "frogadier|089|chaos rising",
@@ -523,7 +549,8 @@
       "card_show_price_note": "Rules estimate from raw p10+median blend (42 samples); raw/ungraded only \u2014 graded is pressure only.",
       "raw_sample_count": 42,
       "updated_at_utc": "2026-05-23T19:40:10.947757+00:00",
-      "active_status": "active"
+      "active_status": "active",
+      "watchlist_status": 1
     },
     {
       "card_key": "ampharos|090|chaos rising",
@@ -542,7 +569,8 @@
       "card_show_price_note": "Rules estimate from raw p10+median blend (53 samples); raw/ungraded only \u2014 graded is pressure only.",
       "raw_sample_count": 53,
       "updated_at_utc": "2026-05-23T19:40:18.819161+00:00",
-      "active_status": "active"
+      "active_status": "active",
+      "watchlist_status": 1
     },
     {
       "card_key": "xerneas|091|chaos rising",
@@ -561,7 +589,8 @@
       "card_show_price_note": "Rules estimate from raw p10+median blend (45 samples); raw/ungraded only \u2014 graded is pressure only.",
       "raw_sample_count": 45,
       "updated_at_utc": "2026-05-23T19:40:26.386004+00:00",
-      "active_status": "active"
+      "active_status": "active",
+      "watchlist_status": 1
     },
     {
       "card_key": "claydol|092|chaos rising",
@@ -580,7 +609,8 @@
       "card_show_price_note": "Rules estimate from raw p10+median blend (34 samples); raw/ungraded only \u2014 graded is pressure only.",
       "raw_sample_count": 34,
       "updated_at_utc": "2026-05-23T19:40:33.881381+00:00",
-      "active_status": "active"
+      "active_status": "active",
+      "watchlist_status": 1
     },
     {
       "card_key": "crobat|093|chaos rising",
@@ -599,7 +629,8 @@
       "card_show_price_note": "Rules estimate from raw p10+median blend (34 samples); raw/ungraded only \u2014 graded is pressure only.",
       "raw_sample_count": 34,
       "updated_at_utc": "2026-05-23T19:40:41.881237+00:00",
-      "active_status": "active"
+      "active_status": "active",
+      "watchlist_status": 1
     },
     {
       "card_key": "metang|094|chaos rising",
@@ -618,7 +649,8 @@
       "card_show_price_note": "Rules estimate from raw p10+median blend (39 samples); raw/ungraded only \u2014 graded is pressure only.",
       "raw_sample_count": 39,
       "updated_at_utc": "2026-05-23T19:40:49.867887+00:00",
-      "active_status": "active"
+      "active_status": "active",
+      "watchlist_status": 1
     },
     {
       "card_key": "sliggoo|095|chaos rising",
@@ -637,7 +669,8 @@
       "card_show_price_note": "Rules estimate from raw p10+median blend (33 samples); raw/ungraded only \u2014 graded is pressure only.",
       "raw_sample_count": 33,
       "updated_at_utc": "2026-05-23T19:40:57.414662+00:00",
-      "active_status": "active"
+      "active_status": "active",
+      "watchlist_status": 1
     },
     {
       "card_key": "tauros|096|chaos rising",
@@ -656,7 +689,8 @@
       "card_show_price_note": "Rules estimate from raw p10+median blend (58 samples); raw/ungraded only \u2014 graded is pressure only.",
       "raw_sample_count": 58,
       "updated_at_utc": "2026-05-23T19:41:05.139076+00:00",
-      "active_status": "active"
+      "active_status": "active",
+      "watchlist_status": 1
     },
     {
       "card_key": "watchog|097|chaos rising",
@@ -675,7 +709,8 @@
       "card_show_price_note": "Rules estimate from raw p10+median blend (57 samples); raw/ungraded only \u2014 graded is pressure only.",
       "raw_sample_count": 57,
       "updated_at_utc": "2026-05-23T19:41:12.021210+00:00",
-      "active_status": "active"
+      "active_status": "active",
+      "watchlist_status": 1
     },
     {
       "card_key": "mega greninja ex|100|chaos rising",
@@ -694,7 +729,8 @@
       "card_show_price_note": "Rules estimate from raw p10+median blend (37 samples); raw/ungraded only \u2014 graded is pressure only.",
       "raw_sample_count": 37,
       "updated_at_utc": "2026-05-23T19:41:15.608537+00:00",
-      "active_status": "active"
+      "active_status": "active",
+      "watchlist_status": 1
     },
     {
       "card_key": "mega floette ex|101|chaos rising",
@@ -713,7 +749,8 @@
       "card_show_price_note": "Rules estimate from raw p10+median blend (60 samples); raw/ungraded only \u2014 graded is pressure only.",
       "raw_sample_count": 60,
       "updated_at_utc": "2026-05-23T19:41:19.428563+00:00",
-      "active_status": "active"
+      "active_status": "active",
+      "watchlist_status": 1
     },
     {
       "card_key": "mega greninja ex|116|chaos rising",
@@ -732,7 +769,8 @@
       "card_show_price_note": "Rules estimate from raw blend (p10 polluted vs median; 53 samples); raw/ungraded only \u2014 graded is pressure only.",
       "raw_sample_count": 53,
       "updated_at_utc": "2026-05-23T19:41:23.420884+00:00",
-      "active_status": "active"
+      "active_status": "active",
+      "watchlist_status": 1
     },
     {
       "card_key": "mega floette ex|117|chaos rising",
@@ -751,7 +789,8 @@
       "card_show_price_note": "Rules estimate from raw blend (p10 polluted vs median; 45 samples); raw/ungraded only \u2014 graded is pressure only.",
       "raw_sample_count": 45,
       "updated_at_utc": "2026-05-23T19:41:27.111861+00:00",
-      "active_status": "active"
+      "active_status": "active",
+      "watchlist_status": 1
     },
     {
       "card_key": "mega dragalge ex|118|chaos rising",
@@ -770,7 +809,8 @@
       "card_show_price_note": "Rules estimate from raw blend (p10 polluted vs median; 35 samples); raw/ungraded only \u2014 graded is pressure only.",
       "raw_sample_count": 35,
       "updated_at_utc": "2026-05-23T19:41:30.549006+00:00",
-      "active_status": "active"
+      "active_status": "active",
+      "watchlist_status": 1
     },
     {
       "card_key": "cinccino ex|119|chaos rising",
@@ -789,7 +829,8 @@
       "card_show_price_note": "Rules estimate from raw blend (p10 polluted vs median; 41 samples); raw/ungraded only \u2014 graded is pressure only.",
       "raw_sample_count": 41,
       "updated_at_utc": "2026-05-23T19:41:34.032242+00:00",
-      "active_status": "active"
+      "active_status": "active",
+      "watchlist_status": 1
     },
     {
       "card_key": "rowlette|090|perfect order",
@@ -808,7 +849,8 @@
       "card_show_price_note": "",
       "raw_sample_count": null,
       "updated_at_utc": "2026-05-23T19:45:34.010232+00:00",
-      "active_status": "active"
+      "active_status": "active",
+      "watchlist_status": 1
     },
     {
       "card_key": "dedenne|093|perfect order",
@@ -827,7 +869,8 @@
       "card_show_price_note": "Rules estimate from raw p10+median blend (98 samples); raw/ungraded only \u2014 graded is pressure only.",
       "raw_sample_count": 98,
       "updated_at_utc": "2026-05-23T19:45:47.580691+00:00",
-      "active_status": "active"
+      "active_status": "active",
+      "watchlist_status": 1
     },
     {
       "card_key": "espurr|095|perfect order",
@@ -846,7 +889,8 @@
       "card_show_price_note": "Rules estimate from raw p10+median blend (109 samples); raw/ungraded only \u2014 graded is pressure only.",
       "raw_sample_count": 109,
       "updated_at_utc": "2026-05-23T19:45:49.321878+00:00",
-      "active_status": "active"
+      "active_status": "active",
+      "watchlist_status": 1
     },
     {
       "card_key": "probopass|096|perfect order",
@@ -865,7 +909,8 @@
       "card_show_price_note": "Rules estimate from raw p10+median blend (73 samples); raw/ungraded only \u2014 graded is pressure only.",
       "raw_sample_count": 73,
       "updated_at_utc": "2026-05-23T19:45:59.897068+00:00",
-      "active_status": "active"
+      "active_status": "active",
+      "watchlist_status": 1
     },
     {
       "card_key": "mega starmie ex|118|perfect order",
@@ -884,7 +929,8 @@
       "card_show_price_note": "Rules estimate from raw blend (p10 polluted vs median; 97 samples); raw/ungraded only \u2014 graded is pressure only.",
       "raw_sample_count": 97,
       "updated_at_utc": "2026-05-23T19:45:58.276335+00:00",
-      "active_status": "active"
+      "active_status": "active",
+      "watchlist_status": 1
     },
     {
       "card_key": "mega clefable ex|119|perfect order",
@@ -903,7 +949,8 @@
       "card_show_price_note": "Rules estimate from raw blend (p10 polluted vs median; 84 samples); raw/ungraded only \u2014 graded is pressure only.",
       "raw_sample_count": 84,
       "updated_at_utc": "2026-05-23T19:46:07.286982+00:00",
-      "active_status": "active"
+      "active_status": "active",
+      "watchlist_status": 1
     },
     {
       "card_key": "mega zygarde ex|120|perfect order",
@@ -922,7 +969,8 @@
       "card_show_price_note": "Rules estimate from raw blend (p10 polluted vs median; 107 samples); raw/ungraded only \u2014 graded is pressure only.",
       "raw_sample_count": 107,
       "updated_at_utc": "2026-05-23T19:46:08.431170+00:00",
-      "active_status": "active"
+      "active_status": "active",
+      "watchlist_status": 1
     }
   ]
 }

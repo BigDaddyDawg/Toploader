@@ -38,9 +38,9 @@ Open it on your phone and bookmark it. The page caches `floors.json` in the brow
 
 Share this URL with family and friends:
 
-`https://<username>.github.io/<repo-name>/wishlist.html`
+`https://bigdaddydawg.github.io/Toploader/wishlist.html`
 
-The wishlist page shows every active exported card and its `target_buy_gbp` price. It sorts cheapest first by default, with filters for set and price order.
+The wishlist page shows watched exported cards and their `target_buy_gbp` price. The saved morning batch cards are watched by default, and you can toggle cards on/off in the app. It sorts cheapest first by default, with filters for set and price order.
 
 ## Files
 
