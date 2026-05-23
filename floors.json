@@ -1,12 +1,13 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-05-23T19:44:56.272178+00:00",
+  "generated_at_utc": "2026-05-23T20:20:34.509230+00:00",
   "local_date": "2026-05-23",
   "source_db": "C:\\Users\\rache\\OneDrive\\Documents\\mkdir pokemon-tcg-terminal\\tcg_data.db",
   "include_bought": false,
-  "total_cards": 47,
+  "total_cards": 48,
   "sets": [
     "Ascended Heroes",
+    "Black Bolt",
     "Chaos Rising",
     "Perfect Order"
   ],
@@ -449,6 +450,25 @@
       "active_status": "active"
     },
     {
+      "card_key": "tympole|103|black bolt",
+      "set_name": "Black Bolt",
+      "card": "Tympole",
+      "number": "103",
+      "scrape_query": "Tympole Black Bolt 103",
+      "ebay_sales": 48,
+      "forecast_status": "ok",
+      "advisor_decision": "Hold",
+      "floor_gbp": 5.52,
+      "target_buy_gbp": 5.52,
+      "floor_confidence": "high",
+      "floor_quality_flag": "watch",
+      "floor_justification": "We looked at 63 raw (ungraded) sales for this card. In the data, the cheapest reliable cluster was around \u00a35.52, while most sales sat nearer \u00a36.71, and the latest raw sale we saw was \u00a34.41 on 2026-05-23. We blended recent raw sales with the lifecycle model because this is a high-end chase card. Our working raw floor is \u00a35.52. Treat this as a cautious floor \u2014 double-check the listing is the right card, language, and condition before you rely on it. Graded/slab prices are high ",
+      "card_show_price_note": "Rules estimate from raw+lifecycle blend (63 samples, chase); raw/ungraded only \u2014 graded is pressure only.",
+      "raw_sample_count": 63,
+      "updated_at_utc": "2026-05-23T19:56:01.030478+00:00",
+      "active_status": "active"
+    },
+    {
       "card_key": "chespin|087|chaos rising",
       "set_name": "Chaos Rising",
       "card": "Chespin",
@@ -787,7 +807,7 @@
       "floor_justification": "",
       "card_show_price_note": "",
       "raw_sample_count": null,
-      "updated_at_utc": "2026-05-23T19:39:09.348281+00:00",
+      "updated_at_utc": "2026-05-23T19:45:34.010232+00:00",
       "active_status": "active"
     },
     {
@@ -806,7 +826,7 @@
       "floor_justification": "We looked at 98 raw (ungraded) sales for this card. In the data, the cheapest reliable cluster was around \u00a35.23, while most sales sat nearer \u00a36.84, and the cheapest clean raw listing today is about \u00a34.80, and the latest raw sale we saw was \u00a36.67 on 2026-05-23. We used typical recent raw sales, not just the cheapest outlier. Our working raw floor is \u00a35.61. Graded/slab prices are high on this card, but they only inform timing \u2014 not the raw floor.",
       "card_show_price_note": "Rules estimate from raw p10+median blend (98 samples); raw/ungraded only \u2014 graded is pressure only.",
       "raw_sample_count": 98,
-      "updated_at_utc": "2026-05-23T19:39:20.315897+00:00",
+      "updated_at_utc": "2026-05-23T19:45:47.580691+00:00",
       "active_status": "active"
     },
     {
@@ -825,7 +845,7 @@
       "floor_justification": "We looked at 109 raw (ungraded) sales for this card. In the data, the cheapest reliable cluster was around \u00a34.00, while most sales sat nearer \u00a35.08, and the cheapest clean raw listing today is about \u00a31.11, and the latest raw sale we saw was \u00a3195.24 on 2026-05-23. We used typical recent raw sales, not just the cheapest outlier. Our working raw floor is \u00a34.17. Graded/slab prices are high on this card, but they only inform timing \u2014 not the raw floor.",
       "card_show_price_note": "Rules estimate from raw p10+median blend (109 samples); raw/ungraded only \u2014 graded is pressure only.",
       "raw_sample_count": 109,
-      "updated_at_utc": "2026-05-23T19:39:27.623457+00:00",
+      "updated_at_utc": "2026-05-23T19:45:49.321878+00:00",
       "active_status": "active"
     },
     {
@@ -844,7 +864,7 @@
       "floor_justification": "We looked at 73 raw (ungraded) sales for this card. In the data, the cheapest reliable cluster was around \u00a32.11, while most sales sat nearer \u00a33.24, and the cheapest clean raw listing today is about \u00a30.92, and the latest raw sale we saw was \u00a33.69 on 2026-05-23. We used typical recent raw sales, not just the cheapest outlier. Our working raw floor is \u00a32.66. Graded/slab prices are high on this card, but they only inform timing \u2014 not the raw floor.",
       "card_show_price_note": "Rules estimate from raw p10+median blend (73 samples); raw/ungraded only \u2014 graded is pressure only.",
       "raw_sample_count": 73,
-      "updated_at_utc": "2026-05-23T19:39:35.856925+00:00",
+      "updated_at_utc": "2026-05-23T19:45:59.897068+00:00",
       "active_status": "active"
     },
     {
@@ -863,7 +883,7 @@
       "floor_justification": "We looked at 97 raw (ungraded) sales for this card. In the data, the cheapest reliable cluster was around \u00a318.29, while most sales sat nearer \u00a357.09, and the cheapest clean raw listing today is about \u00a318.07, and the latest raw sale we saw was \u00a3195.24 on 2026-05-23. A few unusually cheap sales were mixed in with normal ones, so we did not trust the absolute lowest sales on their own. Our working raw floor is \u00a342.82. Treat this as a cautious floor \u2014 double-check the listing is ",
       "card_show_price_note": "Rules estimate from raw blend (p10 polluted vs median; 97 samples); raw/ungraded only \u2014 graded is pressure only.",
       "raw_sample_count": 97,
-      "updated_at_utc": "2026-05-23T19:39:39.766859+00:00",
+      "updated_at_utc": "2026-05-23T19:45:58.276335+00:00",
       "active_status": "active"
     },
     {
@@ -882,7 +902,7 @@
       "floor_justification": "We looked at 84 raw (ungraded) sales for this card. In the data, the cheapest reliable cluster was around \u00a318.29, while most sales sat nearer \u00a355.58, and the cheapest clean raw listing today is about \u00a318.07, and the latest raw sale we saw was \u00a355.58 on 2026-05-23. A few unusually cheap sales were mixed in with normal ones, so we did not trust the absolute lowest sales on their own. Our working raw floor is \u00a341.69. Treat this as a cautious floor \u2014 double-check the listing is t",
       "card_show_price_note": "Rules estimate from raw blend (p10 polluted vs median; 84 samples); raw/ungraded only \u2014 graded is pressure only.",
       "raw_sample_count": 84,
-      "updated_at_utc": "2026-05-23T19:39:44.157875+00:00",
+      "updated_at_utc": "2026-05-23T19:46:07.286982+00:00",
       "active_status": "active"
     },
     {
@@ -901,7 +921,7 @@
       "floor_justification": "We looked at 107 raw (ungraded) sales for this card. In the data, the cheapest reliable cluster was around \u00a318.29, while most sales sat nearer \u00a362.96, and the cheapest clean raw listing today is about \u00a338.40, and the latest raw sale we saw was \u00a357.60 on 2026-05-23. A few unusually cheap sales were mixed in with normal ones, so we did not trust the absolute lowest sales on their own. Our working raw floor is \u00a347.22. Treat this as a cautious floor \u2014 double-check the listing is ",
       "card_show_price_note": "Rules estimate from raw blend (p10 polluted vs median; 107 samples); raw/ungraded only \u2014 graded is pressure only.",
       "raw_sample_count": 107,
-      "updated_at_utc": "2026-05-23T19:39:48.729876+00:00",
+      "updated_at_utc": "2026-05-23T19:46:08.431170+00:00",
       "active_status": "active"
     }
   ]
