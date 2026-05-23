@@ -40,14 +40,14 @@ Share this URL with family and friends:
 
 `https://<username>.github.io/<repo-name>/wishlist.html`
 
-The wishlist page shows cards marked `Watch` and their `target_buy_gbp` price. It sorts cheapest first by default, with filters for set and price order.
+The wishlist page shows every active exported card and its `target_buy_gbp` price. It sorts cheapest first by default, with filters for set and price order.
 
 ## Files
 
 | File | Purpose |
 |------|---------|
 | `index.html` | Mobile search/filter UI |
-| `wishlist.html` | Shareable wishlist for watched cards and target prices |
+| `wishlist.html` | Shareable wishlist for active cards and target prices |
 | `floors.json` | Exported from `ui_batch_card_results` |
 
 No scraping runs on the phone — only this JSON is served.

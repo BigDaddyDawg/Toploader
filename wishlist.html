@@ -196,13 +196,9 @@
       }
     }
 
-    function isWishlistCard(card) {
-      return (card.floor_quality_flag || "").toLowerCase() === "watch";
-    }
-
     function render(data) {
       const allCards = data.cards || [];
-      const cards = allCards.filter(isWishlistCard);
+      const cards = allCards.slice();
       const when = data.generated_at_utc || data.local_date || "unknown";
       const cacheNote = data._from_cache ? " (offline cache)" : "";
       document.getElementById("meta").textContent =
@@ -252,7 +248,7 @@
         if (!filtered.length) {
           list.innerHTML = cards.length
             ? '<div class="empty">No wishlist cards match that search.</div>'
-            : '<div class="empty">No cards are currently marked Watch. Mark cards as Watch in the main app, run the morning export, then publish again.</div>';
+            : '<div class="empty">No cards are currently in the exported wishlist. Run the morning export, then publish again.</div>';
           return;
         }
 
