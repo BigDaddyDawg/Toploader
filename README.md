@@ -1,12 +1,13 @@
 # Toploader (GitHub Pages)
 
-Read-only snapshot of today's card-show floors and a shareable wishlist — one page, two tabs.
+Read-only phone homepage for today's Toploader snapshot: landing page, floor checker, and shareable wishlist in one static app.
 
 ## URLs
 
 | View | URL |
 |------|-----|
-| Floor checker | https://bigdaddydawg.github.io/Toploader/ |
+| Home | https://bigdaddydawg.github.io/Toploader/ |
+| Floor checker | https://bigdaddydawg.github.io/Toploader/#floors |
 | Wishlist (share with family) | https://bigdaddydawg.github.io/Toploader/#wishlist |
 
 Old bookmarks to `wishlist.html` redirect to `#wishlist`.
@@ -27,6 +28,7 @@ In the public **Toploader** repo: **Settings → Pages → Build from branch →
 
 ## What each tab shows
 
+- **Home** — quick summary and big buttons into the card-show tools.
 - **Floor checker** — all active exported cards with floor, target buy, quality flags, and notes.
 - **Wishlist** — only cards with `watchlist_status` in the app (morning batch cards are seeded on batch run). Name, set, number, and target price only. Sort by cheapest, expensive, or set.
 
@@ -36,7 +38,7 @@ Toggle wishlist membership in the Toploader app; re-export and publish to update
 
 | File | Purpose |
 |------|---------|
-| `index.html` | Single-page UI (floors + wishlist tabs, hash routing) |
+| `index.html` | Single-page UI (home + floors + wishlist tabs, hash routing) |
 | `wishlist.html` | Redirect to `#wishlist` for old links |
 | `floors.json` | Exported from `ui_batch_card_results` |
 

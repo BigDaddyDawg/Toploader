@@ -61,6 +61,64 @@
       color: var(--text);
       border-color: rgba(139, 92, 246, 0.45);
     }
+    .hero {
+      border: 1px solid rgba(139, 92, 246, 0.34);
+      background:
+        linear-gradient(145deg, rgba(139, 92, 246, 0.28), rgba(45, 212, 191, 0.10)),
+        var(--panel);
+      border-radius: 24px;
+      padding: 18px;
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.30);
+      margin-bottom: 12px;
+    }
+    .hero h2 {
+      margin: 0 0 8px;
+      font-size: 1.6rem;
+      letter-spacing: -0.04em;
+    }
+    .hero p {
+      margin: 0;
+      color: #c8d5ff;
+      line-height: 1.45;
+    }
+    .home-grid, .summary-grid {
+      display: grid;
+      gap: 8px;
+    }
+    .summary-grid {
+      grid-template-columns: repeat(3, 1fr);
+      margin: 12px 0;
+    }
+    .summary {
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      padding: 12px;
+    }
+    .summary strong {
+      display: block;
+      font-size: 1.25rem;
+    }
+    .summary span {
+      color: var(--muted);
+      font-size: 0.75rem;
+    }
+    .action-card {
+      text-align: left;
+      cursor: pointer;
+      color: inherit;
+      font: inherit;
+      width: 100%;
+    }
+    .action-card h2 {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .action-card h2 span {
+      color: var(--ok);
+      font-size: 1.1rem;
+    }
     .toolbar {
       display: grid;
       gap: 8px;
@@ -85,7 +143,7 @@
       grid-template-columns: 1fr 1fr;
       gap: 8px;
     }
-  .filters.wishlist-filters {
+    .filters.wishlist-filters {
       grid-template-columns: 1fr 1fr;
     }
     .stats {
@@ -97,14 +155,14 @@
       display: grid;
       gap: 8px;
     }
-    .card {
+    .card, .action-card {
       border: 1px solid var(--line);
       background: var(--panel);
       border-radius: 18px;
       padding: 12px;
       box-shadow: 0 18px 52px rgba(0, 0, 0, 0.22);
     }
-    .card h2 {
+    .card h2, .action-card h2 {
       margin: 0 0 4px;
       font-size: 1rem;
     }
@@ -157,6 +215,16 @@
       text-align: center;
     }
     .error { color: #ff9a9a; }
+    @media (min-width: 720px) {
+      body {
+        max-width: 780px;
+        margin: 0 auto;
+        padding-top: 24px;
+      }
+      .home-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
     .view { display: none; }
     .view.active { display: block; }
   </style>
@@ -168,11 +236,35 @@
   </header>
 
   <nav class="tabs" aria-label="View">
-    <button type="button" class="tab active" id="tabFloors" data-view="floors">Floor checker</button>
+    <button type="button" class="tab active" id="tabHome" data-view="home">Home</button>
+    <button type="button" class="tab" id="tabFloors" data-view="floors">Floors</button>
     <button type="button" class="tab" id="tabWishlist" data-view="wishlist">Wishlist</button>
   </nav>
 
-  <div id="viewFloors" class="view active">
+  <div id="viewHome" class="view active">
+    <section class="hero">
+      <h2>Card-show helper in your pocket</h2>
+      <p>Check today’s floor prices, target buys, and the family wishlist from the same phone-friendly Toploader page.</p>
+    </section>
+    <div class="summary-grid" aria-label="Snapshot summary">
+      <div class="summary"><strong id="homeCardCount">—</strong><span>priced cards</span></div>
+      <div class="summary"><strong id="homeWishlistCount">—</strong><span>wishlist</span></div>
+      <div class="summary"><strong id="homeWatchCount">—</strong><span>watch flags</span></div>
+    </div>
+    <div class="home-grid">
+      <button type="button" class="action-card" data-go="floors">
+        <h2>Floor checker <span>›</span></h2>
+        <p class="sub">Search every exported card, compare floor and target buy, and spot pricing quality flags.</p>
+      </button>
+      <button type="button" class="action-card" data-go="wishlist">
+        <h2>Wishlist <span>›</span></h2>
+        <p class="sub">A cleaner share link for family and friends, showing only watched cards and target prices.</p>
+      </button>
+    </div>
+    <div id="homeError"></div>
+  </div>
+
+  <div id="viewFloors" class="view">
     <div class="toolbar">
       <input type="search" id="searchFloors" placeholder="Search card, number, set…" autocomplete="off">
       <div class="filters">
@@ -270,27 +362,31 @@
     }
 
     let snapshotData = null;
-    let activeView = "floors";
+    let activeView = "home";
 
     function setView(view) {
       activeView = view;
-      const hash = view === "wishlist" ? "#wishlist" : "#floors";
+      const hash = view === "wishlist" ? "#wishlist" : view === "floors" ? "#floors" : "";
       if (location.hash !== hash) {
-        history.replaceState(null, "", hash === "#floors" ? location.pathname : hash);
+        history.replaceState(null, "", hash ? hash : location.pathname);
       }
+      document.getElementById("viewHome").classList.toggle("active", view === "home");
       document.getElementById("viewFloors").classList.toggle("active", view === "floors");
       document.getElementById("viewWishlist").classList.toggle("active", view === "wishlist");
+      document.getElementById("tabHome").classList.toggle("active", view === "home");
       document.getElementById("tabFloors").classList.toggle("active", view === "floors");
       document.getElementById("tabWishlist").classList.toggle("active", view === "wishlist");
-      document.title = view === "wishlist" ? "Toploader — Wishlist" : "Toploader — Floors";
+      document.title = view === "wishlist" ? "Toploader — Wishlist" : view === "floors" ? "Toploader — Floors" : "Toploader";
       if (snapshotData) updateMeta();
-      if (view === "floors") renderFloors();
+      if (view === "home") renderHome();
+      else if (view === "floors") renderFloors();
       else renderWishlist();
     }
 
     function parseHash() {
       const h = (location.hash || "").toLowerCase();
-      return h === "#wishlist" ? "wishlist" : "floors";
+      if (h === "#floors") return "floors";
+      return h === "#wishlist" ? "wishlist" : "home";
     }
 
     function updateMeta() {
@@ -299,7 +395,10 @@
       const errNote = snapshotData._load_error ? " · fetch issue" : "";
       const all = snapshotData.cards || [];
       const wish = all.filter(isWatched);
-      if (activeView === "wishlist") {
+      if (activeView === "home") {
+        document.getElementById("meta").textContent =
+          `${all.length} cards · ${wish.length} on wishlist · updated ${when}${cacheNote}${errNote}`;
+      } else if (activeView === "wishlist") {
         document.getElementById("meta").textContent =
           `${wish.length} wishlist cards · updated ${when}${cacheNote}${errNote}`;
       } else {
@@ -314,6 +413,15 @@
       selectEl.innerHTML = '<option value="">All sets</option>' +
         sets.map(s => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join("");
       if (prev && sets.includes(prev)) selectEl.value = prev;
+    }
+
+    function renderHome() {
+      const cards = snapshotData.cards || [];
+      const wish = cards.filter(isWatched);
+      const watchFlags = cards.filter(c => (c.floor_quality_flag || "").toLowerCase() === "watch");
+      document.getElementById("homeCardCount").textContent = cards.length;
+      document.getElementById("homeWishlistCount").textContent = wish.length;
+      document.getElementById("homeWatchCount").textContent = watchFlags.length;
     }
 
     function renderFloors() {
@@ -433,8 +541,12 @@
       apply();
     }
 
+    document.getElementById("tabHome").addEventListener("click", () => setView("home"));
     document.getElementById("tabFloors").addEventListener("click", () => setView("floors"));
     document.getElementById("tabWishlist").addEventListener("click", () => setView("wishlist"));
+    document.querySelectorAll("[data-go]").forEach(el => {
+      el.addEventListener("click", () => setView(el.dataset.go));
+    });
     window.addEventListener("hashchange", () => setView(parseHash()));
 
     loadSnapshot()
@@ -444,6 +556,8 @@
       })
       .catch(err => {
         document.getElementById("meta").textContent = "Could not load floors.json";
+        document.getElementById("homeError").innerHTML =
+          `<div class="error">${escapeHtml(err.message || err)}<br><br>Run the morning batch with export on your laptop first.</div>`;
         document.getElementById("listFloors").innerHTML =
           `<div class="error">${escapeHtml(err.message || err)}<br><br>Run the morning batch with export on your laptop first.</div>`;
       });
