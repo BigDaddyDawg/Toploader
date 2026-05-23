@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#070b17">
+  <title>Toploader — Wishlist</title>
+  <style>
+    :root {
+      --bg: #070b17;
+      --panel: #111c38;
+      --line: #2a3f75;
+      --text: #e9eeff;
+      --muted: #99a8d7;
+      --brand: #5e8fff;
+      --ok: #5ce3c3;
+      --warn: #ffd07a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 12px 12px 32px;
+    }
+    header {
+      margin-bottom: 12px;
+    }
+    h1 {
+      margin: 0;
+      font-size: 1.15rem;
+    }
+    .meta {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.45;
+    }
+    .toolbar {
+      display: grid;
+      gap: 8px;
+      margin-bottom: 12px;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background: linear-gradient(var(--bg) 70%, transparent);
+      padding-bottom: 8px;
+    }
+    input, select {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #172a53;
+      color: var(--text);
+      padding: 10px 12px;
+      font-size: 1rem;
+    }
+    .filters {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .stats {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin: 0;
+    }
+    .list {
+      display: grid;
+      gap: 8px;
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+    }
+    .card h2 {
+      margin: 0;
+      font-size: 1rem;
+    }
+    .sub {
+      margin: 4px 0 10px;
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+    .budget {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+    .budget .label {
+      color: var(--muted);
+      font-size: 0.72rem;
+    }
+    .budget .value {
+      color: var(--ok);
+      font-weight: 800;
+      font-size: 1.05rem;
+    }
+    .empty, .error {
+      border: 1px dashed var(--line);
+      border-radius: 12px;
+      padding: 16px;
+      color: var(--muted);
+      text-align: center;
+    }
+    .nav {
+      margin-top: 10px;
+      font-size: 0.9rem;
+    }
+    .nav a {
+      color: var(--ok);
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Toploader — Wishlist</h1>
+      <p class="meta" id="meta">Loading wishlist…</p>
+      <p class="nav"><a href="./index.html">Open full daily floor checker</a></p>
+    </header>
+
+    <div class="toolbar">
+      <input type="search" id="search" placeholder="Search card, number, set…" autocomplete="off">
+      <div class="filters">
+        <select id="setFilter" aria-label="Filter by set">
+          <option value="">All sets</option>
+        </select>
+        <select id="sortFilter" aria-label="Sort wishlist">
+          <option value="cheapest">Cheapest first</option>
+          <option value="expensive">Most expensive first</option>
+          <option value="set">Set order</option>
+        </select>
+      </div>
+      <p class="stats" id="stats"></p>
+    </div>
+
+    <section id="list" class="list"></section>
+  </main>
+
+  <script>
+    const CACHE_KEY = "toploader_floors_v1";
+
+    function money(v) {
+      if (v === null || v === undefined || v === "") return "Ask me";
+      const n = Number(v);
+      if (!Number.isFinite(n)) return "Ask me";
+      return "£" + n.toLocaleString("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function escapeHtml(s) {
+      return String(s)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function loadCached() {
+      try {
+        const raw = localStorage.getItem(CACHE_KEY);
+        return raw ? JSON.parse(raw) : null;
+      } catch (_) {
+        return null;
+      }
+    }
+
+    function saveCache(data) {
+      try {
+        localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+      } catch (_) {}
+    }
+
+    async function loadSnapshot() {
+      try {
+        const res = await fetch("floors.json?" + Date.now(), { cache: "no-store" });
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        const data = await res.json();
+        saveCache(data);
+        return data;
+      } catch (err) {
+        const cached = loadCached();
+        if (cached) {
+          cached._from_cache = true;
+          cached._load_error = String(err);
+          return cached;
+        }
+        throw err;
+      }
+    }
+
+    function isWishlistCard(card) {
+      return (card.floor_quality_flag || "").toLowerCase() === "watch";
+    }
+
+    function render(data) {
+      const allCards = data.cards || [];
+      const cards = allCards.filter(isWishlistCard);
+      const when = data.generated_at_utc || data.local_date || "unknown";
+      const cacheNote = data._from_cache ? " (offline cache)" : "";
+      document.getElementById("meta").textContent =
+        `${cards.length} wishlist cards · updated ${when}${cacheNote}`;
+
+      const setFilter = document.getElementById("setFilter");
+      const sets = [...new Set(cards.map(c => c.set_name).filter(Boolean))].sort();
+      setFilter.innerHTML = '<option value="">All sets</option>' +
+        sets.map(s => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join("");
+
+      function priceValue(card) {
+        const n = Number(card.target_buy_gbp);
+        return Number.isFinite(n) ? n : Number.POSITIVE_INFINITY;
+      }
+
+      function cardNumberValue(card) {
+        const n = Number.parseInt(card.number, 10);
+        return Number.isFinite(n) ? n : 9999;
+      }
+
+      function applyFilters() {
+        const q = document.getElementById("search").value.trim().toLowerCase();
+        const setVal = setFilter.value;
+        const sortVal = document.getElementById("sortFilter").value;
+        let filtered = cards.slice();
+        if (setVal) filtered = filtered.filter(c => c.set_name === setVal);
+        if (q) {
+          filtered = filtered.filter(c => {
+            const blob = [c.card, c.number, c.set_name, c.scrape_query].join(" ").toLowerCase();
+            return blob.includes(q);
+          });
+        }
+        filtered.sort((a, b) => {
+          if (sortVal === "expensive") return priceValue(b) - priceValue(a);
+          if (sortVal === "set") {
+            return String(a.set_name || "").localeCompare(String(b.set_name || ""))
+              || cardNumberValue(a) - cardNumberValue(b)
+              || String(a.card || "").localeCompare(String(b.card || ""));
+          }
+          return priceValue(a) - priceValue(b);
+        });
+
+        document.getElementById("stats").textContent =
+          `Showing ${filtered.length} of ${cards.length}`;
+
+        const list = document.getElementById("list");
+        if (!filtered.length) {
+          list.innerHTML = cards.length
+            ? '<div class="empty">No wishlist cards match that search.</div>'
+            : '<div class="empty">No cards are currently marked Watch. Mark cards as Watch in the main app, run the morning export, then publish again.</div>';
+          return;
+        }
+
+        list.innerHTML = filtered.map(card => `
+          <article class="card">
+            <h2>${escapeHtml(card.card || "")} <span style="color:var(--muted)">#${escapeHtml(card.number || "")}</span></h2>
+            <p class="sub">${escapeHtml(card.set_name || "")}</p>
+            <div class="budget">
+              <span class="label">Target price</span>
+              <span class="value">${money(card.target_buy_gbp)}</span>
+            </div>
+          </article>
+        `).join("");
+      }
+
+      document.getElementById("search").oninput = applyFilters;
+      setFilter.onchange = applyFilters;
+      document.getElementById("sortFilter").onchange = applyFilters;
+      applyFilters();
+    }
+
+    loadSnapshot()
+      .then(render)
+      .catch(err => {
+        document.getElementById("meta").textContent = "Could not load wishlist.";
+        document.getElementById("list").innerHTML =
+          `<div class="error">${escapeHtml(err.message || err)}<br><br>The wishlist appears after the daily snapshot has been published.</div>`;
+      });
+  </script>
+</body>
+</html>
