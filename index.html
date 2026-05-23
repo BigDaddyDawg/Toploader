@@ -173,7 +173,7 @@
     }
     .kpi-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap: 8px;
       margin: 10px 0;
     }
@@ -340,6 +340,39 @@
       border-radius: 18px;
       padding: 12px;
       box-shadow: 0 18px 52px rgba(0, 0, 0, 0.22);
+    }
+    #listWishlist {
+      gap: 10px;
+    }
+    #listWishlist .card {
+      --wish-accent: 45, 212, 191;
+      --wish-border: rgba(45, 212, 191, 0.28);
+      position: relative;
+      overflow: hidden;
+      border-color: var(--wish-border);
+      background:
+        radial-gradient(circle at 92% 18%, rgba(var(--wish-accent), 0.18), transparent 28%),
+        linear-gradient(145deg, rgba(var(--wish-accent), 0.10), rgba(255, 255, 255, 0.038) 52%),
+        var(--panel);
+    }
+    #listWishlist .card:nth-child(even) {
+      --wish-accent: 139, 92, 246;
+      --wish-border: rgba(139, 92, 246, 0.30);
+    }
+    #listWishlist .card:nth-child(3n) {
+      --wish-accent: 247, 199, 109;
+      --wish-border: rgba(247, 199, 109, 0.30);
+    }
+    #listWishlist .card::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 4px;
+      background: rgb(var(--wish-accent));
+      opacity: 0.86;
+    }
+    #listWishlist .budget .value {
+      color: rgb(var(--wish-accent));
     }
     .card h2, .action-card h2 {
       margin: 0 0 4px;
@@ -597,7 +630,7 @@
         grid-template-columns: repeat(4, 1fr);
       }
       .kpi-grid {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(3, 1fr);
       }
       .tl-hero h2 { max-width: 28rem; }
       .tl-hero p { max-width: 32rem; }
@@ -646,10 +679,6 @@
       <div class="kpi">
         <div class="kpi-label">Wishlist</div>
         <div class="kpi-value" id="homeWishlistCount">—</div>
-      </div>
-      <div class="kpi">
-        <div class="kpi-label">Watch flags</div>
-        <div class="kpi-value" id="homeWatchCount">—</div>
       </div>
       <div class="kpi">
         <div class="kpi-label">Updated</div>
@@ -924,16 +953,13 @@
     function renderHome() {
       const cards = snapshotData.cards || [];
       const wish = cards.filter(isWatched);
-      const watchFlags = cards.filter(c => (c.floor_quality_flag || "").toLowerCase() === "watch");
       const when = snapshotData.generated_at_utc || snapshotData.local_date || "";
       document.getElementById("homeCardCount").textContent = cards.length;
       document.getElementById("homeWishlistCount").textContent = wish.length;
-      document.getElementById("homeWatchCount").textContent = watchFlags.length;
       document.getElementById("homeUpdated").textContent = formatSnapshotDate(when);
       const chips = [];
       if (cards.length) chips.push(`${cards.length} cards priced`);
       if (wish.length) chips.push(`${wish.length} on wishlist`);
-      if (watchFlags.length) chips.push(`${watchFlags.length} need a closer look`);
       if (snapshotData._from_cache) chips.push("Offline cache");
       document.getElementById("homeChips").innerHTML = chips.length
         ? chips.map(c => `<span class="chip">${escapeHtml(c)}</span>`).join("")
