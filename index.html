@@ -113,6 +113,7 @@
       font-weight: 750;
       cursor: pointer;
       font-family: inherit;
+      transition: border-color 0.15s, background 0.15s, color 0.15s;
     }
     .toggle-btn.active {
       border-color: rgba(45, 212, 191, 0.46);
@@ -321,7 +322,7 @@
       flex-shrink: 0;
     }
     .panel-badge.price { background: rgba(56, 189, 248, 0.18); color: #7dd3fc; }
-    .panel-badge.family { background: rgba(45, 212, 191, 0.18); color: #99f6e4; }
+    .panel-badge.list { background: rgba(45, 212, 191, 0.18); color: #99f6e4; }
     .panel-badge.helper { background: rgba(139, 92, 246, 0.2); color: #c4b5fd; }
     .panel-badge.buy { background: rgba(45, 212, 191, 0.18); color: #99f6e4; }
     .toolbar {
@@ -388,6 +389,13 @@
       padding: 12px;
       box-shadow: 0 18px 52px rgba(0, 0, 0, 0.22);
     }
+    body.compact-on .card {
+      padding: 10px 12px;
+    }
+    body.detail-on .card {
+      border-radius: 22px;
+      padding: 15px;
+    }
     .card.highlight {
       border-color: rgba(247, 199, 109, 0.62);
       box-shadow: 0 0 0 2px rgba(247, 199, 109, 0.18), 0 18px 52px rgba(0, 0, 0, 0.22);
@@ -437,6 +445,9 @@
     body.compact-on .why {
       display: none;
     }
+    body.detail-on .why {
+      display: block;
+    }
     .deal-calc label {
       color: var(--muted);
       font-size: 0.74rem;
@@ -452,7 +463,7 @@
     .deal-result.good { color: #99f6e4; }
     .deal-result.warn { color: var(--warn); }
     .deal-result.bad { color: #fca5a5; }
-    .helper-card .max-pay {
+    .helper-card .target-price {
       display: inline-flex;
       align-items: center;
       gap: 6px;
@@ -480,6 +491,23 @@
       background: rgba(45, 212, 191, 0.10);
       font-size: 0.75rem;
       font-weight: 850;
+    }
+    .buy-cta {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 7px 11px;
+      color: #031b19;
+      background: linear-gradient(135deg, #99f6e4, #f7c76d);
+      font-size: 0.82rem;
+      font-weight: 900;
+      letter-spacing: 0.02em;
+    }
+    .buy-note {
+      color: #dbe7ff;
+      font-size: 0.84rem;
+      line-height: 1.35;
+      margin: 6px 0 0;
     }
     #listWishlist {
       gap: 10px;
@@ -848,6 +876,13 @@
       }
     }
     @media (max-width: 420px) {
+      .quick-controls {
+        position: sticky;
+        top: 0;
+        z-index: 4;
+        padding: 6px 0;
+        background: linear-gradient(var(--bg) 75%, transparent);
+      }
       body.images-on .card-layout.has-image {
         grid-template-columns: 66px minmax(0, 1fr);
       }
@@ -900,7 +935,7 @@
     <section class="tl-hero">
       <div class="tl-eyebrow">Today’s snapshot</div>
       <h2>Card-show helper in your pocket</h2>
-      <p>Floor prices, target buys, and the family wishlist — same Toploader look as the desktop app, tuned for your phone.</p>
+      <p>Floor prices, target buys, and the wishlist — same Toploader look as the desktop app, tuned for your phone.</p>
       <div class="chip-row" id="homeChips" aria-label="Snapshot highlights"></div>
     </section>
     <div class="kpi-grid" aria-label="Snapshot summary">
@@ -943,16 +978,16 @@
       <button type="button" class="action-card accent-wishlist" data-go="wishlist">
         <div class="action-card-head">
           <h2>Wishlist <span class="chev" aria-hidden="true">›</span></h2>
-          <span class="panel-badge family">Family share</span>
+          <span class="panel-badge list">Card list</span>
         </div>
         <p class="sub">Backlog cards queued up for the next hunt.</p>
       </button>
       <button type="button" class="action-card accent-guide" data-go="helper">
         <div class="action-card-head">
           <h2>Helper mode <span class="chev" aria-hidden="true">›</span></h2>
-          <span class="panel-badge helper">Non-collectors</span>
+          <span class="panel-badge helper">Simple view</span>
         </div>
-        <p class="sub">Simple “find this, pay up to this, avoid these mistakes” cards for family buyers.</p>
+        <p class="sub">A cleaner card-match view with images, exact numbers, and condition reminders.</p>
       </button>
       <button type="button" class="action-card accent-guide" data-go="buying-guide">
         <div class="action-card-head">
@@ -973,9 +1008,9 @@
           <option value="">All sets</option>
         </select>
         <select id="timingFilterBuyList" aria-label="Filter by buy timing">
-          <option value="">All timing</option>
-          <option value="buy">Buy now</option>
-          <option value="wait">Wait / watch</option>
+          <option value="">All buy-now cards</option>
+          <option value="fresh">Fresh data only</option>
+          <option value="watched">Wishlist only</option>
         </select>
       </div>
       <div class="set-buttons" id="setButtonsBuyList" aria-label="Buy list set shortcuts"></div>
@@ -1024,7 +1059,7 @@
   <div id="viewHelper" class="view">
     <section class="guide-hero">
       <h2>Wishlist helper mode</h2>
-      <p>For family and friends: match the picture, check the exact number, and never pay more than the big green max price.</p>
+      <p>Match the picture, check the exact card number, and use the target as the ceiling for a clean raw copy.</p>
       <span class="guide-note">If the card is graded, Japanese, damaged, or the number does not match, skip it.</span>
     </section>
     <div class="toolbar">
@@ -1048,7 +1083,7 @@
   <div id="viewBuyingGuide" class="view">
     <section class="guide-hero">
       <h2>Before you buy a raw card</h2>
-      <p>Open every listing photo and check these 4 things. This is for family helpers, not grading experts.</p>
+      <p>Open every listing photo and check these 4 things. This is a quick raw-card condition guide, not grading advice.</p>
       <span class="guide-note">If unsure, skip it. There will be another one.</span>
     </section>
     <section class="guide-list" aria-label="Raw card buying photo checks">
@@ -1218,10 +1253,13 @@
     function applyDisplayPreferences() {
       document.body.classList.toggle("images-on", showImages);
       document.body.classList.toggle("compact-on", compactCards);
+      document.body.classList.toggle("detail-on", !compactCards);
       document.getElementById("toggleImages").classList.toggle("active", showImages);
-      document.getElementById("toggleImages").textContent = showImages ? "Images on" : "Images off";
+      document.getElementById("toggleImages").textContent = showImages ? "Hide images" : "Show images";
+      document.getElementById("toggleImages").setAttribute("aria-pressed", showImages ? "true" : "false");
       document.getElementById("toggleCompact").classList.toggle("active", compactCards);
-      document.getElementById("toggleCompact").textContent = compactCards ? "Compact cards" : "Detail cards";
+      document.getElementById("toggleCompact").textContent = compactCards ? "Show details" : "Compact cards";
+      document.getElementById("toggleCompact").setAttribute("aria-pressed", compactCards ? "false" : "true");
     }
 
     function parseHashParts() {
@@ -1279,16 +1317,16 @@
       const buy = buildBuyCandidates(all);
       if (activeView === "home") {
         document.getElementById("meta").textContent =
-          `${all.length} cards · ${wish.length} wishlist · ${buy.length} buy candidates · updated ${when}${cacheNote}${errNote}`;
+          `${all.length} cards · ${wish.length} wishlist · ${buy.length} buy-now cards · updated ${when}${cacheNote}${errNote}`;
       } else if (activeView === "buy-list") {
         document.getElementById("meta").textContent =
-          `${buy.length} buy candidates · updated ${when}${cacheNote}${errNote}`;
+          `${buy.length} buy-now cards · updated ${when}${cacheNote}${errNote}`;
       } else if (activeView === "wishlist") {
         document.getElementById("meta").textContent =
           `${wish.length} wishlist cards · updated ${when}${cacheNote}${errNote}`;
       } else if (activeView === "helper") {
         document.getElementById("meta").textContent =
-          `${wish.length} helper cards · max prices for non-collectors · updated ${when}${cacheNote}${errNote}`;
+          `${wish.length} helper cards · simple match view · updated ${when}${cacheNote}${errNote}`;
       } else if (activeView === "buying-guide") {
         document.getElementById("meta").textContent =
           `Use this while checking listing photos · updated ${when}${cacheNote}${errNote}`;
@@ -1348,36 +1386,28 @@
 
     function buyTiming(card) {
       const decision = String(card.advisor_decision || "").toLowerCase();
-      const flag = String(card.floor_quality_flag || "").toLowerCase();
-      const conf = String(card.floor_confidence || "").toLowerCase();
-      if (decision.includes("buy")) return "Buy now";
-      if (flag === "watch" || conf === "low") return "Wait / check carefully";
-      if (card.target_buy_gbp && card.floor_gbp) return "Only under max price";
-      return "Hold for now";
+      return decision.includes("buy") ? "Buy now" : "Hold";
     }
 
-    function opportunityScore(card) {
+    function isBuyNow(card) {
+      return String(card.advisor_decision || "").toLowerCase().includes("buy");
+    }
+
+    function buyRank(card) {
       let score = 0;
-      const decision = String(card.advisor_decision || "").toLowerCase();
       const conf = String(card.floor_confidence || "").toLowerCase();
-      const flag = String(card.floor_quality_flag || "").toLowerCase();
-      if (decision.includes("buy")) score += 60;
-      if (isWatched(card)) score += 12;
-      if (conf.includes("high")) score += 14;
-      else if (conf.includes("medium")) score += 8;
-      if (flag === "watch") score -= 12;
+      if (isWatched(card)) score += 10;
+      if (conf.includes("high")) score += 8;
+      else if (conf.includes("medium")) score += 4;
       if (isStale(card)) score -= 8;
-      const sales = Number(card.ebay_sales || 0);
-      if (sales >= 50) score += 8;
-      else if (sales >= 20) score += 4;
       return score;
     }
 
     function buildBuyCandidates(cards) {
       return cards
-        .filter(card => isWatched(card) || String(card.advisor_decision || "").toLowerCase().includes("buy"))
-        .map(card => ({ ...card, _score: opportunityScore(card) }))
-        .sort((a, b) => b._score - a._score || priceValue(a) - priceValue(b));
+        .filter(isBuyNow)
+        .map(card => ({ ...card, _rank: buyRank(card) }))
+        .sort((a, b) => b._rank - a._rank || priceValue(a) - priceValue(b));
     }
 
     function cardArticleClass(card, extra = "") {
@@ -1478,8 +1508,8 @@
         const timing = document.getElementById("timingFilterBuyList").value;
         let filtered = cards.slice();
         if (setVal) filtered = filtered.filter(c => c.set_name === setVal);
-        if (timing === "buy") filtered = filtered.filter(c => buyTiming(c) === "Buy now");
-        if (timing === "wait") filtered = filtered.filter(c => buyTiming(c) !== "Buy now");
+        if (timing === "fresh") filtered = filtered.filter(c => !isStale(c));
+        if (timing === "watched") filtered = filtered.filter(isWatched);
         if (q) {
           filtered = filtered.filter(c => {
             const blob = [c.card, c.number, c.set_name, c.scrape_query, c.advisor_decision, c.floor_justification].join(" ").toLowerCase();
@@ -1487,11 +1517,13 @@
           });
         }
         document.getElementById("statsBuyList").textContent =
-          `Showing ${filtered.length} of ${cards.length} candidates`;
+          `Showing ${filtered.length} of ${cards.length} buy-now cards`;
         updateSetButtons(setButtons, setVal);
         const list = document.getElementById("listBuyList");
         if (!filtered.length) {
-          list.innerHTML = '<div class="empty">No buy candidates match your filters.</div>';
+          list.innerHTML = cards.length
+            ? '<div class="empty">No buy-now cards match your filters.</div>'
+            : '<div class="empty">No buy-now recommendations in this snapshot. Use Floors or Wishlist for cards to watch.</div>';
           return;
         }
         list.innerHTML = filtered.map(card => {
@@ -1506,13 +1538,14 @@
                   <div class="prices">
                     <div class="price"><span class="label">Max buy</span><span class="value">${money(card.target_buy_gbp)}</span></div>
                     <div class="price"><span class="label">Floor</span><span class="value">${money(card.floor_gbp)}</span></div>
-                    <div class="price"><span class="label">Signal</span><span class="value"><span class="buy-score">${Math.max(0, Math.round(card._score))}</span></span></div>
+                    <div class="price"><span class="label">Action</span><span class="value"><span class="buy-cta">Check today</span></span></div>
                   </div>
                   <p>
-                    <span class="badge">${escapeHtml(card.advisor_decision || "Watch")}</span>
+                    <span class="badge">Buy now</span>
                     ${card.floor_confidence ? `<span class="badge">${escapeHtml(card.floor_confidence)}</span>` : ""}
                     ${stale}
                   </p>
+                  <p class="buy-note">Look for a clean raw copy at or below ${money(card.target_buy_gbp)}. If condition is weak, skip it.</p>
                   <p class="why">${escapeHtml(card.floor_justification || card.card_show_price_note || "Check price and condition before buying.")}</p>
                   ${renderDealCalculator(card)}
                 </div>
@@ -1665,7 +1698,7 @@
               <div class="wishlist-main">
                 <h2><a href="${detailLink("wishlist", card)}" style="color:inherit;text-decoration:none">${escapeHtml(card.card || "")} <span style="color:var(--muted)">#${escapeHtml(card.number || "")}</span></a></h2>
                 <div class="budget">
-                  <span class="label">Max pay</span>
+                  <span class="label">Target</span>
                   <span class="value">${moneyWishlist(card.target_buy_gbp)}</span>
                 </div>
               </div>
@@ -1718,7 +1751,7 @@
               || cardNumberValue(a) - cardNumberValue(b)
               || String(a.card || "").localeCompare(String(b.card || ""));
           }
-          return opportunityScore(b) - opportunityScore(a) || priceValue(a) - priceValue(b);
+          return buyRank(b) - buyRank(a) || priceValue(a) - priceValue(b);
         });
         document.getElementById("statsHelper").textContent =
           `Showing ${filtered.length} of ${cards.length} helper cards`;
@@ -1737,12 +1770,12 @@
               <div>
                 <h2><a href="${detailLink("helper", card)}" style="color:inherit;text-decoration:none">${escapeHtml(card.card || "")} <span style="color:var(--muted)">#${escapeHtml(card.number || "")}</span></a></h2>
                 <p class="sub">${escapeHtml(card.set_name || "Unknown set")} · raw English only</p>
-                <div class="max-pay">Max pay ${moneyWishlist(card.target_buy_gbp)}</div>
+                <div class="target-price">Target ${moneyWishlist(card.target_buy_gbp)}</div>
                 <ul class="plain-list">
                   <li>Card name must match: ${escapeHtml(card.card || "this card")}.</li>
                   <li>Number must match: #${escapeHtml(card.number || "?")}.</li>
                   <li>Skip graded slabs, Japanese cards, creases, whitening, or blurry photos.</li>
-                  <li>If asking price is over ${moneyWishlist(card.target_buy_gbp)}, send a photo before buying.</li>
+                  <li>If it is over target, pause and double-check before deciding.</li>
                 </ul>
                 <p class="why">${escapeHtml(card.card_show_price_note || card.floor_justification || "When unsure, do not buy it.")}</p>
               </div>
