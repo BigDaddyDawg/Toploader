@@ -509,6 +509,17 @@
       line-height: 1.35;
       margin: 6px 0 0;
     }
+    .timing {
+      border-left: 3px solid rgba(247, 199, 109, 0.72);
+      padding-left: 9px;
+      color: #dbe7ff;
+      font-size: 0.82rem;
+      line-height: 1.35;
+      margin: 7px 0 0;
+    }
+    body.compact-on .timing {
+      display: none;
+    }
     #listWishlist {
       gap: 10px;
     }
@@ -1389,6 +1400,17 @@
       return decision.includes("buy") ? "Buy now" : "Hold";
     }
 
+    function buyingWindowText(card) {
+      const raw = String(card.buying_window || "").replace(/\*\*/g, "").trim();
+      if (raw) return raw;
+      const direction = String(card.direction_30d || "").trim();
+      const conf = String(card.forecast_confidence || card.floor_confidence || "").trim();
+      if (direction || conf) {
+        return `Window: ${direction || "watch"}${conf ? ` · ${conf.toLowerCase()} confidence` : ""}`;
+      }
+      return "";
+    }
+
     function isBuyNow(card) {
       return String(card.advisor_decision || "").toLowerCase().includes("buy");
     }
@@ -1528,6 +1550,7 @@
         }
         list.innerHTML = filtered.map(card => {
           const stale = isStale(card) ? '<span class="badge watch">stale data</span>' : "";
+          const timing = buyingWindowText(card);
           return `
             <article class="${cardArticleClass(card)}">
               <div class="card-layout ${cardImageUrl(card) ? "has-image" : ""}">
@@ -1546,6 +1569,7 @@
                     ${stale}
                   </p>
                   <p class="buy-note">Look for a clean raw copy at or below ${money(card.target_buy_gbp)}. If condition is weak, skip it.</p>
+                  ${timing ? `<p class="timing">${escapeHtml(timing)}</p>` : ""}
                   <p class="why">${escapeHtml(card.floor_justification || card.card_show_price_note || "Check price and condition before buying.")}</p>
                   ${renderDealCalculator(card)}
                 </div>
@@ -1600,6 +1624,7 @@
           const qf = (card.floor_quality_flag || "").toLowerCase();
           const badgeClass = qf === "watch" ? "badge watch" : "badge";
           const onList = isWatched(card) ? '<span class="badge">On wishlist</span>' : "";
+          const timing = buyingWindowText(card);
           return `
             <article class="${cardArticleClass(card)}">
               <div class="card-layout ${cardImageUrl(card) ? "has-image" : ""}">
@@ -1617,6 +1642,7 @@
                     ${card.floor_confidence ? `<span class="badge">${escapeHtml(card.floor_confidence)}</span>` : ""}
                     ${isStale(card) ? '<span class="badge watch">stale data</span>' : ""}
                   </p>
+                  ${timing ? `<p class="timing">${escapeHtml(timing)}</p>` : ""}
                   <p class="why">${escapeHtml(card.floor_justification || card.card_show_price_note || "")}</p>
                   ${renderDealCalculator(card)}
                 </div>
@@ -1690,29 +1716,36 @@
             : '<div class="empty">No watched cards in this snapshot. Toggle cards on the wishlist in the Toploader app, then run export and publish.</div>';
           return;
         }
-        list.innerHTML = filtered.map(card => `
-          <article class="${cardArticleClass(card)}">
-            <div class="card-layout ${cardImageUrl(card) ? "has-image" : ""}">
-              ${renderCardImage(card)}
-              <div>
-              <div class="wishlist-main">
-                <h2><a href="${detailLink("wishlist", card)}" style="color:inherit;text-decoration:none">${escapeHtml(card.card || "")} <span style="color:var(--muted)">#${escapeHtml(card.number || "")}</span></a></h2>
-                <div class="budget">
-                  <span class="label">Target</span>
-                  <span class="value">${moneyWishlist(card.target_buy_gbp)}</span>
+        list.innerHTML = filtered.map(card => {
+          const timing = buyingWindowText(card);
+          return `
+            <article class="${cardArticleClass(card)}">
+              <div class="card-layout ${cardImageUrl(card) ? "has-image" : ""}">
+                ${renderCardImage(card)}
+                <div>
+                <div class="wishlist-main">
+                  <h2><a href="${detailLink("wishlist", card)}" style="color:inherit;text-decoration:none">${escapeHtml(card.card || "")} <span style="color:var(--muted)">#${escapeHtml(card.number || "")}</span></a></h2>
+                  <div class="budget">
+                    <span class="label">Target</span>
+                    <span class="value">${moneyWishlist(card.target_buy_gbp)}</span>
+                  </div>
+                  <div class="prices">
+                    <div class="price"><span class="label">Expected floor</span><span class="value">${money(card.floor_gbp)}</span></div>
+                  </div>
+                  ${timing ? `<p class="timing">${escapeHtml(timing)}</p>` : ""}
+                </div>
+                <div class="wishlist-set" aria-label="Set: ${escapeHtml(card.set_name || "Unknown set")}">
+                  <span class="wishlist-set-icon" aria-hidden="true">${escapeHtml(setIconText(card.set_name))}</span>
+                  <span class="wishlist-set-copy">
+                    <span class="wishlist-set-kicker">Set</span>
+                    <span class="wishlist-set-name">${escapeHtml(card.set_name || "Unknown set")}</span>
+                  </span>
+                </div>
                 </div>
               </div>
-              <div class="wishlist-set" aria-label="Set: ${escapeHtml(card.set_name || "Unknown set")}">
-                <span class="wishlist-set-icon" aria-hidden="true">${escapeHtml(setIconText(card.set_name))}</span>
-                <span class="wishlist-set-copy">
-                  <span class="wishlist-set-kicker">Set</span>
-                  <span class="wishlist-set-name">${escapeHtml(card.set_name || "Unknown set")}</span>
-                </span>
-              </div>
-              </div>
-            </div>
-          </article>
-        `).join("");
+            </article>
+          `;
+        }).join("");
         scrollHighlightedCard();
       }
 
@@ -1763,25 +1796,29 @@
             : '<div class="empty">No watched cards in this snapshot yet.</div>';
           return;
         }
-        list.innerHTML = filtered.map(card => `
-          <article class="${cardArticleClass(card, "helper-card")}">
-            <div class="card-layout ${cardImageUrl(card) ? "has-image" : ""}">
-              ${renderCardImage(card)}
-              <div>
-                <h2><a href="${detailLink("helper", card)}" style="color:inherit;text-decoration:none">${escapeHtml(card.card || "")} <span style="color:var(--muted)">#${escapeHtml(card.number || "")}</span></a></h2>
-                <p class="sub">${escapeHtml(card.set_name || "Unknown set")} · raw English only</p>
-                <div class="target-price">Target ${moneyWishlist(card.target_buy_gbp)}</div>
-                <ul class="plain-list">
-                  <li>Card name must match: ${escapeHtml(card.card || "this card")}.</li>
-                  <li>Number must match: #${escapeHtml(card.number || "?")}.</li>
-                  <li>Skip graded slabs, Japanese cards, creases, whitening, or blurry photos.</li>
-                  <li>If it is over target, pause and double-check before deciding.</li>
-                </ul>
-                <p class="why">${escapeHtml(card.card_show_price_note || card.floor_justification || "When unsure, do not buy it.")}</p>
+        list.innerHTML = filtered.map(card => {
+          const timing = buyingWindowText(card);
+          return `
+            <article class="${cardArticleClass(card, "helper-card")}">
+              <div class="card-layout ${cardImageUrl(card) ? "has-image" : ""}">
+                ${renderCardImage(card)}
+                <div>
+                  <h2><a href="${detailLink("helper", card)}" style="color:inherit;text-decoration:none">${escapeHtml(card.card || "")} <span style="color:var(--muted)">#${escapeHtml(card.number || "")}</span></a></h2>
+                  <p class="sub">${escapeHtml(card.set_name || "Unknown set")} · raw English only</p>
+                  <div class="target-price">Target ${moneyWishlist(card.target_buy_gbp)} · floor ${money(card.floor_gbp)}</div>
+                  ${timing ? `<p class="timing">${escapeHtml(timing)}</p>` : ""}
+                  <ul class="plain-list">
+                    <li>Card name must match: ${escapeHtml(card.card || "this card")}.</li>
+                    <li>Number must match: #${escapeHtml(card.number || "?")}.</li>
+                    <li>Skip graded slabs, Japanese cards, creases, whitening, or blurry photos.</li>
+                    <li>If it is over target, pause and double-check before deciding.</li>
+                  </ul>
+                  <p class="why">${escapeHtml(card.card_show_price_note || card.floor_justification || "When unsure, do not buy it.")}</p>
+                </div>
               </div>
-            </div>
-          </article>
-        `).join("");
+            </article>
+          `;
+        }).join("");
         scrollHighlightedCard();
       }
 
