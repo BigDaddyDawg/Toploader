@@ -325,6 +325,27 @@
     .filters.wishlist-filters {
       grid-template-columns: 1fr 1fr;
     }
+    .set-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .set-chip-btn {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--muted);
+      padding: 8px 10px;
+      font-family: inherit;
+      font-size: 0.78rem;
+      font-weight: 750;
+      cursor: pointer;
+    }
+    .set-chip-btn.active {
+      border-color: rgba(45, 212, 191, 0.45);
+      background: rgba(45, 212, 191, 0.14);
+      color: var(--text);
+    }
     .stats {
       font-size: 0.8rem;
       color: var(--muted);
@@ -349,6 +370,10 @@
       --wish-border: rgba(45, 212, 191, 0.28);
       position: relative;
       overflow: hidden;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(112px, 34%);
+      gap: 12px;
+      align-items: center;
       border-color: var(--wish-border);
       background:
         radial-gradient(circle at 92% 18%, rgba(var(--wish-accent), 0.18), transparent 28%),
@@ -373,6 +398,57 @@
     }
     #listWishlist .budget .value {
       color: rgb(var(--wish-accent));
+    }
+    .wishlist-main {
+      min-width: 0;
+    }
+    .wishlist-set {
+      justify-self: end;
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr);
+      gap: 9px;
+      align-items: center;
+      min-width: 112px;
+      max-width: 220px;
+      padding: 8px 10px;
+      border: 1px solid rgba(var(--wish-accent), 0.28);
+      border-radius: 16px;
+      background: rgba(5, 8, 22, 0.22);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    }
+    .wishlist-set-icon {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
+      background:
+        radial-gradient(circle at 65% 30%, rgba(255, 255, 255, 0.28), transparent 22%),
+        linear-gradient(145deg, rgba(var(--wish-accent), 0.65), rgba(139, 92, 246, 0.22));
+      color: #fff;
+      font-size: 0.72rem;
+      font-weight: 900;
+      letter-spacing: 0.03em;
+      box-shadow: 0 10px 24px rgba(var(--wish-accent), 0.16);
+    }
+    .wishlist-set-copy {
+      min-width: 0;
+      text-align: right;
+    }
+    .wishlist-set-kicker {
+      display: block;
+      color: var(--muted);
+      font-size: 0.62rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .wishlist-set-name {
+      display: block;
+      color: var(--text);
+      font-size: 0.82rem;
+      font-weight: 800;
+      line-height: 1.15;
     }
     .card h2, .action-card h2 {
       margin: 0 0 4px;
@@ -641,6 +717,18 @@
         grid-template-columns: repeat(3, 1fr);
       }
     }
+    @media (max-width: 420px) {
+      #listWishlist .card {
+        grid-template-columns: 1fr;
+      }
+      .wishlist-set {
+        justify-self: stretch;
+        max-width: none;
+      }
+      .wishlist-set-copy {
+        text-align: left;
+      }
+    }
     .view { display: none; }
     .view.active { display: block; }
   </style>
@@ -729,6 +817,7 @@
           <option value="watch">Quality: watch only</option>
         </select>
       </div>
+      <div class="set-buttons" id="setButtonsFloors" aria-label="Set shortcuts"></div>
       <p class="stats" id="statsFloors"></p>
     </div>
     <div id="listFloors" class="list"></div>
@@ -747,6 +836,7 @@
           <option value="set">Set order</option>
         </select>
       </div>
+      <div class="set-buttons" id="setButtonsWishlist" aria-label="Wishlist set shortcuts"></div>
       <p class="stats" id="statsWishlist"></p>
     </div>
     <div id="listWishlist" class="list"></div>
@@ -939,6 +1029,27 @@
       if (prev && sets.includes(prev)) selectEl.value = prev;
     }
 
+    function setNamesFor(cards) {
+      return [...new Set(cards.map(c => c.set_name).filter(Boolean))].sort();
+    }
+
+    function renderSetButtons(containerEl, cards, onPick) {
+      const sets = setNamesFor(cards);
+      containerEl.innerHTML = [
+        '<button type="button" class="set-chip-btn" data-set="">All sets</button>',
+        ...sets.map(s => `<button type="button" class="set-chip-btn" data-set="${escapeHtml(s)}">${escapeHtml(s)}</button>`)
+      ].join("");
+      containerEl.querySelectorAll(".set-chip-btn").forEach(btn => {
+        btn.addEventListener("click", () => onPick(btn.dataset.set || ""));
+      });
+    }
+
+    function updateSetButtons(containerEl, selectedSet) {
+      containerEl.querySelectorAll(".set-chip-btn").forEach(btn => {
+        btn.classList.toggle("active", (btn.dataset.set || "") === (selectedSet || ""));
+      });
+    }
+
     function formatSnapshotDate(raw) {
       if (!raw) return "—";
       try {
@@ -968,11 +1079,17 @@
 
     function renderFloors() {
       const cards = snapshotData.cards || [];
-      fillSetOptions(document.getElementById("setFilterFloors"), cards);
+      const setSelect = document.getElementById("setFilterFloors");
+      const setButtons = document.getElementById("setButtonsFloors");
+      fillSetOptions(setSelect, cards);
+      renderSetButtons(setButtons, cards, setName => {
+        setSelect.value = setName;
+        apply();
+      });
 
       function apply() {
         const q = document.getElementById("searchFloors").value.trim().toLowerCase();
-        const setVal = document.getElementById("setFilterFloors").value;
+        const setVal = setSelect.value;
         const qual = document.getElementById("qualityFilterFloors").value;
         let filtered = cards.slice();
         if (setVal) filtered = filtered.filter(c => c.set_name === setVal);
@@ -987,6 +1104,7 @@
         }
         document.getElementById("statsFloors").textContent =
           `Showing ${filtered.length} of ${cards.length}`;
+        updateSetButtons(setButtons, setVal);
         const list = document.getElementById("listFloors");
         if (!filtered.length) {
           list.innerHTML = '<div class="empty">No cards match your filters.</div>';
@@ -1016,7 +1134,7 @@
       }
 
       document.getElementById("searchFloors").oninput = apply;
-      document.getElementById("setFilterFloors").onchange = apply;
+      setSelect.onchange = apply;
       document.getElementById("qualityFilterFloors").onchange = apply;
       apply();
     }
@@ -1031,13 +1149,24 @@
       return Number.isFinite(n) ? n : 9999;
     }
 
+    function setIconText(setName) {
+      const words = String(setName || "Set").match(/[A-Za-z0-9]+/g) || ["Set"];
+      return words.slice(0, 2).map(word => word[0]).join("").toUpperCase();
+    }
+
     function renderWishlist() {
       const cards = (snapshotData.cards || []).filter(isWatched);
-      fillSetOptions(document.getElementById("setFilterWishlist"), cards);
+      const setSelect = document.getElementById("setFilterWishlist");
+      const setButtons = document.getElementById("setButtonsWishlist");
+      fillSetOptions(setSelect, cards);
+      renderSetButtons(setButtons, cards, setName => {
+        setSelect.value = setName;
+        apply();
+      });
 
       function apply() {
         const q = document.getElementById("searchWishlist").value.trim().toLowerCase();
-        const setVal = document.getElementById("setFilterWishlist").value;
+        const setVal = setSelect.value;
         const sortVal = document.getElementById("sortWishlist").value;
         let filtered = cards.slice();
         if (setVal) filtered = filtered.filter(c => c.set_name === setVal);
@@ -1058,6 +1187,7 @@
         });
         document.getElementById("statsWishlist").textContent =
           `Showing ${filtered.length} of ${cards.length}`;
+        updateSetButtons(setButtons, setVal);
         const list = document.getElementById("listWishlist");
         if (!filtered.length) {
           list.innerHTML = cards.length
@@ -1067,18 +1197,26 @@
         }
         list.innerHTML = filtered.map(card => `
           <article class="card">
-            <h2>${escapeHtml(card.card || "")} <span style="color:var(--muted)">#${escapeHtml(card.number || "")}</span></h2>
-            <p class="sub">${escapeHtml(card.set_name || "")}</p>
-            <div class="budget">
-              <span class="label">Target price</span>
-              <span class="value">${moneyWishlist(card.target_buy_gbp)}</span>
+            <div class="wishlist-main">
+              <h2>${escapeHtml(card.card || "")} <span style="color:var(--muted)">#${escapeHtml(card.number || "")}</span></h2>
+              <div class="budget">
+                <span class="label">Target price</span>
+                <span class="value">${moneyWishlist(card.target_buy_gbp)}</span>
+              </div>
+            </div>
+            <div class="wishlist-set" aria-label="Set: ${escapeHtml(card.set_name || "Unknown set")}">
+              <span class="wishlist-set-icon" aria-hidden="true">${escapeHtml(setIconText(card.set_name))}</span>
+              <span class="wishlist-set-copy">
+                <span class="wishlist-set-kicker">Set</span>
+                <span class="wishlist-set-name">${escapeHtml(card.set_name || "Unknown set")}</span>
+              </span>
             </div>
           </article>
         `).join("");
       }
 
       document.getElementById("searchWishlist").oninput = apply;
-      document.getElementById("setFilterWishlist").onchange = apply;
+      setSelect.onchange = apply;
       document.getElementById("sortWishlist").onchange = apply;
       apply();
     }

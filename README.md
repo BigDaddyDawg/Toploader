@@ -16,7 +16,7 @@ Old bookmarks to `wishlist.html` redirect to `#wishlist`.
 
 ```powershell
 cd "C:\path\to\pokemon-tcg-terminal"
-.\.venv\Scripts\python.exe scripts\batch_card_lists.py --no-skip --local-only --no-floor-review --workers 1 --export-static
+.\.venv\Scripts\python.exe scripts\batch_card_lists.py --no-skip --local-only --no-floor-review --workers 2 --export-static
 .\scripts\publish_daily_floors.ps1
 ```
 
