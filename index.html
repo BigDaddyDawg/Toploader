@@ -103,6 +103,10 @@
       gap: 8px;
       margin: 0 0 12px;
     }
+    body.home-view .tabs,
+    body.home-view .quick-controls {
+      display: none;
+    }
     .toggle-btn {
       border: 1px solid var(--line);
       border-radius: 14px;
@@ -1283,6 +1287,7 @@
 
     function setView(view) {
       activeView = view;
+      document.body.classList.toggle("home-view", view === "home");
       const route = view === "buying-guide" ? "buying-guide" : view === "buy-list" ? "buy-list" : view === "helper" ? "helper" : view === "wishlist" ? "wishlist" : view === "floors" ? "floors" : "";
       const hash = route ? `#${route}${selectedCardSlug ? `?card=${encodeURIComponent(selectedCardSlug)}` : ""}` : "";
       if (location.hash !== hash) {
@@ -1321,6 +1326,7 @@
 
     function updateMeta() {
       const when = snapshotData.generated_at_utc || snapshotData.local_date || "";
+      const updated = formatSnapshotDateTime(when);
       const cacheNote = snapshotData._from_cache ? " · offline cache" : "";
       const errNote = snapshotData._load_error ? " · fetch issue" : "";
       const all = snapshotData.cards || [];
@@ -1328,22 +1334,22 @@
       const buy = buildBuyCandidates(all);
       if (activeView === "home") {
         document.getElementById("meta").textContent =
-          `${all.length} cards · ${wish.length} wishlist · ${buy.length} buy-now cards · updated ${when}${cacheNote}${errNote}`;
+          `${all.length} cards · ${wish.length} wishlist · ${buy.length} buy-now cards · updated ${updated}${cacheNote}${errNote}`;
       } else if (activeView === "buy-list") {
         document.getElementById("meta").textContent =
-          `${buy.length} buy-now cards · updated ${when}${cacheNote}${errNote}`;
+          `${buy.length} buy-now cards · updated ${updated}${cacheNote}${errNote}`;
       } else if (activeView === "wishlist") {
         document.getElementById("meta").textContent =
-          `${wish.length} wishlist cards · updated ${when}${cacheNote}${errNote}`;
+          `${wish.length} wishlist cards · updated ${updated}${cacheNote}${errNote}`;
       } else if (activeView === "helper") {
         document.getElementById("meta").textContent =
-          `${wish.length} helper cards · simple match view · updated ${when}${cacheNote}${errNote}`;
+          `${wish.length} helper cards · simple match view · updated ${updated}${cacheNote}${errNote}`;
       } else if (activeView === "buying-guide") {
         document.getElementById("meta").textContent =
-          `Use this while checking listing photos · updated ${when}${cacheNote}${errNote}`;
+          `Use this while checking listing photos · updated ${updated}${cacheNote}${errNote}`;
       } else {
         document.getElementById("meta").textContent =
-          `${all.length} cards · ${wish.length} on wishlist · ${when}${cacheNote}${errNote}`;
+          `${all.length} cards · ${wish.length} on wishlist · updated ${updated}${cacheNote}${errNote}`;
       }
     }
 
@@ -1382,6 +1388,26 @@
         const d = new Date(raw);
         if (!Number.isFinite(d.getTime())) return String(raw).slice(0, 10);
         return d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+      } catch (_) {
+        return String(raw).slice(0, 10);
+      }
+    }
+
+    function formatSnapshotDateTime(raw) {
+      if (!raw) return "—";
+      try {
+        const d = new Date(raw);
+        if (!Number.isFinite(d.getTime())) return String(raw).slice(0, 10);
+        return d.toLocaleString("en-GB", {
+          timeZone: "Europe/London",
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+          timeZoneName: "short",
+        }).replace(",", "");
       } catch (_) {
         return String(raw).slice(0, 10);
       }
@@ -1503,7 +1529,7 @@
       const when = snapshotData.generated_at_utc || snapshotData.local_date || "";
       document.getElementById("homeCardCount").textContent = cards.length;
       document.getElementById("homeWishlistCount").textContent = wish.length;
-      document.getElementById("homeUpdated").textContent = formatSnapshotDate(when);
+      document.getElementById("homeUpdated").textContent = formatSnapshotDateTime(when);
       const chips = [];
       if (cards.length) chips.push(`${cards.length} cards priced`);
       if (wish.length) chips.push(`${wish.length} on wishlist`);
