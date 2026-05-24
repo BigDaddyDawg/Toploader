@@ -4,7 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#050816">
+  <meta name="description" content="Toploader static Pokemon TCG card-show wishlist, floors, and buy timing helper.">
   <title>Toploader</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -93,6 +96,28 @@
       background: linear-gradient(145deg, rgba(139, 92, 246, 0.35), rgba(45, 212, 191, 0.12));
       color: var(--text);
       border-color: rgba(139, 92, 246, 0.45);
+    }
+    .quick-controls {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin: 0 0 12px;
+    }
+    .toggle-btn {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.055);
+      color: var(--muted);
+      padding: 10px 12px;
+      font-size: 0.84rem;
+      font-weight: 750;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .toggle-btn.active {
+      border-color: rgba(45, 212, 191, 0.46);
+      background: rgba(45, 212, 191, 0.12);
+      color: var(--text);
     }
     .tl-hero {
       position: relative;
@@ -298,6 +323,7 @@
     .panel-badge.price { background: rgba(56, 189, 248, 0.18); color: #7dd3fc; }
     .panel-badge.family { background: rgba(45, 212, 191, 0.18); color: #99f6e4; }
     .panel-badge.helper { background: rgba(139, 92, 246, 0.2); color: #c4b5fd; }
+    .panel-badge.buy { background: rgba(45, 212, 191, 0.18); color: #99f6e4; }
     .toolbar {
       display: grid;
       gap: 8px;
@@ -362,6 +388,99 @@
       padding: 12px;
       box-shadow: 0 18px 52px rgba(0, 0, 0, 0.22);
     }
+    .card.highlight {
+      border-color: rgba(247, 199, 109, 0.62);
+      box-shadow: 0 0 0 2px rgba(247, 199, 109, 0.18), 0 18px 52px rgba(0, 0, 0, 0.22);
+    }
+    .card-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 10px;
+    }
+    body.images-on .card-layout.has-image {
+      grid-template-columns: 86px minmax(0, 1fr);
+    }
+    body.images-on.compact-on .card-layout.has-image {
+      grid-template-columns: 58px minmax(0, 1fr);
+    }
+    .card-image {
+      display: none;
+      width: 86px;
+      align-self: start;
+    }
+    body.images-on .card-image {
+      display: block;
+    }
+    body.images-on.compact-on .card-image {
+      width: 58px;
+    }
+    .card-image img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      box-shadow: 0 14px 32px rgba(0, 0, 0, 0.30);
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .card-image a {
+      display: block;
+      color: inherit;
+    }
+    .deal-calc {
+      border-top: 1px solid rgba(148, 163, 184, 0.14);
+      margin-top: 9px;
+      padding-top: 9px;
+      display: grid;
+      gap: 8px;
+    }
+    body.compact-on .deal-calc,
+    body.compact-on .why {
+      display: none;
+    }
+    .deal-calc label {
+      color: var(--muted);
+      font-size: 0.74rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .deal-result {
+      color: #dbe7ff;
+      font-size: 0.84rem;
+      line-height: 1.35;
+    }
+    .deal-result.good { color: #99f6e4; }
+    .deal-result.warn { color: var(--warn); }
+    .deal-result.bad { color: #fca5a5; }
+    .helper-card .max-pay {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 999px;
+      padding: 7px 10px;
+      margin: 6px 0;
+      background: rgba(45, 212, 191, 0.16);
+      color: #99f6e4;
+      font-size: 1.02rem;
+      font-weight: 900;
+    }
+    .plain-list {
+      margin: 8px 0 0;
+      padding-left: 1.1rem;
+      color: #dbe7ff;
+      font-size: 0.86rem;
+      line-height: 1.42;
+    }
+    .buy-score {
+      display: inline-block;
+      border: 1px solid rgba(45, 212, 191, 0.38);
+      border-radius: 999px;
+      padding: 4px 9px;
+      color: #99f6e4;
+      background: rgba(45, 212, 191, 0.10);
+      font-size: 0.75rem;
+      font-weight: 850;
+    }
     #listWishlist {
       gap: 10px;
     }
@@ -370,8 +489,7 @@
       --wish-border: rgba(45, 212, 191, 0.28);
       position: relative;
       overflow: hidden;
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(112px, 34%);
+      display: block;
       gap: 12px;
       align-items: center;
       border-color: var(--wish-border);
@@ -401,6 +519,15 @@
     }
     .wishlist-main {
       min-width: 0;
+    }
+    #listWishlist .card-layout {
+      align-items: center;
+    }
+    #listWishlist .card-layout > div:last-child {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(112px, 34%);
+      gap: 12px;
+      align-items: center;
     }
     .wishlist-set {
       justify-self: end;
@@ -703,6 +830,9 @@
         padding: 24px 20px 40px;
       }
       .tabs {
+        grid-template-columns: repeat(6, 1fr);
+      }
+      .quick-controls {
         grid-template-columns: repeat(4, 1fr);
       }
       .kpi-grid {
@@ -718,6 +848,14 @@
       }
     }
     @media (max-width: 420px) {
+      body.images-on .card-layout.has-image {
+        grid-template-columns: 66px minmax(0, 1fr);
+      }
+      body.images-on.compact-on .card-layout.has-image {
+        grid-template-columns: 52px minmax(0, 1fr);
+      }
+      body.images-on .card-image { width: 66px; }
+      body.images-on.compact-on .card-image { width: 52px; }
       #listWishlist .card {
         grid-template-columns: 1fr;
       }
@@ -747,10 +885,16 @@
 
   <nav class="tabs" aria-label="View">
     <button type="button" class="tab active" id="tabHome" data-view="home">Home</button>
+    <button type="button" class="tab" id="tabBuyList" data-view="buy-list">Buy list</button>
     <button type="button" class="tab" id="tabFloors" data-view="floors">Floors</button>
     <button type="button" class="tab" id="tabWishlist" data-view="wishlist">Wishlist</button>
+    <button type="button" class="tab" id="tabHelper" data-view="helper">Helper</button>
     <button type="button" class="tab" id="tabBuyingGuide" data-view="buying-guide">Buying guide</button>
   </nav>
+  <div class="quick-controls" aria-label="Display options">
+    <button type="button" class="toggle-btn active" id="toggleCompact">Compact cards</button>
+    <button type="button" class="toggle-btn" id="toggleImages">Images off</button>
+  </div>
 
   <div id="viewHome" class="view active">
     <section class="tl-hero">
@@ -775,8 +919,10 @@
     </div>
     <div class="snapshot-strip" aria-label="Quick navigation">
       <span class="strip-label">Jump to</span>
+      <button type="button" class="strip-btn" data-go="buy-list">Today’s buy list</button>
       <button type="button" class="strip-btn" data-go="floors">Floor checker</button>
       <button type="button" class="strip-btn" data-go="wishlist">Wishlist</button>
+      <button type="button" class="strip-btn" data-go="helper">Helper mode</button>
       <button type="button" class="strip-btn" data-go="buying-guide">Buying guide</button>
     </div>
     <div class="home-grid">
@@ -787,12 +933,26 @@
         </div>
         <p class="sub">Expected floors and ideal buy points for every card in the list.</p>
       </button>
+      <button type="button" class="action-card accent-wishlist" data-go="buy-list">
+        <div class="action-card-head">
+          <h2>Today’s buy list <span class="chev" aria-hidden="true">›</span></h2>
+          <span class="panel-badge buy">Timing</span>
+        </div>
+        <p class="sub">Cards most worth checking today, ranked by buy signal and confidence.</p>
+      </button>
       <button type="button" class="action-card accent-wishlist" data-go="wishlist">
         <div class="action-card-head">
           <h2>Wishlist <span class="chev" aria-hidden="true">›</span></h2>
           <span class="panel-badge family">Family share</span>
         </div>
         <p class="sub">Backlog cards queued up for the next hunt.</p>
+      </button>
+      <button type="button" class="action-card accent-guide" data-go="helper">
+        <div class="action-card-head">
+          <h2>Helper mode <span class="chev" aria-hidden="true">›</span></h2>
+          <span class="panel-badge helper">Non-collectors</span>
+        </div>
+        <p class="sub">Simple “find this, pay up to this, avoid these mistakes” cards for family buyers.</p>
       </button>
       <button type="button" class="action-card accent-guide" data-go="buying-guide">
         <div class="action-card-head">
@@ -803,6 +963,25 @@
       </button>
     </div>
     <div id="homeError"></div>
+  </div>
+
+  <div id="viewBuyList" class="view">
+    <div class="toolbar">
+      <input type="search" id="searchBuyList" placeholder="Search buy list…" autocomplete="off">
+      <div class="filters">
+        <select id="setFilterBuyList" aria-label="Filter by set">
+          <option value="">All sets</option>
+        </select>
+        <select id="timingFilterBuyList" aria-label="Filter by buy timing">
+          <option value="">All timing</option>
+          <option value="buy">Buy now</option>
+          <option value="wait">Wait / watch</option>
+        </select>
+      </div>
+      <div class="set-buttons" id="setButtonsBuyList" aria-label="Buy list set shortcuts"></div>
+      <p class="stats" id="statsBuyList"></p>
+    </div>
+    <div id="listBuyList" class="list"></div>
   </div>
 
   <div id="viewFloors" class="view">
@@ -840,6 +1019,30 @@
       <p class="stats" id="statsWishlist"></p>
     </div>
     <div id="listWishlist" class="list"></div>
+  </div>
+
+  <div id="viewHelper" class="view">
+    <section class="guide-hero">
+      <h2>Wishlist helper mode</h2>
+      <p>For family and friends: match the picture, check the exact number, and never pay more than the big green max price.</p>
+      <span class="guide-note">If the card is graded, Japanese, damaged, or the number does not match, skip it.</span>
+    </section>
+    <div class="toolbar">
+      <input type="search" id="searchHelper" placeholder="Search helper wishlist…" autocomplete="off">
+      <div class="filters">
+        <select id="setFilterHelper" aria-label="Filter helper cards by set">
+          <option value="">All sets</option>
+        </select>
+        <select id="sortHelper" aria-label="Sort helper cards">
+          <option value="priority">Priority first</option>
+          <option value="cheapest">Cheapest first</option>
+          <option value="set">Set order</option>
+        </select>
+      </div>
+      <div class="set-buttons" id="setButtonsHelper" aria-label="Helper set shortcuts"></div>
+      <p class="stats" id="statsHelper"></p>
+    </div>
+    <div id="listHelper" class="list"></div>
   </div>
 
   <div id="viewBuyingGuide" class="view">
@@ -909,6 +1112,8 @@
 
   <script>
     const CACHE_KEY = "toploader_floors_v1";
+    const PREF_IMAGES_KEY = "toploader_show_images_v1";
+    const PREF_COMPACT_KEY = "toploader_compact_cards_v1";
 
     function money(v) {
       if (v === null || v === undefined || v === "") return "n/a";
@@ -934,6 +1139,21 @@
 
     function isWatched(card) {
       return Number(card.watchlist_status) === 1;
+    }
+
+    function loadPreference(key, fallback) {
+      try {
+        const raw = localStorage.getItem(key);
+        return raw === null ? fallback : raw === "1";
+      } catch (_) {
+        return fallback;
+      }
+    }
+
+    function savePreference(key, value) {
+      try {
+        localStorage.setItem(key, value ? "1" : "0");
+      } catch (_) {}
     }
 
     function loadCached() {
@@ -971,33 +1191,83 @@
 
     let snapshotData = null;
     let activeView = "home";
+    let selectedCardSlug = "";
+    let showImages = loadPreference(PREF_IMAGES_KEY, false);
+    let compactCards = loadPreference(PREF_COMPACT_KEY, true);
+
+    function cardSlug(card) {
+      return [card.card, card.number, card.set_name]
+        .join("-")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
+    }
+
+    function cardImageUrl(card) {
+      return card.image_small_url || card.image_large_url || "";
+    }
+
+    function renderCardImage(card) {
+      const src = cardImageUrl(card);
+      if (!src) return "";
+      const alt = `${card.card || "Card"} ${card.number ? "#" + card.number : ""}`;
+      const large = card.image_large_url || src;
+      return `<div class="card-image"><a href="${escapeHtml(large)}" target="_blank" rel="noopener"><img loading="lazy" decoding="async" src="${escapeHtml(src)}" alt="${escapeHtml(alt)}"></a></div>`;
+    }
+
+    function applyDisplayPreferences() {
+      document.body.classList.toggle("images-on", showImages);
+      document.body.classList.toggle("compact-on", compactCards);
+      document.getElementById("toggleImages").classList.toggle("active", showImages);
+      document.getElementById("toggleImages").textContent = showImages ? "Images on" : "Images off";
+      document.getElementById("toggleCompact").classList.toggle("active", compactCards);
+      document.getElementById("toggleCompact").textContent = compactCards ? "Compact cards" : "Detail cards";
+    }
+
+    function parseHashParts() {
+      const raw = location.hash || "";
+      const body = raw.startsWith("#") ? raw.slice(1) : raw;
+      const [route, query = ""] = body.split("?");
+      const params = new URLSearchParams(query);
+      return { route: route.toLowerCase(), card: params.get("card") || "" };
+    }
 
     function setView(view) {
       activeView = view;
-      const hash = view === "buying-guide" ? "#buying-guide" : view === "wishlist" ? "#wishlist" : view === "floors" ? "#floors" : "";
+      const route = view === "buying-guide" ? "buying-guide" : view === "buy-list" ? "buy-list" : view === "helper" ? "helper" : view === "wishlist" ? "wishlist" : view === "floors" ? "floors" : "";
+      const hash = route ? `#${route}${selectedCardSlug ? `?card=${encodeURIComponent(selectedCardSlug)}` : ""}` : "";
       if (location.hash !== hash) {
         history.replaceState(null, "", hash ? hash : location.pathname);
       }
       document.getElementById("viewHome").classList.toggle("active", view === "home");
+      document.getElementById("viewBuyList").classList.toggle("active", view === "buy-list");
       document.getElementById("viewFloors").classList.toggle("active", view === "floors");
       document.getElementById("viewWishlist").classList.toggle("active", view === "wishlist");
+      document.getElementById("viewHelper").classList.toggle("active", view === "helper");
       document.getElementById("viewBuyingGuide").classList.toggle("active", view === "buying-guide");
       document.getElementById("tabHome").classList.toggle("active", view === "home");
+      document.getElementById("tabBuyList").classList.toggle("active", view === "buy-list");
       document.getElementById("tabFloors").classList.toggle("active", view === "floors");
       document.getElementById("tabWishlist").classList.toggle("active", view === "wishlist");
+      document.getElementById("tabHelper").classList.toggle("active", view === "helper");
       document.getElementById("tabBuyingGuide").classList.toggle("active", view === "buying-guide");
-      document.title = view === "buying-guide" ? "Toploader — Buying Guide" : view === "wishlist" ? "Toploader — Wishlist" : view === "floors" ? "Toploader — Floors" : "Toploader";
+      document.title = view === "buying-guide" ? "Toploader — Buying Guide" : view === "buy-list" ? "Toploader — Buy List" : view === "helper" ? "Toploader — Helper" : view === "wishlist" ? "Toploader — Wishlist" : view === "floors" ? "Toploader — Floors" : "Toploader";
       if (snapshotData) updateMeta();
       if (view === "home") renderHome();
+      else if (view === "buy-list") renderBuyList();
       else if (view === "floors") renderFloors();
       else if (view === "wishlist") renderWishlist();
+      else if (view === "helper") renderHelper();
     }
 
     function parseHash() {
-      const h = (location.hash || "").toLowerCase();
-      if (h === "#floors") return "floors";
-      if (h === "#buying-guide") return "buying-guide";
-      return h === "#wishlist" ? "wishlist" : "home";
+      const parsed = parseHashParts();
+      selectedCardSlug = parsed.card;
+      if (parsed.route === "floors") return "floors";
+      if (parsed.route === "buy-list") return "buy-list";
+      if (parsed.route === "helper") return "helper";
+      if (parsed.route === "buying-guide") return "buying-guide";
+      return parsed.route === "wishlist" ? "wishlist" : "home";
     }
 
     function updateMeta() {
@@ -1006,12 +1276,19 @@
       const errNote = snapshotData._load_error ? " · fetch issue" : "";
       const all = snapshotData.cards || [];
       const wish = all.filter(isWatched);
+      const buy = buildBuyCandidates(all);
       if (activeView === "home") {
         document.getElementById("meta").textContent =
-          `${all.length} cards · ${wish.length} on wishlist · updated ${when}${cacheNote}${errNote}`;
+          `${all.length} cards · ${wish.length} wishlist · ${buy.length} buy candidates · updated ${when}${cacheNote}${errNote}`;
+      } else if (activeView === "buy-list") {
+        document.getElementById("meta").textContent =
+          `${buy.length} buy candidates · updated ${when}${cacheNote}${errNote}`;
       } else if (activeView === "wishlist") {
         document.getElementById("meta").textContent =
           `${wish.length} wishlist cards · updated ${when}${cacheNote}${errNote}`;
+      } else if (activeView === "helper") {
+        document.getElementById("meta").textContent =
+          `${wish.length} helper cards · max prices for non-collectors · updated ${when}${cacheNote}${errNote}`;
       } else if (activeView === "buying-guide") {
         document.getElementById("meta").textContent =
           `Use this while checking listing photos · updated ${when}${cacheNote}${errNote}`;
@@ -1061,9 +1338,116 @@
       }
     }
 
+    function isStale(card) {
+      const raw = card.updated_at_utc;
+      if (!raw) return true;
+      const d = new Date(raw);
+      if (!Number.isFinite(d.getTime())) return true;
+      return (Date.now() - d.getTime()) > 1000 * 60 * 60 * 48;
+    }
+
+    function buyTiming(card) {
+      const decision = String(card.advisor_decision || "").toLowerCase();
+      const flag = String(card.floor_quality_flag || "").toLowerCase();
+      const conf = String(card.floor_confidence || "").toLowerCase();
+      if (decision.includes("buy")) return "Buy now";
+      if (flag === "watch" || conf === "low") return "Wait / check carefully";
+      if (card.target_buy_gbp && card.floor_gbp) return "Only under max price";
+      return "Hold for now";
+    }
+
+    function opportunityScore(card) {
+      let score = 0;
+      const decision = String(card.advisor_decision || "").toLowerCase();
+      const conf = String(card.floor_confidence || "").toLowerCase();
+      const flag = String(card.floor_quality_flag || "").toLowerCase();
+      if (decision.includes("buy")) score += 60;
+      if (isWatched(card)) score += 12;
+      if (conf.includes("high")) score += 14;
+      else if (conf.includes("medium")) score += 8;
+      if (flag === "watch") score -= 12;
+      if (isStale(card)) score -= 8;
+      const sales = Number(card.ebay_sales || 0);
+      if (sales >= 50) score += 8;
+      else if (sales >= 20) score += 4;
+      return score;
+    }
+
+    function buildBuyCandidates(cards) {
+      return cards
+        .filter(card => isWatched(card) || String(card.advisor_decision || "").toLowerCase().includes("buy"))
+        .map(card => ({ ...card, _score: opportunityScore(card) }))
+        .sort((a, b) => b._score - a._score || priceValue(a) - priceValue(b));
+    }
+
+    function cardArticleClass(card, extra = "") {
+      return `card ${extra} ${cardSlug(card) === selectedCardSlug ? "highlight" : ""}`.trim();
+    }
+
+    function detailLink(view, card) {
+      return `#${view}?card=${encodeURIComponent(cardSlug(card))}`;
+    }
+
+    function renderDealCalculator(card) {
+      const slug = cardSlug(card);
+      return `
+        <div class="deal-calc">
+          <label for="ask_${escapeHtml(slug)}">Dealer asking price</label>
+          <input type="number" inputmode="decimal" min="0" step="0.01" placeholder="£ asking price" id="ask_${escapeHtml(slug)}" data-deal-card="${escapeHtml(slug)}">
+          <div class="deal-result" id="deal_${escapeHtml(slug)}">Enter an asking price to compare against the max buy.</div>
+        </div>
+      `;
+    }
+
+    function updateDealResults() {
+      document.querySelectorAll("[data-deal-card]").forEach(input => {
+        const slug = input.dataset.dealCard;
+        const card = (snapshotData.cards || []).find(c => cardSlug(c) === slug);
+        const out = document.getElementById(`deal_${slug}`);
+        if (!card || !out) return;
+        const asking = Number(input.value);
+        const target = Number(card.target_buy_gbp);
+        const floor = Number(card.floor_gbp);
+        out.className = "deal-result";
+        if (!Number.isFinite(asking) || asking <= 0) {
+          out.textContent = "Enter an asking price to compare against the max buy.";
+          return;
+        }
+        if (Number.isFinite(target) && asking <= target) {
+          out.classList.add("good");
+          out.textContent = `Good deal: ${money(target - asking)} under max buy.`;
+        } else if (Number.isFinite(floor) && asking <= floor) {
+          out.classList.add("warn");
+          out.textContent = Number.isFinite(target)
+            ? `Near floor, but above target by ${money(asking - target)}. Check condition hard.`
+            : "Near estimated floor. Ask before buying if condition is not clearly clean.";
+        } else if (Number.isFinite(target)) {
+          out.classList.add("bad");
+          out.textContent = `Too high: ${money(asking - target)} over max buy.`;
+        } else {
+          out.classList.add("warn");
+          out.textContent = "No target price yet. Ask before buying.";
+        }
+      });
+    }
+
+    function wireDealInputs() {
+      document.querySelectorAll("[data-deal-card]").forEach(input => {
+        input.addEventListener("input", updateDealResults);
+      });
+      updateDealResults();
+    }
+
+    function scrollHighlightedCard() {
+      if (!selectedCardSlug) return;
+      const el = document.querySelector(".card.highlight");
+      if (el) setTimeout(() => el.scrollIntoView({ block: "center", behavior: "smooth" }), 50);
+    }
+
     function renderHome() {
       const cards = snapshotData.cards || [];
       const wish = cards.filter(isWatched);
+      const buy = buildBuyCandidates(cards);
       const when = snapshotData.generated_at_utc || snapshotData.local_date || "";
       document.getElementById("homeCardCount").textContent = cards.length;
       document.getElementById("homeWishlistCount").textContent = wish.length;
@@ -1071,10 +1455,79 @@
       const chips = [];
       if (cards.length) chips.push(`${cards.length} cards priced`);
       if (wish.length) chips.push(`${wish.length} on wishlist`);
+      if (buy.length) chips.push(`${buy.length} to check today`);
       if (snapshotData._from_cache) chips.push("Offline cache");
       document.getElementById("homeChips").innerHTML = chips.length
         ? chips.map(c => `<span class="chip">${escapeHtml(c)}</span>`).join("")
         : '<span class="chip">Waiting for snapshot</span>';
+    }
+
+    function renderBuyList() {
+      const cards = buildBuyCandidates(snapshotData.cards || []);
+      const setSelect = document.getElementById("setFilterBuyList");
+      const setButtons = document.getElementById("setButtonsBuyList");
+      fillSetOptions(setSelect, cards);
+      renderSetButtons(setButtons, cards, setName => {
+        setSelect.value = setName;
+        apply();
+      });
+
+      function apply() {
+        const q = document.getElementById("searchBuyList").value.trim().toLowerCase();
+        const setVal = setSelect.value;
+        const timing = document.getElementById("timingFilterBuyList").value;
+        let filtered = cards.slice();
+        if (setVal) filtered = filtered.filter(c => c.set_name === setVal);
+        if (timing === "buy") filtered = filtered.filter(c => buyTiming(c) === "Buy now");
+        if (timing === "wait") filtered = filtered.filter(c => buyTiming(c) !== "Buy now");
+        if (q) {
+          filtered = filtered.filter(c => {
+            const blob = [c.card, c.number, c.set_name, c.scrape_query, c.advisor_decision, c.floor_justification].join(" ").toLowerCase();
+            return blob.includes(q);
+          });
+        }
+        document.getElementById("statsBuyList").textContent =
+          `Showing ${filtered.length} of ${cards.length} candidates`;
+        updateSetButtons(setButtons, setVal);
+        const list = document.getElementById("listBuyList");
+        if (!filtered.length) {
+          list.innerHTML = '<div class="empty">No buy candidates match your filters.</div>';
+          return;
+        }
+        list.innerHTML = filtered.map(card => {
+          const stale = isStale(card) ? '<span class="badge watch">stale data</span>' : "";
+          return `
+            <article class="${cardArticleClass(card)}">
+              <div class="card-layout ${cardImageUrl(card) ? "has-image" : ""}">
+                ${renderCardImage(card)}
+                <div>
+                  <h2><a href="${detailLink("buy-list", card)}" style="color:inherit;text-decoration:none">${escapeHtml(card.card || "")} <span style="color:var(--muted)">#${escapeHtml(card.number || "")}</span></a></h2>
+                  <p class="sub">${escapeHtml(card.set_name || "")} · ${escapeHtml(buyTiming(card))}</p>
+                  <div class="prices">
+                    <div class="price"><span class="label">Max buy</span><span class="value">${money(card.target_buy_gbp)}</span></div>
+                    <div class="price"><span class="label">Floor</span><span class="value">${money(card.floor_gbp)}</span></div>
+                    <div class="price"><span class="label">Signal</span><span class="value"><span class="buy-score">${Math.max(0, Math.round(card._score))}</span></span></div>
+                  </div>
+                  <p>
+                    <span class="badge">${escapeHtml(card.advisor_decision || "Watch")}</span>
+                    ${card.floor_confidence ? `<span class="badge">${escapeHtml(card.floor_confidence)}</span>` : ""}
+                    ${stale}
+                  </p>
+                  <p class="why">${escapeHtml(card.floor_justification || card.card_show_price_note || "Check price and condition before buying.")}</p>
+                  ${renderDealCalculator(card)}
+                </div>
+              </div>
+            </article>
+          `;
+        }).join("");
+        wireDealInputs();
+        scrollHighlightedCard();
+      }
+
+      document.getElementById("searchBuyList").oninput = apply;
+      setSelect.onchange = apply;
+      document.getElementById("timingFilterBuyList").onchange = apply;
+      apply();
     }
 
     function renderFloors() {
@@ -1115,22 +1568,31 @@
           const badgeClass = qf === "watch" ? "badge watch" : "badge";
           const onList = isWatched(card) ? '<span class="badge">On wishlist</span>' : "";
           return `
-            <article class="card">
-              <h2>${escapeHtml(card.card || "")} <span style="color:var(--muted)">#${escapeHtml(card.number || "")}</span></h2>
-              <p class="sub">${escapeHtml(card.set_name || "")} · ${escapeHtml(card.advisor_decision || "—")}</p>
-              <div class="prices">
-                <div class="price"><span class="label">Floor</span><span class="value">${money(card.floor_gbp)}</span></div>
-                <div class="price"><span class="label">Target buy</span><span class="value">${money(card.target_buy_gbp)}</span></div>
+            <article class="${cardArticleClass(card)}">
+              <div class="card-layout ${cardImageUrl(card) ? "has-image" : ""}">
+                ${renderCardImage(card)}
+                <div>
+                  <h2><a href="${detailLink("floors", card)}" style="color:inherit;text-decoration:none">${escapeHtml(card.card || "")} <span style="color:var(--muted)">#${escapeHtml(card.number || "")}</span></a></h2>
+                  <p class="sub">${escapeHtml(card.set_name || "")} · ${escapeHtml(card.advisor_decision || "—")}</p>
+                  <div class="prices">
+                    <div class="price"><span class="label">Floor</span><span class="value">${money(card.floor_gbp)}</span></div>
+                    <div class="price"><span class="label">Target buy</span><span class="value">${money(card.target_buy_gbp)}</span></div>
+                  </div>
+                  <p>
+                    ${onList}
+                    ${qf ? `<span class="${badgeClass}">${escapeHtml(card.floor_quality_flag)}</span>` : ""}
+                    ${card.floor_confidence ? `<span class="badge">${escapeHtml(card.floor_confidence)}</span>` : ""}
+                    ${isStale(card) ? '<span class="badge watch">stale data</span>' : ""}
+                  </p>
+                  <p class="why">${escapeHtml(card.floor_justification || card.card_show_price_note || "")}</p>
+                  ${renderDealCalculator(card)}
+                </div>
               </div>
-              <p>
-                ${onList}
-                ${qf ? `<span class="${badgeClass}">${escapeHtml(card.floor_quality_flag)}</span>` : ""}
-                ${card.floor_confidence ? `<span class="badge">${escapeHtml(card.floor_confidence)}</span>` : ""}
-              </p>
-              <p class="why">${escapeHtml(card.floor_justification || card.card_show_price_note || "")}</p>
             </article>
           `;
         }).join("");
+        wireDealInputs();
+        scrollHighlightedCard();
       }
 
       document.getElementById("searchFloors").oninput = apply;
@@ -1196,23 +1658,29 @@
           return;
         }
         list.innerHTML = filtered.map(card => `
-          <article class="card">
-            <div class="wishlist-main">
-              <h2>${escapeHtml(card.card || "")} <span style="color:var(--muted)">#${escapeHtml(card.number || "")}</span></h2>
-              <div class="budget">
-                <span class="label">Target price</span>
-                <span class="value">${moneyWishlist(card.target_buy_gbp)}</span>
+          <article class="${cardArticleClass(card)}">
+            <div class="card-layout ${cardImageUrl(card) ? "has-image" : ""}">
+              ${renderCardImage(card)}
+              <div>
+              <div class="wishlist-main">
+                <h2><a href="${detailLink("wishlist", card)}" style="color:inherit;text-decoration:none">${escapeHtml(card.card || "")} <span style="color:var(--muted)">#${escapeHtml(card.number || "")}</span></a></h2>
+                <div class="budget">
+                  <span class="label">Max pay</span>
+                  <span class="value">${moneyWishlist(card.target_buy_gbp)}</span>
+                </div>
               </div>
-            </div>
-            <div class="wishlist-set" aria-label="Set: ${escapeHtml(card.set_name || "Unknown set")}">
-              <span class="wishlist-set-icon" aria-hidden="true">${escapeHtml(setIconText(card.set_name))}</span>
-              <span class="wishlist-set-copy">
-                <span class="wishlist-set-kicker">Set</span>
-                <span class="wishlist-set-name">${escapeHtml(card.set_name || "Unknown set")}</span>
-              </span>
+              <div class="wishlist-set" aria-label="Set: ${escapeHtml(card.set_name || "Unknown set")}">
+                <span class="wishlist-set-icon" aria-hidden="true">${escapeHtml(setIconText(card.set_name))}</span>
+                <span class="wishlist-set-copy">
+                  <span class="wishlist-set-kicker">Set</span>
+                  <span class="wishlist-set-name">${escapeHtml(card.set_name || "Unknown set")}</span>
+                </span>
+              </div>
+              </div>
             </div>
           </article>
         `).join("");
+        scrollHighlightedCard();
       }
 
       document.getElementById("searchWishlist").oninput = apply;
@@ -1221,14 +1689,105 @@
       apply();
     }
 
+    function renderHelper() {
+      const cards = (snapshotData.cards || []).filter(isWatched);
+      const setSelect = document.getElementById("setFilterHelper");
+      const setButtons = document.getElementById("setButtonsHelper");
+      fillSetOptions(setSelect, cards);
+      renderSetButtons(setButtons, cards, setName => {
+        setSelect.value = setName;
+        apply();
+      });
+
+      function apply() {
+        const q = document.getElementById("searchHelper").value.trim().toLowerCase();
+        const setVal = setSelect.value;
+        const sortVal = document.getElementById("sortHelper").value;
+        let filtered = cards.slice();
+        if (setVal) filtered = filtered.filter(c => c.set_name === setVal);
+        if (q) {
+          filtered = filtered.filter(c => {
+            const blob = [c.card, c.number, c.set_name, c.scrape_query].join(" ").toLowerCase();
+            return blob.includes(q);
+          });
+        }
+        filtered.sort((a, b) => {
+          if (sortVal === "cheapest") return priceValue(a) - priceValue(b);
+          if (sortVal === "set") {
+            return String(a.set_name || "").localeCompare(String(b.set_name || ""))
+              || cardNumberValue(a) - cardNumberValue(b)
+              || String(a.card || "").localeCompare(String(b.card || ""));
+          }
+          return opportunityScore(b) - opportunityScore(a) || priceValue(a) - priceValue(b);
+        });
+        document.getElementById("statsHelper").textContent =
+          `Showing ${filtered.length} of ${cards.length} helper cards`;
+        updateSetButtons(setButtons, setVal);
+        const list = document.getElementById("listHelper");
+        if (!filtered.length) {
+          list.innerHTML = cards.length
+            ? '<div class="empty">No helper cards match that search.</div>'
+            : '<div class="empty">No watched cards in this snapshot yet.</div>';
+          return;
+        }
+        list.innerHTML = filtered.map(card => `
+          <article class="${cardArticleClass(card, "helper-card")}">
+            <div class="card-layout ${cardImageUrl(card) ? "has-image" : ""}">
+              ${renderCardImage(card)}
+              <div>
+                <h2><a href="${detailLink("helper", card)}" style="color:inherit;text-decoration:none">${escapeHtml(card.card || "")} <span style="color:var(--muted)">#${escapeHtml(card.number || "")}</span></a></h2>
+                <p class="sub">${escapeHtml(card.set_name || "Unknown set")} · raw English only</p>
+                <div class="max-pay">Max pay ${moneyWishlist(card.target_buy_gbp)}</div>
+                <ul class="plain-list">
+                  <li>Card name must match: ${escapeHtml(card.card || "this card")}.</li>
+                  <li>Number must match: #${escapeHtml(card.number || "?")}.</li>
+                  <li>Skip graded slabs, Japanese cards, creases, whitening, or blurry photos.</li>
+                  <li>If asking price is over ${moneyWishlist(card.target_buy_gbp)}, send a photo before buying.</li>
+                </ul>
+                <p class="why">${escapeHtml(card.card_show_price_note || card.floor_justification || "When unsure, do not buy it.")}</p>
+              </div>
+            </div>
+          </article>
+        `).join("");
+        scrollHighlightedCard();
+      }
+
+      document.getElementById("searchHelper").oninput = apply;
+      setSelect.onchange = apply;
+      document.getElementById("sortHelper").onchange = apply;
+      apply();
+    }
+
     document.getElementById("tabHome").addEventListener("click", () => setView("home"));
+    document.getElementById("tabBuyList").addEventListener("click", () => setView("buy-list"));
     document.getElementById("tabFloors").addEventListener("click", () => setView("floors"));
     document.getElementById("tabWishlist").addEventListener("click", () => setView("wishlist"));
+    document.getElementById("tabHelper").addEventListener("click", () => setView("helper"));
     document.getElementById("tabBuyingGuide").addEventListener("click", () => setView("buying-guide"));
+    document.getElementById("toggleImages").addEventListener("click", () => {
+      showImages = !showImages;
+      savePreference(PREF_IMAGES_KEY, showImages);
+      applyDisplayPreferences();
+    });
+    document.getElementById("toggleCompact").addEventListener("click", () => {
+      compactCards = !compactCards;
+      savePreference(PREF_COMPACT_KEY, compactCards);
+      applyDisplayPreferences();
+    });
     document.querySelectorAll("[data-go]").forEach(el => {
-      el.addEventListener("click", () => setView(el.dataset.go));
+      el.addEventListener("click", () => {
+        selectedCardSlug = "";
+        setView(el.dataset.go);
+      });
     });
     window.addEventListener("hashchange", () => setView(parseHash()));
+    applyDisplayPreferences();
+
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("service-worker.js").catch(() => {});
+      });
+    }
 
     loadSnapshot()
       .then(data => {

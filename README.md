@@ -7,8 +7,10 @@ Read-only phone homepage for today's Toploader snapshot: landing page, floor che
 | View | URL |
 |------|-----|
 | Home | https://bigdaddydawg.github.io/Toploader/ |
+| Today’s buy list | https://bigdaddydawg.github.io/Toploader/#buy-list |
 | Floor checker | https://bigdaddydawg.github.io/Toploader/#floors |
 | Wishlist (share with family) | https://bigdaddydawg.github.io/Toploader/#wishlist |
+| Helper mode | https://bigdaddydawg.github.io/Toploader/#helper |
 
 Old bookmarks to `wishlist.html` redirect to `#wishlist`.
 
@@ -29,8 +31,12 @@ In the public **Toploader** repo: **Settings → Pages → Build from branch →
 ## What each tab shows
 
 - **Home** — quick summary and big buttons into the card-show tools.
+- **Today’s buy list** — cards most worth checking now, ranked by buy signal and confidence.
 - **Floor checker** — all active exported cards with floor, target buy, quality flags, and notes.
 - **Wishlist** — only cards with `watchlist_status` in the app (morning batch cards are seeded on batch run). Name, set, number, and target price only. Sort by cheapest, expensive, or set.
+- **Helper mode** — simplified wishlist cards for non-collectors: image toggle, exact card number, max pay, and skip rules.
+
+Use the static display controls to switch between compact/detail cards and image thumbnails. Images are lazy-loaded from catalog URLs when present; they are not stored in the static JSON as binary data.
 
 Toggle wishlist membership in the Toploader app; re-export and publish to update the public site.
 
@@ -40,6 +46,9 @@ Toggle wishlist membership in the Toploader app; re-export and publish to update
 |------|---------|
 | `index.html` | Single-page UI (home + floors + wishlist tabs, hash routing) |
 | `wishlist.html` | Redirect to `#wishlist` for old links |
+| `buy-list.html` | Redirect to `#buy-list` |
+| `helper.html` | Redirect to `#helper` |
 | `floors.json` | Exported from `ui_batch_card_results` |
+| `manifest.webmanifest`, `service-worker.js`, `icon.svg` | Installable/offline shell for the static app |
 
 No scraping runs on the phone — only this JSON is served. The page caches `floors.json` in the browser for poor signal.
