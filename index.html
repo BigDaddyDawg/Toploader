@@ -665,6 +665,89 @@
       color: #c9d7ff;
     }
     .badge.watch { border-color: #8a6a2a; color: var(--warn); }
+    .badge.got-badge {
+      border-color: rgba(45, 212, 191, 0.55);
+      color: #99f6e4;
+      background: rgba(45, 212, 191, 0.12);
+      font-weight: 800;
+    }
+    .card.card-bought {
+      opacity: 0.68;
+      border-color: rgba(148, 163, 184, 0.22);
+    }
+    .card.card-bought h2,
+    .card.card-bought .target-price,
+    .card.card-bought .budget .value {
+      text-decoration: line-through;
+      text-decoration-color: rgba(148, 163, 184, 0.72);
+    }
+    .got-it-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-top: 8px;
+    }
+    .got-it-btn {
+      border: 0;
+      border-radius: 999px;
+      padding: 10px 16px;
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 900;
+      letter-spacing: 0.02em;
+      color: #031b19;
+      background: linear-gradient(135deg, #99f6e4, #5eead4);
+      cursor: pointer;
+      box-shadow: 0 10px 28px rgba(45, 212, 191, 0.22);
+    }
+    .got-it-btn:disabled,
+    .undo-got-btn:disabled {
+      opacity: 0.55;
+      cursor: wait;
+    }
+    .undo-got-btn {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-family: inherit;
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.04);
+      cursor: pointer;
+    }
+    .sync-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 3px 9px;
+      font-size: 0.72rem;
+      font-weight: 750;
+      color: var(--muted);
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+    .sync-pill::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #64748b;
+    }
+    .sync-pill.sync-live {
+      border-color: rgba(45, 212, 191, 0.42);
+      color: #99f6e4;
+    }
+    .sync-pill.sync-live::before {
+      background: #2dd4bf;
+      box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.18);
+    }
+    .sync-pill.sync-warn::before {
+      background: var(--warn);
+    }
     .guide-hero {
       border: 1px solid rgba(45, 212, 191, 0.28);
       background:
@@ -1064,6 +1147,7 @@
           <option value="expensive">Most expensive first</option>
           <option value="set">Set order</option>
         </select>
+        <button type="button" class="toggle-btn" id="toggleHideBought" aria-pressed="true">Hide got cards</button>
       </div>
       <div class="set-buttons" id="setButtonsWishlist" aria-label="Wishlist set shortcuts"></div>
       <p class="stats" id="statsWishlist"></p>
@@ -1088,6 +1172,7 @@
           <option value="cheapest">Cheapest first</option>
           <option value="set">Set order</option>
         </select>
+        <button type="button" class="toggle-btn" id="toggleHideBoughtHelper" aria-pressed="true">Hide got cards</button>
       </div>
       <div class="set-buttons" id="setButtonsHelper" aria-label="Helper set shortcuts"></div>
       <p class="stats" id="statsHelper"></p>
@@ -1160,6 +1245,9 @@
     </section>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="supabase-config.js"></script>
+  <script src="show-sync.js"></script>
   <script>
     const CACHE_KEY = "toploader_floors_v1";
     const PREF_IMAGES_KEY = "toploader_show_images_v1";
@@ -1329,27 +1417,30 @@
       const updated = formatSnapshotDateTime(when);
       const cacheNote = snapshotData._from_cache ? " · offline cache" : "";
       const errNote = snapshotData._load_error ? " · fetch issue" : "";
+      const syncNote = syncStatusHtml();
       const all = snapshotData.cards || [];
-      const wish = all.filter(isWatched);
-      const buy = buildBuyCandidates(all);
+      const wishAll = all.filter(isWatched);
+      const wish = window.showSync ? showSync.filterCards(wishAll) : wishAll;
+      const gotCount = window.showSync ? showSync.boughtCount(wishAll) : 0;
+      const buy = buildBuyCandidates(window.showSync ? showSync.filterCards(all) : all);
       if (activeView === "home") {
-        document.getElementById("meta").textContent =
-          `${all.length} cards · ${wish.length} wishlist · ${buy.length} buy-now cards · updated ${updated}${cacheNote}${errNote}`;
+        document.getElementById("meta").innerHTML =
+          `${all.length} cards · ${wish.length} wishlist${gotCount ? ` · ${gotCount} got` : ""} · ${buy.length} buy-now cards · updated ${updated}${cacheNote}${errNote}${syncNote}`;
       } else if (activeView === "buy-list") {
-        document.getElementById("meta").textContent =
-          `${buy.length} buy-now cards · updated ${updated}${cacheNote}${errNote}`;
+        document.getElementById("meta").innerHTML =
+          `${buy.length} buy-now cards · updated ${updated}${cacheNote}${errNote}${syncNote}`;
       } else if (activeView === "wishlist") {
-        document.getElementById("meta").textContent =
-          `${wish.length} wishlist cards · updated ${updated}${cacheNote}${errNote}`;
+        document.getElementById("meta").innerHTML =
+          `${wish.length} left${gotCount ? ` · ${gotCount} got` : ""} · updated ${updated}${cacheNote}${errNote}${syncNote}`;
       } else if (activeView === "helper") {
-        document.getElementById("meta").textContent =
-          `${wish.length} helper cards · simple match view · updated ${updated}${cacheNote}${errNote}`;
+        document.getElementById("meta").innerHTML =
+          `${wish.length} helper cards${gotCount ? ` · ${gotCount} got` : ""} · updated ${updated}${cacheNote}${errNote}${syncNote}`;
       } else if (activeView === "buying-guide") {
         document.getElementById("meta").textContent =
           `Use this while checking listing photos · updated ${updated}${cacheNote}${errNote}`;
       } else {
-        document.getElementById("meta").textContent =
-          `${all.length} cards · ${wish.length} on wishlist · updated ${updated}${cacheNote}${errNote}`;
+        document.getElementById("meta").innerHTML =
+          `${all.length} cards · ${wish.length} on wishlist · updated ${updated}${cacheNote}${errNote}${syncNote}`;
       }
     }
 
@@ -1459,7 +1550,39 @@
     }
 
     function cardArticleClass(card, extra = "") {
-      return `card ${extra} ${cardSlug(card) === selectedCardSlug ? "highlight" : ""}`.trim();
+      const boughtClass = window.showSync ? showSync.cardExtraClass(card) : "";
+      return `card ${extra} ${boughtClass} ${cardSlug(card) === selectedCardSlug ? "highlight" : ""}`.trim();
+    }
+
+    function syncStatusHtml() {
+      if (!window.showSync || !showSync.isConfigured() || !snapshotData) return "";
+      const text = showSync.statusText(snapshotData);
+      if (!text) return "";
+      return `<span class="sync-pill ${showSync.statusClass()}">${escapeHtml(text)}</span>`;
+    }
+
+    function applyHideBoughtToggle() {
+      [document.getElementById("toggleHideBought"), document.getElementById("toggleHideBoughtHelper")].forEach(btn => {
+        if (!btn || !window.showSync) return;
+        const configured = showSync.isConfigured();
+        btn.style.display = configured ? "" : "none";
+        if (!configured) return;
+        const hidden = showSync.hideBought();
+        btn.classList.toggle("active", hidden);
+        btn.textContent = hidden ? "Hide got cards" : "Show got cards";
+        btn.setAttribute("aria-pressed", hidden ? "true" : "false");
+      });
+    }
+
+    function rerenderActiveView() {
+      if (!snapshotData) return;
+      updateMeta();
+      applyHideBoughtToggle();
+      if (activeView === "home") renderHome();
+      else if (activeView === "buy-list") renderBuyList();
+      else if (activeView === "floors") renderFloors();
+      else if (activeView === "wishlist") renderWishlist();
+      else if (activeView === "helper") renderHelper();
     }
 
     function detailLink(view, card) {
@@ -1524,8 +1647,9 @@
 
     function renderHome() {
       const cards = snapshotData.cards || [];
-      const wish = cards.filter(isWatched);
-      const buy = buildBuyCandidates(cards);
+      const wishAll = cards.filter(isWatched);
+      const wish = window.showSync ? showSync.filterCards(wishAll) : wishAll;
+      const buy = buildBuyCandidates(window.showSync ? showSync.filterCards(cards) : cards);
       const when = snapshotData.generated_at_utc || snapshotData.local_date || "";
       document.getElementById("homeCardCount").textContent = cards.length;
       document.getElementById("homeWishlistCount").textContent = wish.length;
@@ -1533,6 +1657,9 @@
       const chips = [];
       if (cards.length) chips.push(`${cards.length} cards priced`);
       if (wish.length) chips.push(`${wish.length} on wishlist`);
+      if (window.showSync && showSync.boughtCount(wishAll)) {
+        chips.push(`${showSync.boughtCount(wishAll)} got today`);
+      }
       if (buy.length) chips.push(`${buy.length} to check today`);
       if (snapshotData._from_cache) chips.push("Offline cache");
       document.getElementById("homeChips").innerHTML = chips.length
@@ -1541,7 +1668,8 @@
     }
 
     function renderBuyList() {
-      const cards = buildBuyCandidates(snapshotData.cards || []);
+      const allCards = snapshotData.cards || [];
+      const cards = buildBuyCandidates(window.showSync ? showSync.filterCards(allCards) : allCards);
       const setSelect = document.getElementById("setFilterBuyList");
       const setButtons = document.getElementById("setButtonsBuyList");
       fillSetOptions(setSelect, cards);
@@ -1702,7 +1830,8 @@
     }
 
     function renderWishlist() {
-      const cards = (snapshotData.cards || []).filter(isWatched);
+      const wishAll = (snapshotData.cards || []).filter(isWatched);
+      const cards = window.showSync ? showSync.filterCards(wishAll) : wishAll;
       const setSelect = document.getElementById("setFilterWishlist");
       const setButtons = document.getElementById("setButtonsWishlist");
       fillSetOptions(setSelect, cards);
@@ -1733,17 +1862,20 @@
           return priceValue(a) - priceValue(b);
         });
         document.getElementById("statsWishlist").textContent =
-          `Showing ${filtered.length} of ${cards.length}`;
+          `Showing ${filtered.length} of ${cards.length}${window.showSync && showSync.boughtCount(wishAll) ? ` · ${showSync.boughtCount(wishAll)} got` : ""}`;
         updateSetButtons(setButtons, setVal);
         const list = document.getElementById("listWishlist");
         if (!filtered.length) {
           list.innerHTML = cards.length
             ? '<div class="empty">No wishlist cards match that search.</div>'
-            : '<div class="empty">No watched cards in this snapshot. Toggle cards on the wishlist in the Toploader app, then run export and publish.</div>';
+            : wishAll.length && window.showSync && showSync.boughtCount(wishAll)
+              ? '<div class="empty">Everything on the list is marked got. Toggle “Show got cards” to review.</div>'
+              : '<div class="empty">No watched cards in this snapshot. Toggle cards on the wishlist in the Toploader app, then run export and publish.</div>';
           return;
         }
         list.innerHTML = filtered.map(card => {
           const timing = buyingWindowText(card);
+          const gotControls = window.showSync ? showSync.renderGotItControls(card, escapeHtml) : "";
           return `
             <article class="${cardArticleClass(card)}">
               <div class="card-layout ${cardImageUrl(card) ? "has-image" : ""}">
@@ -1759,6 +1891,7 @@
                     <div class="price"><span class="label">Expected floor</span><span class="value">${money(card.floor_gbp)}</span></div>
                   </div>
                   ${timing ? `<p class="timing">${escapeHtml(timing)}</p>` : ""}
+                  ${gotControls}
                 </div>
                 <div class="wishlist-set" aria-label="Set: ${escapeHtml(card.set_name || "Unknown set")}">
                   <span class="wishlist-set-icon" aria-hidden="true">${escapeHtml(setIconText(card.set_name))}</span>
@@ -1772,6 +1905,7 @@
             </article>
           `;
         }).join("");
+        if (window.showSync) showSync.wireListActions(list);
         scrollHighlightedCard();
       }
 
@@ -1782,7 +1916,8 @@
     }
 
     function renderHelper() {
-      const cards = (snapshotData.cards || []).filter(isWatched);
+      const wishAll = (snapshotData.cards || []).filter(isWatched);
+      const cards = window.showSync ? showSync.filterCards(wishAll) : wishAll;
       const setSelect = document.getElementById("setFilterHelper");
       const setButtons = document.getElementById("setButtonsHelper");
       fillSetOptions(setSelect, cards);
@@ -1813,17 +1948,20 @@
           return buyRank(b) - buyRank(a) || priceValue(a) - priceValue(b);
         });
         document.getElementById("statsHelper").textContent =
-          `Showing ${filtered.length} of ${cards.length} helper cards`;
+          `Showing ${filtered.length} of ${cards.length} helper cards${window.showSync && showSync.boughtCount(wishAll) ? ` · ${showSync.boughtCount(wishAll)} got` : ""}`;
         updateSetButtons(setButtons, setVal);
         const list = document.getElementById("listHelper");
         if (!filtered.length) {
           list.innerHTML = cards.length
             ? '<div class="empty">No helper cards match that search.</div>'
-            : '<div class="empty">No watched cards in this snapshot yet.</div>';
+            : wishAll.length && window.showSync && showSync.boughtCount(wishAll)
+              ? '<div class="empty">Everything on the list is marked got.</div>'
+              : '<div class="empty">No watched cards in this snapshot yet.</div>';
           return;
         }
         list.innerHTML = filtered.map(card => {
           const timing = buyingWindowText(card);
+          const gotControls = window.showSync ? showSync.renderGotItControls(card, escapeHtml) : "";
           return `
             <article class="${cardArticleClass(card, "helper-card")}">
               <div class="card-layout ${cardImageUrl(card) ? "has-image" : ""}">
@@ -1833,6 +1971,7 @@
                   <p class="sub">${escapeHtml(card.set_name || "Unknown set")} · raw English only</p>
                   <div class="target-price">Target ${moneyWishlist(card.target_buy_gbp)} · floor ${money(card.floor_gbp)}</div>
                   ${timing ? `<p class="timing">${escapeHtml(timing)}</p>` : ""}
+                  ${gotControls}
                   <ul class="plain-list">
                     <li>Card name must match: ${escapeHtml(card.card || "this card")}.</li>
                     <li>Number must match: #${escapeHtml(card.number || "?")}.</li>
@@ -1845,6 +1984,7 @@
             </article>
           `;
         }).join("");
+        if (window.showSync) showSync.wireListActions(list);
         scrollHighlightedCard();
       }
 
@@ -1870,6 +2010,17 @@
       savePreference(PREF_COMPACT_KEY, compactCards);
       applyDisplayPreferences();
     });
+    document.getElementById("toggleHideBought").addEventListener("click", () => {
+      if (!window.showSync) return;
+      showSync.setHideBought(!showSync.hideBought());
+    });
+    document.getElementById("toggleHideBoughtHelper").addEventListener("click", () => {
+      if (!window.showSync) return;
+      showSync.setHideBought(!showSync.hideBought());
+    });
+    if (window.showSync) {
+      showSync.onChange(() => rerenderActiveView());
+    }
     document.querySelectorAll("[data-go]").forEach(el => {
       el.addEventListener("click", () => {
         selectedCardSlug = "";
@@ -1886,8 +2037,12 @@
     }
 
     loadSnapshot()
-      .then(data => {
+      .then(async data => {
         snapshotData = data;
+        if (window.showSync) {
+          await showSync.init(data);
+          applyHideBoughtToggle();
+        }
         setView(parseHash());
       })
       .catch(err => {

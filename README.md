@@ -40,6 +40,16 @@ Use the static display controls to switch between compact/detail cards and image
 
 Toggle wishlist membership in the Toploader app; re-export and publish to update the public site.
 
+## Live “Got it” sync (Supabase)
+
+During a card show, anyone on the wishlist can tap **Got it ✓** and everyone else sees the update within seconds — no laptop export needed mid-show.
+
+One-time setup: see **[SUPABASE_SETUP.md](./SUPABASE_SETUP.md)**.
+
+- Marks are scoped to the snapshot `local_date` (today’s show).
+- Got cards are hidden by default; toggle **Show got cards** on the wishlist tab.
+- Buy list also excludes got cards so you do not double-buy.
+
 ## Files
 
 | File | Purpose |
@@ -49,6 +59,8 @@ Toggle wishlist membership in the Toploader app; re-export and publish to update
 | `buy-list.html` | Redirect to `#buy-list` |
 | `helper.html` | Redirect to `#helper` |
 | `floors.json` | Exported from `ui_batch_card_results` |
+| `show-sync.js` | Supabase live sync for “got it” marks |
+| `supabase-config.js` | Your Supabase project URL + anon key |
 | `manifest.webmanifest`, `service-worker.js`, `icon.svg` | Installable/offline shell for the static app |
 
 No scraping runs on the phone — only this JSON is served. The page caches `floors.json` in the browser for poor signal.

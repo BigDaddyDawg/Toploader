@@ -1,4 +1,4 @@
-const CACHE_NAME = "toploader-static-v3";
+const CACHE_NAME = "toploader-static-v4";
 const CORE_ASSETS = [
   "./",
   "index.html",
@@ -7,7 +7,9 @@ const CORE_ASSETS = [
   "helper.html",
   "floors.json",
   "manifest.webmanifest",
-  "icon.svg"
+  "icon.svg",
+  "supabase-config.js",
+  "show-sync.js"
 ];
 
 self.addEventListener("install", event => {
