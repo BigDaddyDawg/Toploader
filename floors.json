@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-05-30T06:32:12.088277+00:00",
+  "generated_at_utc": "2026-05-30T06:33:41.893576+00:00",
   "local_date": "2026-05-30",
   "source_db": "C:\\Users\\rache\\OneDrive\\Documents\\mkdir pokemon-tcg-terminal\\tcg_data.db",
   "include_bought": false,
@@ -685,7 +685,7 @@
       "raw_sample_count": 114,
       "image_small_url": "https://images.scrydex.com/pokemon/zsv10pt5-134/small",
       "image_large_url": "https://images.scrydex.com/pokemon/zsv10pt5-134/large",
-      "updated_at_utc": "2026-05-30T06:31:29.644546+00:00",
+      "updated_at_utc": "2026-05-30T06:32:14.811437+00:00",
       "active_status": "active",
       "watchlist_status": 1
     },
@@ -711,7 +711,7 @@
       "raw_sample_count": 348,
       "image_small_url": "https://images.scrydex.com/pokemon/zsv10pt5-166/small",
       "image_large_url": "https://images.scrydex.com/pokemon/zsv10pt5-166/large",
-      "updated_at_utc": "2026-05-30T06:31:49.907738+00:00",
+      "updated_at_utc": "2026-05-30T06:32:21.134707+00:00",
       "active_status": "active",
       "watchlist_status": 1
     },
@@ -737,7 +737,7 @@
       "raw_sample_count": 201,
       "image_small_url": "https://images.scrydex.com/pokemon/zsv10pt5-168/small",
       "image_large_url": "https://images.scrydex.com/pokemon/zsv10pt5-168/large",
-      "updated_at_utc": "2026-05-30T06:31:50.651029+00:00",
+      "updated_at_utc": "2026-05-30T06:32:32.178817+00:00",
       "active_status": "active",
       "watchlist_status": 1
     },
@@ -1387,7 +1387,7 @@
       "raw_sample_count": 122,
       "image_small_url": "https://images.pokemontcg.io/rsv10pt5/87.png",
       "image_large_url": "https://images.pokemontcg.io/rsv10pt5/87_hires.png",
-      "updated_at_utc": "2026-05-30T06:30:55.448417+00:00",
+      "updated_at_utc": "2026-05-30T06:32:53.018027+00:00",
       "active_status": "active",
       "watchlist_status": 1
     },
@@ -1413,7 +1413,7 @@
       "raw_sample_count": 113,
       "image_small_url": "https://images.pokemontcg.io/rsv10pt5/101.png",
       "image_large_url": "https://images.pokemontcg.io/rsv10pt5/101_hires.png",
-      "updated_at_utc": "2026-05-30T06:32:09.483255+00:00",
+      "updated_at_utc": "2026-05-30T06:32:52.239503+00:00",
       "active_status": "active",
       "watchlist_status": 1
     },
@@ -1439,7 +1439,7 @@
       "raw_sample_count": 110,
       "image_small_url": "https://images.pokemontcg.io/rsv10pt5/102.png",
       "image_large_url": "https://images.pokemontcg.io/rsv10pt5/102_hires.png",
-      "updated_at_utc": "2026-05-30T06:31:17.139214+00:00",
+      "updated_at_utc": "2026-05-30T06:33:10.006420+00:00",
       "active_status": "active",
       "watchlist_status": 1
     },
@@ -1465,7 +1465,7 @@
       "raw_sample_count": 99,
       "image_small_url": "https://images.pokemontcg.io/rsv10pt5/103.png",
       "image_large_url": "https://images.pokemontcg.io/rsv10pt5/103_hires.png",
-      "updated_at_utc": "2026-05-30T06:31:30.162203+00:00",
+      "updated_at_utc": "2026-05-30T06:33:10.448645+00:00",
       "active_status": "active",
       "watchlist_status": 1
     },
@@ -1491,7 +1491,7 @@
       "raw_sample_count": 72,
       "image_small_url": "https://images.pokemontcg.io/rsv10pt5/115.png",
       "image_large_url": "https://images.pokemontcg.io/rsv10pt5/115_hires.png",
-      "updated_at_utc": "2026-05-30T06:31:38.718589+00:00",
+      "updated_at_utc": "2026-05-30T06:33:27.064758+00:00",
       "active_status": "active",
       "watchlist_status": 1
     },
@@ -1517,7 +1517,7 @@
       "raw_sample_count": 116,
       "image_small_url": "https://images.pokemontcg.io/rsv10pt5/143.png",
       "image_large_url": "https://images.pokemontcg.io/rsv10pt5/143_hires.png",
-      "updated_at_utc": "2026-05-30T06:31:51.695555+00:00",
+      "updated_at_utc": "2026-05-30T06:33:27.609360+00:00",
       "active_status": "active",
       "watchlist_status": 1
     },
@@ -1543,7 +1543,7 @@
       "raw_sample_count": 149,
       "image_small_url": "https://images.pokemontcg.io/rsv10pt5/154.png",
       "image_large_url": "https://images.pokemontcg.io/rsv10pt5/154_hires.png",
-      "updated_at_utc": "2026-05-30T06:31:58.916779+00:00",
+      "updated_at_utc": "2026-05-30T06:33:40.424670+00:00",
       "active_status": "active",
       "watchlist_status": 1
     },
@@ -1569,7 +1569,7 @@
       "raw_sample_count": 106,
       "image_small_url": "https://images.pokemontcg.io/rsv10pt5/156.png",
       "image_large_url": "https://images.pokemontcg.io/rsv10pt5/156_hires.png",
-      "updated_at_utc": "2026-05-30T06:32:10.870558+00:00",
+      "updated_at_utc": "2026-05-30T06:33:40.837054+00:00",
       "active_status": "active",
       "watchlist_status": 1
     }
