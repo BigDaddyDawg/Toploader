@@ -1280,8 +1280,8 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-  <script src="supabase-config.js"></script>
-  <script src="show-sync.js"></script>
+  <script src="supabase-config.js?v=5"></script>
+  <script src="show-sync.js?v=5"></script>
   <script>
     const CACHE_KEY = "toploader_floors_v1";
     const PREF_IMAGES_KEY = "toploader_show_images_v1";
@@ -2177,7 +2177,7 @@
 
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("service-worker.js").catch(() => {});
+        navigator.serviceWorker.register("service-worker.js?v=5").catch(() => {});
       });
     }
 

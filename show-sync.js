@@ -299,7 +299,7 @@
   }
 
   function renderPurchaseControls(card, escapeHtml) {
-    if (!isConfigured() || !ready) return "";
+    if (!isConfigured()) return "";
     const key = cardKey(card);
     if (!key) return "";
 
@@ -310,6 +310,14 @@
         <div class="got-it-row">
           <span class="badge got-badge">Owned · ${who}</span>
           <button type="button" class="undo-got-btn" data-unpurchase="${escapeHtml(key)}">Undo</button>
+        </div>
+      `;
+    }
+
+    if (!ready) {
+      return `
+        <div class="got-it-row">
+          <button type="button" class="got-it-btn" disabled>Purchased ✓ (connecting…)</button>
         </div>
       `;
     }

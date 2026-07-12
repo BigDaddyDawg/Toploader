@@ -1,4 +1,4 @@
-const CACHE_NAME = "toploader-static-v4";
+const CACHE_NAME = "toploader-static-v5";
 const CORE_ASSETS = [
   "./",
   "index.html",
@@ -9,8 +9,21 @@ const CORE_ASSETS = [
   "manifest.webmanifest",
   "icon.svg",
   "supabase-config.js",
-  "show-sync.js"
+  "show-sync.js",
 ];
+
+/** Network-first with offline fallback — keeps HTML/JS fresh after publishes. */
+function networkFirst(request, fallbackUrl) {
+  return fetch(request)
+    .then(response => {
+      const copy = response.clone();
+      caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
+      return response;
+    })
+    .catch(() =>
+      caches.match(request).then(cached => cached || (fallbackUrl ? caches.match(fallbackUrl) : undefined))
+    );
+}
 
 self.addEventListener("install", event => {
   event.waitUntil(
@@ -34,29 +47,24 @@ self.addEventListener("fetch", event => {
   const url = new URL(event.request.url);
   if (url.origin !== location.origin || event.request.method !== "GET") return;
 
-  if (url.pathname.endsWith("/") || url.pathname.endsWith("/index.html")) {
-    event.respondWith(
-      fetch(event.request)
-        .then(response => {
-          const copy = response.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(event.request, copy));
-          return response;
-        })
-        .catch(() => caches.match(event.request).then(cached => cached || caches.match("index.html")))
-    );
+  const path = url.pathname;
+
+  if (path.endsWith("/") || path.endsWith("/index.html")) {
+    event.respondWith(networkFirst(event.request, "index.html"));
     return;
   }
 
-  if (url.pathname.endsWith("/floors.json")) {
-    event.respondWith(
-      fetch(event.request)
-        .then(response => {
-          const copy = response.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(event.request, copy));
-          return response;
-        })
-        .catch(() => caches.match(event.request).then(cached => cached || caches.match("floors.json")))
-    );
+  if (path.endsWith("/floors.json")) {
+    event.respondWith(networkFirst(event.request, "floors.json"));
+    return;
+  }
+
+  if (
+    path.endsWith("/show-sync.js") ||
+    path.endsWith("/supabase-config.js") ||
+    path.endsWith("/service-worker.js")
+  ) {
+    event.respondWith(networkFirst(event.request));
     return;
   }
 
