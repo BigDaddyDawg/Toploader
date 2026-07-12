@@ -346,6 +346,7 @@
     ownedCount,
     statusText,
     statusClass,
+    isReady: () => ready,
     markPurchased,
     unmarkPurchased,
     wireListActions,

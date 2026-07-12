@@ -404,6 +404,97 @@
       border-color: rgba(247, 199, 109, 0.62);
       box-shadow: 0 0 0 2px rgba(247, 199, 109, 0.18), 0 18px 52px rgba(0, 0, 0, 0.22);
     }
+    .card.selectable {
+      cursor: pointer;
+    }
+    .card.selectable:active {
+      transform: scale(0.995);
+    }
+    #viewWishlist.has-selection {
+      padding-bottom: calc(132px + env(safe-area-inset-bottom, 0px));
+    }
+    .wishlist-action-bar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 40;
+      padding: 14px 16px calc(14px + env(safe-area-inset-bottom, 0px));
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.72), rgba(15, 23, 42, 0.98));
+      border-top: 1px solid rgba(148, 163, 184, 0.22);
+      box-shadow: 0 -18px 48px rgba(0, 0, 0, 0.38);
+      backdrop-filter: blur(10px);
+    }
+    .wishlist-action-bar[hidden] {
+      display: none !important;
+    }
+    .wishlist-action-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .wishlist-action-copy h3 {
+      margin: 0;
+      font-size: 1.02rem;
+      line-height: 1.2;
+      color: var(--text);
+    }
+    .wishlist-action-copy p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+    .wishlist-action-dismiss {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      width: 34px;
+      height: 34px;
+      flex: 0 0 auto;
+      font-size: 1.2rem;
+      line-height: 1;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.04);
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .wishlist-action-purchase {
+      width: 100%;
+      border: 0;
+      border-radius: 16px;
+      padding: 16px 18px;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 900;
+      letter-spacing: 0.02em;
+      color: #031b19;
+      background: linear-gradient(135deg, #99f6e4, #5eead4);
+      cursor: pointer;
+      box-shadow: 0 12px 30px rgba(45, 212, 191, 0.24);
+    }
+    .wishlist-action-purchase:disabled {
+      opacity: 0.55;
+      cursor: wait;
+    }
+    .wishlist-action-owned {
+      width: 100%;
+      border-radius: 16px;
+      padding: 14px 16px;
+      text-align: center;
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: #99f6e4;
+      background: rgba(45, 212, 191, 0.12);
+      border: 1px solid rgba(45, 212, 191, 0.28);
+    }
+    .wishlist-action-note {
+      margin: 0;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.35;
+    }
     .card-layout {
       display: grid;
       grid-template-columns: minmax(0, 1fr);
@@ -1162,6 +1253,7 @@
       <p class="stats" id="statsWishlist"></p>
     </div>
     <div id="listWishlist" class="list"></div>
+    <div id="wishlistActionBar" class="wishlist-action-bar" hidden aria-live="polite"></div>
   </div>
 
   <div id="viewOwned" class="view">
@@ -1280,8 +1372,8 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-  <script src="supabase-config.js?v=5"></script>
-  <script src="show-sync.js?v=5"></script>
+  <script src="supabase-config.js?v=6"></script>
+  <script src="show-sync.js?v=6"></script>
   <script>
     const CACHE_KEY = "toploader_floors_v1";
     const PREF_IMAGES_KEY = "toploader_show_images_v1";
@@ -1375,6 +1467,104 @@
         .replace(/^-+|-+$/g, "");
     }
 
+    function findCardBySlug(slug) {
+      if (!slug || !snapshotData) return null;
+      return (snapshotData.cards || []).find(c => cardSlug(c) === slug) || null;
+    }
+
+    function selectWishlistCard(slug) {
+      selectedCardSlug = slug || "";
+      setView("wishlist");
+    }
+
+    function clearWishlistSelection() {
+      if (!selectedCardSlug) return;
+      selectedCardSlug = "";
+      setView("wishlist");
+    }
+
+    function renderWishlistActionBar() {
+      const bar = document.getElementById("wishlistActionBar");
+      const view = document.getElementById("viewWishlist");
+      if (!bar || !view) return;
+
+      if (activeView !== "wishlist" || !selectedCardSlug || !snapshotData) {
+        bar.hidden = true;
+        view.classList.remove("has-selection");
+        return;
+      }
+
+      const card = findCardBySlug(selectedCardSlug);
+      if (!card || !isWatched(card)) {
+        bar.hidden = true;
+        view.classList.remove("has-selection");
+        return;
+      }
+
+      const configured = window.showSync && showSync.isConfigured();
+      const owned = configured && showSync.isOwned(card);
+      const info = owned ? showSync.ownedInfo(card) : null;
+      const ready = configured && typeof showSync.isReady === "function" && showSync.isReady();
+      const who = info && info.bought_by ? escapeHtml(info.bought_by) : "Someone";
+
+      let actionHtml = "";
+      if (!configured) {
+        actionHtml = '<p class="wishlist-action-note">Live sync is not set up on this site yet.</p>';
+      } else if (owned) {
+        actionHtml = `<div class="wishlist-action-owned">Owned · ${who}</div>`;
+      } else if (!ready) {
+        actionHtml = '<button type="button" class="wishlist-action-purchase" id="wishlistPurchaseBtn" disabled>Purchased (connecting…)</button>';
+      } else {
+        actionHtml = '<button type="button" class="wishlist-action-purchase" id="wishlistPurchaseBtn">Purchased</button>';
+      }
+
+      bar.innerHTML = `
+        <div class="wishlist-action-top">
+          <div class="wishlist-action-copy">
+            <h3>${escapeHtml(card.card || "")} <span style="color:var(--muted)">#${escapeHtml(card.number || "")}</span></h3>
+            <p>${escapeHtml(card.set_name || "Unknown set")} · Target ${moneyWishlist(card.target_buy_gbp)}</p>
+          </div>
+          <button type="button" class="wishlist-action-dismiss" id="wishlistActionDismiss" aria-label="Close">×</button>
+        </div>
+        ${actionHtml}
+      `;
+      bar.hidden = false;
+      view.classList.add("has-selection");
+
+      const dismiss = document.getElementById("wishlistActionDismiss");
+      if (dismiss) dismiss.addEventListener("click", clearWishlistSelection);
+
+      const purchaseBtn = document.getElementById("wishlistPurchaseBtn");
+      if (purchaseBtn && configured && !owned && ready) {
+        purchaseBtn.addEventListener("click", async () => {
+          purchaseBtn.disabled = true;
+          const result = await showSync.markPurchased(card);
+          purchaseBtn.disabled = false;
+          if (!result.ok && result.error) {
+            window.alert(result.error);
+            return;
+          }
+          clearWishlistSelection();
+        });
+      }
+    }
+
+    function wireWishlistSelection(listEl) {
+      if (!listEl) return;
+      listEl.querySelectorAll("[data-select-wishlist]").forEach(el => {
+        el.addEventListener("click", event => {
+          if (event.target.closest("a, button, input, select, textarea")) return;
+          selectWishlistCard(el.dataset.selectWishlist || "");
+        });
+        el.addEventListener("keydown", event => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            selectWishlistCard(el.dataset.selectWishlist || "");
+          }
+        });
+      });
+    }
+
     function cardImageUrl(card) {
       return card.image_small_url || card.image_large_url || "";
     }
@@ -1437,6 +1627,7 @@
       else if (view === "wishlist") renderWishlist();
       else if (view === "owned") renderOwned();
       else if (view === "helper") renderHelper();
+      renderWishlistActionBar();
     }
 
     function parseHash() {
@@ -1914,18 +2105,19 @@
             : wishAll.length && window.showSync && showSync.boughtCount(wishAll)
               ? '<div class="empty">Everything on the list is marked got. Toggle “Show got cards” to review.</div>'
               : '<div class="empty">No watched cards in this snapshot. Toggle cards on the wishlist in the Toploader app, then run export and publish.</div>';
+          renderWishlistActionBar();
           return;
         }
         list.innerHTML = filtered.map(card => {
           const timing = buyingWindowText(card);
-          const gotControls = window.showSync ? showSync.renderGotItControls(card, escapeHtml) : "";
+          const slug = cardSlug(card);
           return `
-            <article class="${cardArticleClass(card)}">
+            <article class="${cardArticleClass(card, "selectable")}" data-select-wishlist="${escapeHtml(slug)}" tabindex="0" role="button" aria-label="Select ${escapeHtml(card.card || "card")}">
               <div class="card-layout ${cardImageUrl(card) ? "has-image" : ""}">
                 ${renderCardImage(card)}
                 <div>
                 <div class="wishlist-main">
-                  <h2><a href="${detailLink("wishlist", card)}" style="color:inherit;text-decoration:none">${escapeHtml(card.card || "")} <span style="color:var(--muted)">#${escapeHtml(card.number || "")}</span></a></h2>
+                  <h2>${escapeHtml(card.card || "")} <span style="color:var(--muted)">#${escapeHtml(card.number || "")}</span></h2>
                   <div class="budget">
                     <span class="label">Target</span>
                     <span class="value">${moneyWishlist(card.target_buy_gbp)}</span>
@@ -1934,7 +2126,6 @@
                     <div class="price"><span class="label">Expected floor</span><span class="value">${money(card.floor_gbp)}</span></div>
                   </div>
                   ${timing ? `<p class="timing">${escapeHtml(timing)}</p>` : ""}
-                  ${gotControls}
                 </div>
                 <div class="wishlist-set" aria-label="Set: ${escapeHtml(card.set_name || "Unknown set")}">
                   <span class="wishlist-set-icon" aria-hidden="true">${escapeHtml(setIconText(card.set_name))}</span>
@@ -1948,8 +2139,9 @@
             </article>
           `;
         }).join("");
-        if (window.showSync) showSync.wireListActions(list);
+        wireWishlistSelection(list);
         scrollHighlightedCard();
+        renderWishlistActionBar();
       }
 
       document.getElementById("searchWishlist").oninput = apply;
@@ -2014,7 +2206,7 @@
         if (!filtered.length) {
           list.innerHTML = owned.length
             ? '<div class="empty">No owned cards match that search.</div>'
-            : '<div class="empty">Nothing bought yet. Tap “Purchased ✓” on a wishlist card to add it here.</div>';
+            : '<div class="empty">Nothing bought yet. Tap a wishlist card, then hit Purchased.</div>';
           return;
         }
         list.innerHTML = filtered.map(card => {
@@ -2177,7 +2369,7 @@
 
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("service-worker.js?v=5").catch(() => {});
+        navigator.serviceWorker.register("service-worker.js?v=6").catch(() => {});
       });
     }
 
