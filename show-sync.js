@@ -1,19 +1,14 @@
 /**
  * Live card-show sync via Supabase.
- *
- * Tapping "Purchased" on a wishlist card moves it to the shared, permanent
- * Owned list and removes it from everyone's wishlist within seconds. Unlike the
- * old per-show "Got it" marks, ownership is keyed by card_key and never resets.
+ * Marks cards "got it" so everyone on the wishlist sees updates in seconds.
  */
 (function () {
   const BUYER_NAME_KEY = "toploader_buyer_name_v1";
-  // Kept the v1 key so existing phones keep their "hide" preference.
-  const HIDE_OWNED_KEY = "toploader_hide_bought_v1";
+  const HIDE_BOUGHT_KEY = "toploader_hide_bought_v1";
 
   let client = null;
   let showDate = "";
-  let ownedMap = new Map(); // card_key -> owned record (with metadata)
-  let cardIndex = new Map(); // card_key -> full card object from latest snapshot
+  let boughtMap = new Map();
   let ready = false;
   let live = false;
   let channel = null;
@@ -32,23 +27,18 @@
     return String(card?.card_key || "").trim();
   }
 
-  function numOrNull(value) {
-    const n = Number(value);
-    return Number.isFinite(n) ? n : null;
-  }
-
-  function loadHideOwned() {
+  function loadHideBought() {
     try {
-      const raw = localStorage.getItem(HIDE_OWNED_KEY);
+      const raw = localStorage.getItem(HIDE_BOUGHT_KEY);
       return raw === null ? true : raw === "1";
     } catch (_) {
       return true;
     }
   }
 
-  function saveHideOwned(value) {
+  function saveHideBought(value) {
     try {
-      localStorage.setItem(HIDE_OWNED_KEY, value ? "1" : "0");
+      localStorage.setItem(HIDE_BOUGHT_KEY, value ? "1" : "0");
     } catch (_) {}
   }
 
@@ -69,7 +59,7 @@
   function promptBuyerName() {
     const existing = buyerName();
     const name = window.prompt(
-      "Your name (so everyone knows who bought the card):",
+      "Your name (so everyone knows who got the card):",
       existing || ""
     );
     if (name === null) return "";
@@ -79,21 +69,12 @@
   }
 
   function ingestRows(rows) {
-    ownedMap = new Map();
+    boughtMap = new Map();
     (rows || []).forEach(row => {
       const key = String(row.card_key || "").trim();
       if (!key) return;
-      ownedMap.set(key, {
-        card_key: key,
-        card: String(row.card_name || "").trim(),
-        number: String(row.number || "").trim(),
-        set_name: String(row.set_name || "").trim(),
-        image_small_url: String(row.image_small_url || "").trim(),
-        image_large_url: String(row.image_large_url || "").trim(),
-        target_buy_gbp: numOrNull(row.target_buy_gbp),
-        floor_gbp: numOrNull(row.floor_gbp),
+      boughtMap.set(key, {
         bought_by: String(row.bought_by || "").trim(),
-        bought_price_gbp: numOrNull(row.bought_price_gbp),
         bought_at: row.bought_at || "",
       });
     });
@@ -103,27 +84,31 @@
     if (typeof onChangeCb === "function") onChangeCb();
   }
 
-  async function fetchOwned() {
-    if (!client) return;
+  async function fetchBought() {
+    if (!client || !showDate) return;
     const { data, error } = await client
-      .from("owned_cards")
-      .select(
-        "card_key,card_name,number,set_name,image_small_url,image_large_url,target_buy_gbp,floor_gbp,bought_by,bought_price_gbp,bought_at"
-      );
+      .from("show_bought_cards")
+      .select("card_key,bought_by,bought_at")
+      .eq("show_date", showDate);
     if (error) throw error;
     ingestRows(data);
     notifyChange();
   }
 
   function subscribe() {
-    if (!client || channel) return;
+    if (!client || !showDate || channel) return;
     channel = client
-      .channel("owned-cards")
+      .channel(`show-bought-${showDate}`)
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "owned_cards" },
+        {
+          event: "*",
+          schema: "public",
+          table: "show_bought_cards",
+          filter: `show_date=eq.${showDate}`,
+        },
         () => {
-          fetchOwned().catch(() => {});
+          fetchBought().catch(() => {});
         }
       )
       .subscribe(status => {
@@ -136,18 +121,13 @@
     ready = false;
     live = false;
     showDate = String(snapshot?.local_date || "").trim();
-    ownedMap = new Map();
-    cardIndex = new Map();
-    (snapshot?.cards || []).forEach(card => {
-      const key = cardKey(card);
-      if (key) cardIndex.set(key, card);
-    });
+    boughtMap = new Map();
     if (channel) {
       client?.removeChannel(channel);
       channel = null;
     }
 
-    if (!isConfigured()) {
+    if (!isConfigured() || !showDate) {
       notifyChange();
       return false;
     }
@@ -161,57 +141,52 @@
     const cfg = config();
     client = window.supabase.createClient(cfg.url.trim(), cfg.anonKey.trim());
     try {
-      await fetchOwned();
+      await fetchBought();
       subscribe();
       ready = true;
       notifyChange();
       return true;
     } catch (err) {
-      console.warn("Owned sync init failed:", err);
+      console.warn("Show sync init failed:", err);
       notifyChange();
       return false;
     }
   }
 
-  function isOwned(card) {
+  function isBought(card) {
     const key = cardKey(card);
-    return key ? ownedMap.has(key) : false;
+    return key ? boughtMap.has(key) : false;
   }
 
-  function ownedInfo(card) {
-    return ownedMap.get(cardKey(card)) || null;
+  function boughtInfo(card) {
+    return boughtMap.get(cardKey(card)) || null;
   }
 
-  function ownedList() {
-    return Array.from(ownedMap.values()).sort((a, b) =>
-      String(b.bought_at || "").localeCompare(String(a.bought_at || ""))
-    );
+  function hideBought() {
+    return loadHideBought();
   }
 
-  function hideOwned() {
-    return loadHideOwned();
-  }
-
-  function setHideOwned(value) {
-    saveHideOwned(Boolean(value));
+  function setHideBought(value) {
+    saveHideBought(Boolean(value));
     notifyChange();
   }
 
   function filterCards(cards) {
-    if (!hideOwned()) return cards.slice();
-    return cards.filter(card => !isOwned(card));
+    if (!hideBought()) return cards.slice();
+    return cards.filter(card => !isBought(card));
   }
 
-  function ownedCount(cards) {
-    return (cards || []).filter(isOwned).length;
+  function boughtCount(cards) {
+    return (cards || []).filter(isBought).length;
   }
 
-  function statusText() {
+  function statusText(snapshot) {
     if (!isConfigured()) return "";
+    if (!showDate) return "Live sync needs snapshot date";
     if (!ready) return "Connecting live sync…";
-    const owned = ownedMap.size;
+    const got = boughtMap.size;
     const liveBit = live ? "Live" : "Polling";
-    return owned ? `${liveBit} · ${owned} owned` : `${liveBit} · synced`;
+    return got ? `${liveBit} · ${got} got` : `${liveBit} · synced`;
   }
 
   function statusClass() {
@@ -219,8 +194,8 @@
     return live ? "sync-live" : "sync-warn";
   }
 
-  async function markPurchased(card) {
-    if (!client) return { ok: false, error: "Sync not ready" };
+  async function markBought(card) {
+    if (!client || !showDate) return { ok: false, error: "Sync not ready" };
     const key = cardKey(card);
     if (!key) return { ok: false, error: "Missing card key" };
 
@@ -230,66 +205,60 @@
       if (!name) return { ok: false, error: "Name required" };
     }
 
-    // Prefer richer metadata from the current snapshot so the Owned list still
-    // renders after the card drops off future floors.json exports.
-    const meta = cardIndex.get(key) || card || {};
     const row = {
+      show_date: showDate,
       card_key: key,
-      card_name: String(meta.card || card.card || "").slice(0, 200),
-      number: String(meta.number || card.number || "").slice(0, 40),
-      set_name: String(meta.set_name || card.set_name || "").slice(0, 200),
-      image_small_url: String(meta.image_small_url || card.image_small_url || ""),
-      image_large_url: String(meta.image_large_url || card.image_large_url || ""),
-      target_buy_gbp: numOrNull(meta.target_buy_gbp),
-      floor_gbp: numOrNull(meta.floor_gbp),
       bought_by: name,
       bought_at: new Date().toISOString(),
     };
 
     const { error } = await client
-      .from("owned_cards")
-      .upsert(row, { onConflict: "card_key" });
+      .from("show_bought_cards")
+      .upsert(row, { onConflict: "show_date,card_key" });
     if (error) return { ok: false, error: error.message };
 
-    ownedMap.set(key, { ...row, card: row.card_name, bought_price_gbp: null });
+    boughtMap.set(key, { bought_by: name, bought_at: row.bought_at });
     notifyChange();
     return { ok: true };
   }
 
-  async function unmarkPurchased(card) {
-    if (!client) return { ok: false, error: "Sync not ready" };
+  async function unmarkBought(card) {
+    if (!client || !showDate) return { ok: false, error: "Sync not ready" };
     const key = cardKey(card);
     if (!key) return { ok: false, error: "Missing card key" };
 
     const { error } = await client
-      .from("owned_cards")
+      .from("show_bought_cards")
       .delete()
+      .eq("show_date", showDate)
       .eq("card_key", key);
     if (error) return { ok: false, error: error.message };
 
-    ownedMap.delete(key);
+    boughtMap.delete(key);
     notifyChange();
     return { ok: true };
   }
 
   function wireListActions(listEl) {
     if (!listEl || !isConfigured()) return;
-    listEl.querySelectorAll("[data-purchase]").forEach(btn => {
+    listEl.querySelectorAll("[data-got-it]").forEach(btn => {
       btn.addEventListener("click", async () => {
-        const key = btn.dataset.purchase || "";
+        const key = btn.dataset.gotIt || "";
+        const card = { card_key: key };
         btn.disabled = true;
-        const result = await markPurchased({ card_key: key });
+        const result = await markBought(card);
         btn.disabled = false;
         if (!result.ok && result.error) {
           window.alert(result.error);
         }
       });
     });
-    listEl.querySelectorAll("[data-unpurchase]").forEach(btn => {
+    listEl.querySelectorAll("[data-undo-got]").forEach(btn => {
       btn.addEventListener("click", async () => {
-        const key = btn.dataset.unpurchase || "";
+        const key = btn.dataset.undoGot || "";
+        const card = { card_key: key };
         btn.disabled = true;
-        const result = await unmarkPurchased({ card_key: key });
+        const result = await unmarkBought(card);
         btn.disabled = false;
         if (!result.ok && result.error) {
           window.alert(result.error);
@@ -298,62 +267,51 @@
     });
   }
 
-  function renderPurchaseControls(card, escapeHtml) {
+  function renderGotItControls(card, escapeHtml) {
     if (!isConfigured() || !ready) return "";
     const key = cardKey(card);
     if (!key) return "";
 
-    const info = ownedInfo(card);
+    const info = boughtInfo(card);
     if (info) {
       const who = info.bought_by ? escapeHtml(info.bought_by) : "Someone";
       return `
         <div class="got-it-row">
-          <span class="badge got-badge">Owned · ${who}</span>
-          <button type="button" class="undo-got-btn" data-unpurchase="${escapeHtml(key)}">Undo</button>
+          <span class="badge got-badge">Got it · ${who}</span>
+          <button type="button" class="undo-got-btn" data-undo-got="${escapeHtml(key)}">Undo</button>
         </div>
       `;
     }
 
     return `
       <div class="got-it-row">
-        <button type="button" class="got-it-btn" data-purchase="${escapeHtml(key)}">Purchased ✓</button>
+        <button type="button" class="got-it-btn" data-got-it="${escapeHtml(key)}">Got it ✓</button>
       </div>
     `;
   }
 
   function cardExtraClass(card) {
-    // Reuse existing ".card-bought" styling for owned cards.
-    return isOwned(card) ? "card-bought" : "";
+    return isBought(card) ? "card-bought" : "";
   }
 
   window.showSync = {
     init,
     isConfigured,
-    isOwned,
-    ownedInfo,
-    ownedList,
-    hideOwned,
-    setHideOwned,
+    isBought,
+    boughtInfo,
+    hideBought,
+    setHideBought,
     filterCards,
-    ownedCount,
+    boughtCount,
     statusText,
     statusClass,
-    markPurchased,
-    unmarkPurchased,
+    markBought,
+    unmarkBought,
     wireListActions,
-    renderPurchaseControls,
+    renderGotItControls,
     cardExtraClass,
     onChange(cb) {
       onChangeCb = cb;
     },
-    // Backwards-compatible aliases for older markup / callers.
-    isBought: isOwned,
-    boughtInfo: ownedInfo,
-    hideBought: hideOwned,
-    setHideBought: setHideOwned,
-    boughtCount: ownedCount,
-    markBought: markPurchased,
-    unmarkBought: unmarkPurchased,
-    renderGotItControls: renderPurchaseControls,
   };
 })();

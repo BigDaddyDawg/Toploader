@@ -1021,7 +1021,6 @@
     <button type="button" class="tab" id="tabBuyList" data-view="buy-list">Buy list</button>
     <button type="button" class="tab" id="tabFloors" data-view="floors">Floors</button>
     <button type="button" class="tab" id="tabWishlist" data-view="wishlist">Wishlist</button>
-    <button type="button" class="tab" id="tabOwned" data-view="owned">Owned</button>
     <button type="button" class="tab" id="tabHelper" data-view="helper">Helper</button>
     <button type="button" class="tab" id="tabBuyingGuide" data-view="buying-guide">Buying guide</button>
   </nav>
@@ -1056,7 +1055,6 @@
       <button type="button" class="strip-btn" data-go="buy-list">Today’s buy list</button>
       <button type="button" class="strip-btn" data-go="floors">Floor checker</button>
       <button type="button" class="strip-btn" data-go="wishlist">Wishlist</button>
-      <button type="button" class="strip-btn" data-go="owned">Owned</button>
       <button type="button" class="strip-btn" data-go="helper">Helper mode</button>
       <button type="button" class="strip-btn" data-go="buying-guide">Buying guide</button>
     </div>
@@ -1081,13 +1079,6 @@
           <span class="panel-badge list">Card list</span>
         </div>
         <p class="sub">Backlog cards queued up for the next hunt.</p>
-      </button>
-      <button type="button" class="action-card accent-wishlist" data-go="owned">
-        <div class="action-card-head">
-          <h2>Owned <span class="chev" aria-hidden="true">›</span></h2>
-          <span class="panel-badge list">Collection</span>
-        </div>
-        <p class="sub">Cards bought and ticked off — shared live with everyone.</p>
       </button>
       <button type="button" class="action-card accent-guide" data-go="helper">
         <div class="action-card-head">
@@ -1156,37 +1147,12 @@
           <option value="expensive">Most expensive first</option>
           <option value="set">Set order</option>
         </select>
-        <button type="button" class="toggle-btn" id="toggleHideBought" aria-pressed="true">Hide owned</button>
+        <button type="button" class="toggle-btn" id="toggleHideBought" aria-pressed="true">Hide got cards</button>
       </div>
       <div class="set-buttons" id="setButtonsWishlist" aria-label="Wishlist set shortcuts"></div>
       <p class="stats" id="statsWishlist"></p>
     </div>
     <div id="listWishlist" class="list"></div>
-  </div>
-
-  <div id="viewOwned" class="view">
-    <section class="guide-hero">
-      <h2>Owned collection</h2>
-      <p>Cards someone has bought and ticked off. These are shared live with everyone and stay here for good.</p>
-      <span class="guide-note">Tapped the wrong one? Use “Move back to wishlist” to undo.</span>
-    </section>
-    <div class="toolbar">
-      <input type="search" id="searchOwned" placeholder="Search owned cards…" autocomplete="off">
-      <div class="filters wishlist-filters">
-        <select id="setFilterOwned" aria-label="Filter by set">
-          <option value="">All sets</option>
-        </select>
-        <select id="sortOwned" aria-label="Sort owned cards">
-          <option value="recent">Recently bought</option>
-          <option value="set">Set order</option>
-          <option value="cheapest">Cheapest first</option>
-          <option value="expensive">Most expensive first</option>
-        </select>
-      </div>
-      <div class="set-buttons" id="setButtonsOwned" aria-label="Owned set shortcuts"></div>
-      <p class="stats" id="statsOwned"></p>
-    </div>
-    <div id="listOwned" class="list"></div>
   </div>
 
   <div id="viewHelper" class="view">
@@ -1206,7 +1172,7 @@
           <option value="cheapest">Cheapest first</option>
           <option value="set">Set order</option>
         </select>
-        <button type="button" class="toggle-btn" id="toggleHideBoughtHelper" aria-pressed="true">Hide owned</button>
+        <button type="button" class="toggle-btn" id="toggleHideBoughtHelper" aria-pressed="true">Hide got cards</button>
       </div>
       <div class="set-buttons" id="setButtonsHelper" aria-label="Helper set shortcuts"></div>
       <p class="stats" id="statsHelper"></p>
@@ -1410,7 +1376,7 @@
     function setView(view) {
       activeView = view;
       document.body.classList.toggle("home-view", view === "home");
-      const route = view === "buying-guide" ? "buying-guide" : view === "buy-list" ? "buy-list" : view === "helper" ? "helper" : view === "wishlist" ? "wishlist" : view === "owned" ? "owned" : view === "floors" ? "floors" : "";
+      const route = view === "buying-guide" ? "buying-guide" : view === "buy-list" ? "buy-list" : view === "helper" ? "helper" : view === "wishlist" ? "wishlist" : view === "floors" ? "floors" : "";
       const hash = route ? `#${route}${selectedCardSlug ? `?card=${encodeURIComponent(selectedCardSlug)}` : ""}` : "";
       if (location.hash !== hash) {
         history.replaceState(null, "", hash ? hash : location.pathname);
@@ -1419,23 +1385,20 @@
       document.getElementById("viewBuyList").classList.toggle("active", view === "buy-list");
       document.getElementById("viewFloors").classList.toggle("active", view === "floors");
       document.getElementById("viewWishlist").classList.toggle("active", view === "wishlist");
-      document.getElementById("viewOwned").classList.toggle("active", view === "owned");
       document.getElementById("viewHelper").classList.toggle("active", view === "helper");
       document.getElementById("viewBuyingGuide").classList.toggle("active", view === "buying-guide");
       document.getElementById("tabHome").classList.toggle("active", view === "home");
       document.getElementById("tabBuyList").classList.toggle("active", view === "buy-list");
       document.getElementById("tabFloors").classList.toggle("active", view === "floors");
       document.getElementById("tabWishlist").classList.toggle("active", view === "wishlist");
-      document.getElementById("tabOwned").classList.toggle("active", view === "owned");
       document.getElementById("tabHelper").classList.toggle("active", view === "helper");
       document.getElementById("tabBuyingGuide").classList.toggle("active", view === "buying-guide");
-      document.title = view === "buying-guide" ? "Toploader — Buying Guide" : view === "buy-list" ? "Toploader — Buy List" : view === "helper" ? "Toploader — Helper" : view === "wishlist" ? "Toploader — Wishlist" : view === "owned" ? "Toploader — Owned" : view === "floors" ? "Toploader — Floors" : "Toploader";
+      document.title = view === "buying-guide" ? "Toploader — Buying Guide" : view === "buy-list" ? "Toploader — Buy List" : view === "helper" ? "Toploader — Helper" : view === "wishlist" ? "Toploader — Wishlist" : view === "floors" ? "Toploader — Floors" : "Toploader";
       if (snapshotData) updateMeta();
       if (view === "home") renderHome();
       else if (view === "buy-list") renderBuyList();
       else if (view === "floors") renderFloors();
       else if (view === "wishlist") renderWishlist();
-      else if (view === "owned") renderOwned();
       else if (view === "helper") renderHelper();
     }
 
@@ -1446,7 +1409,6 @@
       if (parsed.route === "buy-list") return "buy-list";
       if (parsed.route === "helper") return "helper";
       if (parsed.route === "buying-guide") return "buying-guide";
-      if (parsed.route === "owned") return "owned";
       return parsed.route === "wishlist" ? "wishlist" : "home";
     }
 
@@ -1473,10 +1435,6 @@
       } else if (activeView === "helper") {
         document.getElementById("meta").innerHTML =
           `${wish.length} helper cards${gotCount ? ` · ${gotCount} got` : ""} · updated ${updated}${cacheNote}${errNote}${syncNote}`;
-      } else if (activeView === "owned") {
-        const ownedTotal = window.showSync ? showSync.ownedList().length : 0;
-        document.getElementById("meta").innerHTML =
-          `${ownedTotal} owned · updated ${updated}${cacheNote}${errNote}${syncNote}`;
       } else if (activeView === "buying-guide") {
         document.getElementById("meta").textContent =
           `Use this while checking listing photos · updated ${updated}${cacheNote}${errNote}`;
@@ -1611,7 +1569,7 @@
         if (!configured) return;
         const hidden = showSync.hideBought();
         btn.classList.toggle("active", hidden);
-        btn.textContent = hidden ? "Hide owned" : "Show owned";
+        btn.textContent = hidden ? "Hide got cards" : "Show got cards";
         btn.setAttribute("aria-pressed", hidden ? "true" : "false");
       });
     }
@@ -1624,7 +1582,6 @@
       else if (activeView === "buy-list") renderBuyList();
       else if (activeView === "floors") renderFloors();
       else if (activeView === "wishlist") renderWishlist();
-      else if (activeView === "owned") renderOwned();
       else if (activeView === "helper") renderHelper();
     }
 
@@ -1958,107 +1915,6 @@
       apply();
     }
 
-    function renderOwned() {
-      const list = document.getElementById("listOwned");
-      const setSelect = document.getElementById("setFilterOwned");
-      const setButtons = document.getElementById("setButtonsOwned");
-      const configured = window.showSync && showSync.isConfigured();
-      const owned = configured ? showSync.ownedList() : [];
-
-      fillSetOptions(setSelect, owned);
-      renderSetButtons(setButtons, owned, setName => {
-        setSelect.value = setName;
-        apply();
-      });
-
-      function boughtLine(card) {
-        const bits = [];
-        if (card.bought_by) bits.push(`by ${escapeHtml(card.bought_by)}`);
-        if (Number.isFinite(Number(card.bought_price_gbp)) && Number(card.bought_price_gbp) > 0) {
-          bits.push(`for ${money(card.bought_price_gbp)}`);
-        }
-        const when = formatSnapshotDateTime(card.bought_at);
-        if (when) bits.push(`· ${escapeHtml(when)}`);
-        return bits.length ? `<p class="timing">Bought ${bits.join(" ")}</p>` : "";
-      }
-
-      function apply() {
-        const q = document.getElementById("searchOwned").value.trim().toLowerCase();
-        const setVal = setSelect.value;
-        const sortVal = document.getElementById("sortOwned").value;
-        let filtered = owned.slice();
-        if (setVal) filtered = filtered.filter(c => c.set_name === setVal);
-        if (q) {
-          filtered = filtered.filter(c => {
-            const blob = [c.card, c.number, c.set_name, c.bought_by].join(" ").toLowerCase();
-            return blob.includes(q);
-          });
-        }
-        filtered.sort((a, b) => {
-          if (sortVal === "set") {
-            return String(a.set_name || "").localeCompare(String(b.set_name || ""))
-              || cardNumberValue(a) - cardNumberValue(b)
-              || String(a.card || "").localeCompare(String(b.card || ""));
-          }
-          if (sortVal === "cheapest") return priceValue(a) - priceValue(b);
-          if (sortVal === "expensive") return priceValue(b) - priceValue(a);
-          return String(b.bought_at || "").localeCompare(String(a.bought_at || ""));
-        });
-        document.getElementById("statsOwned").textContent =
-          `Showing ${filtered.length} of ${owned.length} owned`;
-        updateSetButtons(setButtons, setVal);
-        if (!configured) {
-          list.innerHTML = '<div class="empty">Live sync is not set up, so there is no shared Owned list yet.</div>';
-          return;
-        }
-        if (!filtered.length) {
-          list.innerHTML = owned.length
-            ? '<div class="empty">No owned cards match that search.</div>'
-            : '<div class="empty">Nothing bought yet. Tap “Purchased ✓” on a wishlist card to add it here.</div>';
-          return;
-        }
-        list.innerHTML = filtered.map(card => {
-          const undo = `
-            <div class="got-it-row">
-              <span class="badge got-badge">Owned</span>
-              <button type="button" class="undo-got-btn" data-unpurchase="${escapeHtml(card.card_key)}">Move back to wishlist</button>
-            </div>
-          `;
-          return `
-            <article class="${cardArticleClass(card)}">
-              <div class="card-layout ${cardImageUrl(card) ? "has-image" : ""}">
-                ${renderCardImage(card)}
-                <div>
-                <div class="wishlist-main">
-                  <h2>${escapeHtml(card.card || "")} <span style="color:var(--muted)">#${escapeHtml(card.number || "")}</span></h2>
-                  <div class="budget">
-                    <span class="label">Target</span>
-                    <span class="value">${moneyWishlist(card.target_buy_gbp)}</span>
-                  </div>
-                  ${boughtLine(card)}
-                  ${undo}
-                </div>
-                <div class="wishlist-set" aria-label="Set: ${escapeHtml(card.set_name || "Unknown set")}">
-                  <span class="wishlist-set-icon" aria-hidden="true">${escapeHtml(setIconText(card.set_name))}</span>
-                  <span class="wishlist-set-copy">
-                    <span class="wishlist-set-kicker">Set</span>
-                    <span class="wishlist-set-name">${escapeHtml(card.set_name || "Unknown set")}</span>
-                  </span>
-                </div>
-                </div>
-              </div>
-            </article>
-          `;
-        }).join("");
-        if (window.showSync) showSync.wireListActions(list);
-      }
-
-      document.getElementById("searchOwned").oninput = apply;
-      setSelect.onchange = apply;
-      document.getElementById("sortOwned").onchange = apply;
-      apply();
-    }
-
     function renderHelper() {
       const wishAll = (snapshotData.cards || []).filter(isWatched);
       const cards = window.showSync ? showSync.filterCards(wishAll) : wishAll;
@@ -2142,7 +1998,6 @@
     document.getElementById("tabBuyList").addEventListener("click", () => setView("buy-list"));
     document.getElementById("tabFloors").addEventListener("click", () => setView("floors"));
     document.getElementById("tabWishlist").addEventListener("click", () => setView("wishlist"));
-    document.getElementById("tabOwned").addEventListener("click", () => setView("owned"));
     document.getElementById("tabHelper").addEventListener("click", () => setView("helper"));
     document.getElementById("tabBuyingGuide").addEventListener("click", () => setView("buying-guide"));
     document.getElementById("toggleImages").addEventListener("click", () => {
