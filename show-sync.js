@@ -23,6 +23,10 @@
     return window.TOPLOADER_SUPABASE || {};
   }
 
+  function ownedTable() {
+    return (config().table || "toploader_owned_cards").trim();
+  }
+
   function isConfigured() {
     const cfg = config();
     return Boolean((cfg.url || "").trim() && (cfg.anonKey || "").trim());
@@ -106,7 +110,7 @@
   async function fetchOwned() {
     if (!client) return;
     const { data, error } = await client
-      .from("owned_cards")
+      .from(ownedTable())
       .select(
         "card_key,card_name,number,set_name,image_small_url,image_large_url,target_buy_gbp,floor_gbp,bought_by,bought_price_gbp,bought_at"
       );
@@ -121,7 +125,7 @@
       .channel("owned-cards")
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "owned_cards" },
+        { event: "*", schema: "public", table: ownedTable() },
         () => {
           fetchOwned().catch(() => {});
         }
@@ -247,7 +251,7 @@
     };
 
     const { error } = await client
-      .from("owned_cards")
+      .from(ownedTable())
       .upsert(row, { onConflict: "card_key" });
     if (error) return { ok: false, error: error.message };
 
@@ -262,7 +266,7 @@
     if (!key) return { ok: false, error: "Missing card key" };
 
     const { error } = await client
-      .from("owned_cards")
+      .from(ownedTable())
       .delete()
       .eq("card_key", key);
     if (error) return { ok: false, error: error.message };
