@@ -1,4 +1,4 @@
-const CACHE_NAME = "toploader-static-v7";
+const CACHE_NAME = "toploader-static-v8";
 const CORE_ASSETS = [
   "./",
   "index.html",
@@ -36,11 +36,18 @@ self.addEventListener("install", event => {
 
 self.addEventListener("activate", event => {
   event.waitUntil(
-    caches.keys().then(keys => Promise.all(
-      keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
-    ))
+    caches.keys()
+      .then(keys => Promise.all(
+        keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
+      ))
+      .then(() => self.clients.claim())
+      .then(() => self.clients.matchAll({ type: "window" }))
+      .then(clients => {
+        for (const client of clients) {
+          client.postMessage({ type: "TOPLOADER_SW_UPDATED", cache: CACHE_NAME });
+        }
+      })
   );
-  self.clients.claim();
 });
 
 self.addEventListener("fetch", event => {
@@ -48,8 +55,15 @@ self.addEventListener("fetch", event => {
   if (url.origin !== location.origin || event.request.method !== "GET") return;
 
   const path = url.pathname;
+  const isHtmlNav =
+    event.request.mode === "navigate" ||
+    path.endsWith("/") ||
+    path.endsWith("/index.html") ||
+    path.endsWith("/wishlist.html") ||
+    path.endsWith("/buy-list.html") ||
+    path.endsWith("/helper.html");
 
-  if (path.endsWith("/") || path.endsWith("/index.html")) {
+  if (isHtmlNav) {
     event.respondWith(networkFirst(event.request, "index.html"));
     return;
   }
@@ -62,13 +76,13 @@ self.addEventListener("fetch", event => {
   if (
     path.endsWith("/show-sync.js") ||
     path.endsWith("/supabase-config.js") ||
-    path.endsWith("/service-worker.js")
+    path.endsWith("/service-worker.js") ||
+    path.endsWith("/manifest.webmanifest") ||
+    path.endsWith("/icon.svg")
   ) {
     event.respondWith(networkFirst(event.request));
     return;
   }
 
-  event.respondWith(
-    caches.match(event.request).then(cached => cached || fetch(event.request))
-  );
+  event.respondWith(networkFirst(event.request));
 });

@@ -6,8 +6,8 @@
   <meta name="theme-color" content="#060b18">
   <meta name="description" content="Toploader static Pokemon TCG card-show wishlist, floors, and buy timing helper.">
   <title>Toploader</title>
-  <link rel="manifest" href="manifest.webmanifest">
-  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="manifest" href="manifest.webmanifest?v=8">
+  <link rel="icon" href="icon.svg?v=8" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
@@ -55,10 +55,10 @@
       z-index: -1;
       pointer-events: none;
       background:
-        radial-gradient(ellipse 80% 50% at 50% -8%, rgba(79, 140, 255, 0.28), transparent 55%),
-        radial-gradient(ellipse 42% 36% at 88% 18%, rgba(45, 212, 191, 0.14), transparent 52%),
-        radial-gradient(ellipse 40% 34% at 8% 28%, rgba(245, 197, 66, 0.12), transparent 55%),
-        linear-gradient(180deg, #050910 0%, #0a1528 48%, #0c1a30 100%);
+        radial-gradient(ellipse 90% 55% at 50% -12%, rgba(79, 140, 255, 0.42), transparent 58%),
+        radial-gradient(ellipse 50% 42% at 92% 16%, rgba(45, 212, 191, 0.22), transparent 55%),
+        radial-gradient(ellipse 48% 40% at 6% 24%, rgba(245, 197, 66, 0.22), transparent 55%),
+        linear-gradient(180deg, #04080f 0%, #0a1528 48%, #0c1a30 100%);
     }
     #energy-sparks {
       position: absolute;
@@ -68,22 +68,22 @@
     }
     .energy-orb {
       position: absolute;
-      width: 55vw;
-      height: 55vw;
+      width: 62vw;
+      height: 62vw;
       border-radius: 50%;
-      filter: blur(80px);
-      opacity: 0.32;
+      filter: blur(72px);
+      opacity: 0.48;
       animation: drift 18s ease-in-out infinite alternate;
     }
     .energy-orb-a {
       top: -12%;
       left: -10%;
-      background: radial-gradient(circle, rgba(245, 197, 66, 0.55), transparent 70%);
+      background: radial-gradient(circle, rgba(245, 197, 66, 0.7), transparent 70%);
     }
     .energy-orb-b {
       right: -14%;
       top: 12%;
-      background: radial-gradient(circle, rgba(45, 212, 191, 0.45), transparent 70%);
+      background: radial-gradient(circle, rgba(45, 212, 191, 0.58), transparent 70%);
       animation-duration: 22s;
       animation-delay: -4s;
     }
@@ -158,14 +158,14 @@
     .brand-title {
       font-family: var(--font-brand);
       font-weight: 800;
-      font-size: 1.15rem;
-      letter-spacing: -0.02em;
-      line-height: 1.1;
-      background: linear-gradient(115deg, var(--energy-soft) 0%, var(--energy) 35%, var(--ok) 100%);
+      font-size: clamp(1.35rem, 4.5vw, 1.75rem);
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      background: linear-gradient(115deg, #fff6d0 0%, var(--energy) 38%, var(--ok) 100%);
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      filter: drop-shadow(0 0 18px rgba(245, 197, 66, 0.28));
+      filter: drop-shadow(0 0 22px rgba(245, 197, 66, 0.45));
     }
     .brand-sub {
       font-family: var(--font-body);
@@ -299,12 +299,15 @@
       margin: 0 0 0.45rem;
       max-width: 16rem;
       font-family: var(--font-brand);
-      font-size: clamp(1.55rem, 5vw, 2.35rem);
+      font-size: clamp(1.7rem, 5.4vw, 2.55rem);
       line-height: 0.98;
       letter-spacing: -0.04em;
       font-weight: 800;
-      color: #fff;
-      text-shadow: 0 0 40px rgba(245, 197, 66, 0.18);
+      background: linear-gradient(120deg, #ffffff 10%, #ffe8a3 55%, #99f6e4 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      filter: drop-shadow(0 0 28px rgba(245, 197, 66, 0.28));
     }
     .tl-hero p {
       position: relative;
@@ -1558,8 +1561,8 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-  <script src="supabase-config.js?v=7"></script>
-  <script src="show-sync.js?v=7"></script>
+  <script src="supabase-config.js?v=8"></script>
+  <script src="show-sync.js?v=8"></script>
   <script>
     function initEnergySparks() {
       const canvas = document.getElementById("energy-sparks");
@@ -2602,7 +2605,22 @@
 
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("service-worker.js?v=7").catch(() => {});
+        navigator.serviceWorker.register("service-worker.js?v=8").then(reg => {
+          if (reg.waiting) reg.waiting.postMessage({ type: "SKIP_WAITING" });
+          reg.update().catch(() => {});
+        }).catch(() => {});
+        let refreshing = false;
+        navigator.serviceWorker.addEventListener("controllerchange", () => {
+          if (refreshing) return;
+          refreshing = true;
+          window.location.reload();
+        });
+        navigator.serviceWorker.addEventListener("message", event => {
+          if (event.data && event.data.type === "TOPLOADER_SW_UPDATED" && !refreshing) {
+            refreshing = true;
+            window.location.reload();
+          }
+        });
       });
     }
 
