@@ -6,8 +6,8 @@
   <meta name="theme-color" content="#3b82f6">
   <meta name="description" content="Chase — daily buy checks and wishlist tracking for Pokemon TCG card shows.">
   <title>Chase</title>
-  <link rel="manifest" href="manifest.webmanifest?v=18">
-  <link rel="icon" href="icon.svg?v=18" type="image/svg+xml">
+  <link rel="manifest" href="manifest.webmanifest?v=19">
+  <link rel="icon" href="icon.svg?v=19" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -766,6 +766,95 @@
       font-size: 0.82rem;
       line-height: 1.35;
     }
+    .price-check-bar {
+      position: fixed;
+      top: calc(8px + env(safe-area-inset-top, 0px));
+      left: 12px;
+      right: 12px;
+      z-index: 60;
+      margin: 0;
+      padding: 12px 14px 10px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.97);
+      border: 2px solid rgba(59, 130, 246, 0.28);
+      box-shadow: 0 14px 36px rgba(26, 39, 68, 0.16);
+      backdrop-filter: blur(12px);
+    }
+    @media (min-width: 720px) {
+      .price-check-bar {
+        left: 50%;
+        right: auto;
+        width: min(536px, calc(100% - 24px));
+        transform: translateX(-50%);
+      }
+    }
+    .price-check-bar[hidden] {
+      display: none !important;
+    }
+    .price-check-bar.is-done {
+      border-color: rgba(31, 173, 106, 0.35);
+    }
+    .price-check-bar.is-error {
+      border-color: rgba(239, 68, 68, 0.35);
+    }
+    .price-check-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .price-check-copy strong {
+      display: block;
+      font-family: var(--font-brand);
+      font-size: 0.95rem;
+      color: var(--text);
+      line-height: 1.25;
+    }
+    .price-check-copy span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      line-height: 1.35;
+    }
+    .price-check-elapsed {
+      flex: 0 0 auto;
+      font-family: var(--font-brand);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #2563eb;
+      padding-top: 2px;
+    }
+    .price-check-bar.is-done .price-check-elapsed,
+    .price-check-bar.is-error .price-check-elapsed {
+      color: var(--muted);
+    }
+    .price-check-track {
+      margin-top: 10px;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(59, 130, 246, 0.12);
+      overflow: hidden;
+    }
+    .price-check-bar.is-done .price-check-track,
+    .price-check-bar.is-error .price-check-track {
+      display: none;
+    }
+    .price-check-fill {
+      height: 100%;
+      width: 40%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #60a5fa, #3b82f6, #60a5fa);
+      background-size: 200% 100%;
+      animation: price-check-slide 1.1s ease-in-out infinite;
+    }
+    @keyframes price-check-slide {
+      0% { transform: translateX(-120%); }
+      100% { transform: translateX(280%); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .price-check-fill { animation: none; width: 100%; opacity: 0.55; }
+    }
     .card-layout {
       display: grid;
       grid-template-columns: minmax(0, 1fr);
@@ -1466,6 +1555,7 @@
       </div>
     </div>
     <p class="meta" id="meta">Loading snapshot…</p>
+    <div id="priceCheckBar" class="price-check-bar" hidden aria-live="polite"></div>
   </header>
 
   <nav class="tabs" aria-label="Main">
@@ -1682,9 +1772,9 @@
   <div id="wishlistActionBar" class="wishlist-action-bar" hidden aria-live="polite"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-  <script src="supabase-config.js?v=18"></script>
-  <script src="show-sync.js?v=18"></script>
-  <script src="set-intake.js?v=18"></script>
+  <script src="supabase-config.js?v=19"></script>
+  <script src="show-sync.js?v=19"></script>
+  <script src="set-intake.js?v=19"></script>
   <script>
     function initEnergySparks() {
       const canvas = document.getElementById("energy-sparks");
@@ -1872,6 +1962,142 @@
     let wishlistSignalFilter = "";
     let showImages = loadPreference(PREF_IMAGES_KEY, true);
     let compactCards = loadPreference(PREF_COMPACT_KEY, false);
+    /** @type {Map<string, { name: string, number: string, startedAt: number }>} */
+    const priceCheckStarts = new Map();
+    /** @type {{ mode: string, name: string, number: string, detail: string, at: number } | null} */
+    let priceCheckDone = null;
+    let priceCheckTick = 0;
+    let priceCheckHideTimer = 0;
+
+    function cardKeyOf(card) {
+      return String(card?.card_key || "").trim();
+    }
+
+    function formatElapsed(ms) {
+      const sec = Math.max(0, Math.floor(ms / 1000));
+      const m = Math.floor(sec / 60);
+      const s = sec % 60;
+      return m > 0 ? `${m}:${String(s).padStart(2, "0")}` : `0:${String(s).padStart(2, "0")}`;
+    }
+
+    function rememberPriceCheckStart(card) {
+      const key = cardKeyOf(card);
+      if (!key || priceCheckStarts.has(key)) return;
+      priceCheckStarts.set(key, {
+        name: String(card.card || card.card_name || "Card").trim(),
+        number: String(card.number || "").trim(),
+        startedAt: Date.now(),
+      });
+      ensurePriceCheckTicker();
+    }
+
+    function ensurePriceCheckTicker() {
+      if (priceCheckTick) return;
+      priceCheckTick = window.setInterval(() => {
+        if (!priceCheckStarts.size && !priceCheckDone) {
+          window.clearInterval(priceCheckTick);
+          priceCheckTick = 0;
+          return;
+        }
+        renderPriceCheckBar();
+      }, 1000);
+    }
+
+    function syncPriceCheckTracking() {
+      const checking = activeWishlistCards().filter(
+        c => String(c.price_status || "").toLowerCase() === "checking"
+      );
+      const activeKeys = new Set(checking.map(cardKeyOf).filter(Boolean));
+
+      checking.forEach(card => rememberPriceCheckStart(card));
+
+      for (const [key, meta] of [...priceCheckStarts.entries()]) {
+        if (activeKeys.has(key)) continue;
+        const card = activeWishlistCards().find(c => cardKeyOf(c) === key);
+        const status = String(card?.price_status || "").toLowerCase();
+        if (status === "ok" || status === "error" || card) {
+          priceCheckDone = {
+            mode: status === "error" ? "error" : "done",
+            name: meta.name,
+            number: meta.number,
+            detail:
+              status === "error"
+                ? "Price check failed — tap the card to retry."
+                : `Max buy ${moneyWishlist(card?.target_buy_gbp)} · you can keep browsing.`,
+            at: Date.now(),
+          };
+          window.clearTimeout(priceCheckHideTimer);
+          priceCheckHideTimer = window.setTimeout(() => {
+            if (priceCheckDone && Date.now() - priceCheckDone.at >= 3500) {
+              priceCheckDone = null;
+              renderPriceCheckBar();
+            }
+          }, 4000);
+        }
+        priceCheckStarts.delete(key);
+      }
+
+      // Drop stale starts if the card vanished mid-check.
+      for (const key of [...priceCheckStarts.keys()]) {
+        if (!activeKeys.has(key) && !activeWishlistCards().some(c => cardKeyOf(c) === key)) {
+          priceCheckStarts.delete(key);
+        }
+      }
+    }
+
+    function renderPriceCheckBar() {
+      const bar = document.getElementById("priceCheckBar");
+      if (!bar) return;
+      syncPriceCheckTracking();
+
+      if (priceCheckStarts.size) {
+        const items = [...priceCheckStarts.values()].sort((a, b) => a.startedAt - b.startedAt);
+        const first = items[0];
+        const elapsed = formatElapsed(Date.now() - first.startedAt);
+        const label =
+          items.length === 1
+            ? `${first.name}${first.number ? ` #${first.number}` : ""}`
+            : `${items.length} cards`;
+        const longWait = Date.now() - first.startedAt > 3 * 60 * 1000;
+        bar.className = "price-check-bar";
+        bar.hidden = false;
+        bar.innerHTML = `
+          <div class="price-check-top">
+            <div class="price-check-copy">
+              <strong>Checking last solds · ${escapeHtml(label)}</strong>
+              <span>${
+                longWait
+                  ? "Still working — you can leave this screen. Tap the card again if it stalls."
+                  : "Usually 1–3 minutes. You can leave this card — the max buy updates when it’s ready."
+              }</span>
+            </div>
+            <div class="price-check-elapsed" aria-label="Elapsed">${escapeHtml(elapsed)}</div>
+          </div>
+          <div class="price-check-track" aria-hidden="true"><div class="price-check-fill"></div></div>
+        `;
+        ensurePriceCheckTicker();
+        return;
+      }
+
+      if (priceCheckDone) {
+        const done = priceCheckDone;
+        bar.className = `price-check-bar ${done.mode === "error" ? "is-error" : "is-done"}`;
+        bar.hidden = false;
+        bar.innerHTML = `
+          <div class="price-check-top">
+            <div class="price-check-copy">
+              <strong>${done.mode === "error" ? "Price check failed" : "Price ready"} · ${escapeHtml(done.name)}${done.number ? ` #${escapeHtml(done.number)}` : ""}</strong>
+              <span>${escapeHtml(done.detail)}</span>
+            </div>
+            <div class="price-check-elapsed">${done.mode === "error" ? "!" : "✓"}</div>
+          </div>
+        `;
+        return;
+      }
+
+      bar.hidden = true;
+      bar.innerHTML = "";
+    }
 
     function cardSlug(card) {
       return [card.card, card.number, card.set_name]
@@ -1909,8 +2135,11 @@
         typeof showSync.isReady === "function" &&
         showSync.isReady()
       ) {
-        showSync.requestPriceCheck(card).then(() => {
+        showSync.requestPriceCheck(card).then(result => {
+          if (result && result.queued) rememberPriceCheckStart(card);
+          else if (result && result.reason === "already-checking") rememberPriceCheckStart(card);
           renderWishlistActionBar();
+          renderPriceCheckBar();
         }).catch(() => {});
       }
     }
@@ -1952,13 +2181,16 @@
         const status = String(card.price_status || "").toLowerCase();
         let statusNote = "";
         if (status === "checking") {
-          statusNote = '<p class="wishlist-action-note">Checking live solds… the max buy will update on this card.</p>';
+          const key = cardKeyOf(card);
+          const started = priceCheckStarts.get(key)?.startedAt || Date.now();
+          const elapsed = formatElapsed(Date.now() - started);
+          statusNote = `<p class="wishlist-action-note">Checking last solds… ${escapeHtml(elapsed)} in. You can close this and keep browsing — the max buy updates on the card.</p>`;
         } else if (status === "error") {
           statusNote = '<p class="wishlist-action-note">Price check failed. Tap the card again to retry.</p>';
         } else if (card.priced_at) {
           statusNote = `<p class="wishlist-action-note">Priced ${escapeHtml(formatSnapshotDateTime(card.priced_at) || "just now")}</p>`;
         } else {
-          statusNote = '<p class="wishlist-action-note">Checking this card’s max buy…</p>';
+          statusNote = '<p class="wishlist-action-note">Starting max-buy check… usually 1–3 minutes. Safe to leave this card.</p>';
         }
         actionHtml = `${statusNote}<button type="button" class="wishlist-action-purchase" id="wishlistPurchaseBtn">Purchased</button>`;
       }
@@ -2263,6 +2495,7 @@
     function rerenderActiveView() {
       if (!snapshotData) return;
       updateMeta();
+      renderPriceCheckBar();
       if (activeView === "buy-list") renderBuyList();
       else if (activeView === "wishlist") renderWishlist();
       else if (activeView === "add-set") {
@@ -2785,7 +3018,7 @@
 
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("service-worker.js?v=18").then(reg => {
+        navigator.serviceWorker.register("service-worker.js?v=19").then(reg => {
           if (reg.waiting) reg.waiting.postMessage({ type: "SKIP_WAITING" });
           reg.update().catch(() => {});
         }).catch(() => {});
