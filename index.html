@@ -6,8 +6,8 @@
   <meta name="theme-color" content="#060b18">
   <meta name="description" content="Toploader phone app — daily buy checks and wishlist tracking for Pokemon TCG card shows.">
   <title>Toploader</title>
-  <link rel="manifest" href="manifest.webmanifest?v=10">
-  <link rel="icon" href="icon.svg?v=10" type="image/svg+xml">
+  <link rel="manifest" href="manifest.webmanifest?v=11">
+  <link rel="icon" href="icon.svg?v=11" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
@@ -867,93 +867,126 @@
       position: relative;
       overflow: hidden;
       display: block;
-      gap: 12px;
-      align-items: center;
+      padding: 12px;
       border-color: var(--wish-border);
       background:
-        radial-gradient(circle at 92% 18%, rgba(var(--wish-accent), 0.18), transparent 28%),
-        linear-gradient(145deg, rgba(var(--wish-accent), 0.10), rgba(255, 255, 255, 0.038) 52%),
+        radial-gradient(circle at 92% 18%, rgba(var(--wish-accent), 0.14), transparent 34%),
+        linear-gradient(145deg, rgba(var(--wish-accent), 0.08), rgba(255, 255, 255, 0.03) 55%),
         var(--panel);
     }
     #listWishlist .card:nth-child(even) {
       --wish-accent: 79, 140, 255;
-      --wish-border: rgba(79, 140, 255, 0.30);
+      --wish-border: rgba(79, 140, 255, 0.28);
     }
     #listWishlist .card:nth-child(3n) {
       --wish-accent: 245, 197, 66;
-      --wish-border: rgba(245, 197, 66, 0.30);
+      --wish-border: rgba(245, 197, 66, 0.28);
     }
     #listWishlist .card::before {
       content: "";
       position: absolute;
       inset: 0 auto 0 0;
-      width: 4px;
+      width: 3px;
       background: rgb(var(--wish-accent));
-      opacity: 0.86;
+      opacity: 0.9;
     }
-    #listWishlist .budget .value {
+    #listWishlist .wish-row {
+      display: grid;
+      grid-template-columns: 72px minmax(0, 1fr);
+      gap: 12px;
+      align-items: start;
+    }
+    #listWishlist .wish-row .card-image {
+      display: block;
+      width: 72px;
+    }
+    #listWishlist .wish-copy {
+      min-width: 0;
+      display: grid;
+      gap: 6px;
+    }
+    #listWishlist .wish-copy h2 {
+      margin: 0;
+      font-size: 1.02rem;
+      line-height: 1.15;
+    }
+    #listWishlist .wish-set-line {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 700;
+      line-height: 1.25;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    #listWishlist .wish-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+    }
+    #listWishlist .wish-prices {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin: 2px 0 0;
+    }
+    #listWishlist .wish-prices .price {
+      min-width: 0;
+      margin: 0;
+    }
+    #listWishlist .wish-prices .value {
       color: rgb(var(--wish-accent));
+      font-weight: 800;
+    }
+    #listWishlist .wish-extra {
+      display: none;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(148, 163, 184, 0.16);
+    }
+    #listWishlist .card.highlight .wish-extra,
+    #listWishlist .card.is-open .wish-extra {
+      display: grid;
+      gap: 8px;
+    }
+    #listWishlist .wish-extra .why {
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin: 0;
+    }
+    #viewWishlist .toolbar {
+      position: static;
+      background: none;
+      padding-bottom: 0;
+    }
+    #viewWishlist .set-buttons {
+      display: none;
+    }
+    #viewWishlist .view-intro {
+      margin-bottom: 10px;
+      padding: 12px 14px;
+    }
+    #viewWishlist .view-intro p {
+      display: none;
+    }
+    #listOwned .wish-row {
+      display: grid;
+      grid-template-columns: 72px minmax(0, 1fr);
+      gap: 12px;
+      align-items: start;
+    }
+    #listOwned .wish-row .card-image {
+      display: block;
+      width: 72px;
     }
     .wishlist-main {
       min-width: 0;
     }
-    #listWishlist .card-layout {
-      align-items: center;
-    }
-    #listWishlist .card-layout > div:last-child {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(112px, 34%);
-      gap: 12px;
-      align-items: center;
-    }
-    .wishlist-set {
-      justify-self: end;
-      display: grid;
-      grid-template-columns: 34px minmax(0, 1fr);
-      gap: 9px;
-      align-items: center;
-      min-width: 112px;
-      max-width: 220px;
-      padding: 8px 10px;
-      border: 1px solid rgba(var(--wish-accent), 0.28);
-      border-radius: 16px;
-      background: rgba(6, 11, 24, 0.35);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
-    }
-    .wishlist-set-icon {
-      display: grid;
-      place-items: center;
-      width: 34px;
-      height: 34px;
-      border-radius: 12px;
-      background:
-        radial-gradient(circle at 65% 30%, rgba(255, 255, 255, 0.28), transparent 22%),
-        linear-gradient(145deg, rgba(var(--wish-accent), 0.65), rgba(45, 212, 191, 0.22));
-      color: #fff;
-      font-size: 0.72rem;
-      font-weight: 900;
-      letter-spacing: 0.03em;
-      box-shadow: 0 10px 24px rgba(var(--wish-accent), 0.16);
-    }
-    .wishlist-set-copy {
-      min-width: 0;
-      text-align: right;
-    }
-    .wishlist-set-kicker {
-      display: block;
-      color: var(--muted);
-      font-size: 0.62rem;
-      font-weight: 800;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-    }
-    .wishlist-set-name {
-      display: block;
-      color: var(--text);
-      font-size: 0.82rem;
-      font-weight: 800;
-      line-height: 1.15;
-    }
+    .wishlist-set { display: none; }
     .card h2, .action-card h2 {
       margin: 0 0 4px;
       font-size: 1rem;
@@ -1292,12 +1325,16 @@
     .error { color: #ff9a9a; }
     @media (min-width: 720px) {
       body {
-        max-width: 960px;
+        max-width: 560px;
         margin: 0 auto;
-        padding: 24px 20px 40px;
+        padding: 20px 16px calc(88px + env(safe-area-inset-bottom, 0px));
       }
       .tabs {
-        grid-template-columns: repeat(6, 1fr);
+        grid-template-columns: repeat(3, 1fr);
+        max-width: 560px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
       }
       .quick-controls {
         grid-template-columns: repeat(4, 1fr);
@@ -1431,8 +1468,7 @@
 
   <div id="viewWishlist" class="view">
     <section class="view-intro">
-      <h2>Your wishlist</h2>
-      <p>Everything you want. Filter Buy now vs Hold, tap a card to mark Purchased when you get it.</p>
+      <h2>Wishlist</h2>
       <span class="intro-count" id="wishlistIntroCount">Loading…</span>
     </section>
     <div class="toolbar">
@@ -1577,8 +1613,8 @@
   <div id="wishlistActionBar" class="wishlist-action-bar" hidden aria-live="polite"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-  <script src="supabase-config.js?v=10"></script>
-  <script src="show-sync.js?v=10"></script>
+  <script src="supabase-config.js?v=11"></script>
+  <script src="show-sync.js?v=11"></script>
   <script>
     function initEnergySparks() {
       const canvas = document.getElementById("energy-sparks");
@@ -2399,40 +2435,31 @@
           return;
         }
         list.innerHTML = filtered.map(card => {
-          const timing = buyingWindowText(card);
           const slug = cardSlug(card);
           const buy = isBuyNow(card);
+          const why = String(card.floor_justification || card.card_show_price_note || "").trim();
+          const openClass = slug === selectedCardSlug ? "is-open" : "";
           return `
-            <article class="${cardArticleClass(card, "selectable")}" data-select-wishlist="${escapeHtml(slug)}" tabindex="0" role="button" aria-label="Select ${escapeHtml(card.card || "card")}">
-              <div class="card-layout ${cardImageUrl(card) ? "has-image" : ""}">
-                ${renderCardImage(card)}
-                <div>
-                <div class="wishlist-main">
+            <article class="${cardArticleClass(card, `selectable ${openClass}`)}" data-select-wishlist="${escapeHtml(slug)}" tabindex="0" role="button" aria-label="Select ${escapeHtml(card.card || "card")}">
+              <div class="wish-row">
+                ${renderCardImage(card) || '<div class="card-image" aria-hidden="true"></div>'}
+                <div class="wish-copy">
                   <h2>${escapeHtml(card.card || "")} <span style="color:var(--muted)">#${escapeHtml(card.number || "")}</span></h2>
-                  <div class="wishlist-signal-row">
+                  <p class="wish-set-line">${escapeHtml(card.set_name || "Unknown set")}</p>
+                  <div class="wish-meta">
                     ${signalBadge(card)}
                     ${buy ? '<span class="buy-cta">Check today</span>' : ""}
                     ${isStale(card) ? '<span class="badge watch">stale</span>' : ""}
                   </div>
-                  <div class="budget">
-                    <span class="label">Max buy</span>
-                    <span class="value">${moneyWishlist(card.target_buy_gbp)}</span>
-                  </div>
-                  <div class="prices">
+                  <div class="wish-prices">
+                    <div class="price"><span class="label">Max buy</span><span class="value">${moneyWishlist(card.target_buy_gbp)}</span></div>
                     <div class="price"><span class="label">Floor</span><span class="value">${money(card.floor_gbp)}</span></div>
                   </div>
-                  ${timing ? `<p class="timing">${escapeHtml(timing)}</p>` : ""}
-                  <p class="why">${escapeHtml(card.floor_justification || card.card_show_price_note || "")}</p>
-                  ${buy ? renderDealCalculator(card) : ""}
                 </div>
-                <div class="wishlist-set" aria-label="Set: ${escapeHtml(card.set_name || "Unknown set")}">
-                  <span class="wishlist-set-icon" aria-hidden="true">${escapeHtml(setIconText(card.set_name))}</span>
-                  <span class="wishlist-set-copy">
-                    <span class="wishlist-set-kicker">Set</span>
-                    <span class="wishlist-set-name">${escapeHtml(card.set_name || "Unknown set")}</span>
-                  </span>
-                </div>
-                </div>
+              </div>
+              <div class="wish-extra">
+                ${why ? `<p class="why">${escapeHtml(why)}</p>` : ""}
+                ${buy ? renderDealCalculator(card) : '<p class="timing">Hold for now — tap Purchased only if you already bought it.</p>'}
               </div>
             </article>
           `;
@@ -2664,7 +2691,7 @@
 
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("service-worker.js?v=10").then(reg => {
+        navigator.serviceWorker.register("service-worker.js?v=11").then(reg => {
           if (reg.waiting) reg.waiting.postMessage({ type: "SKIP_WAITING" });
           reg.update().catch(() => {});
         }).catch(() => {});
