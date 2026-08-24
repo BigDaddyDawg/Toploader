@@ -1,4 +1,4 @@
-const CACHE_NAME = "chase-static-v16";
+const CACHE_NAME = "chase-static-v17";
 const CORE_ASSETS = [
   "./",
   "index.html",
@@ -6,6 +6,7 @@ const CORE_ASSETS = [
   "buy-list.html",
   "helper.html",
   "floors.json",
+  "set-catalogs.json",
   "manifest.webmanifest",
   "icon.svg",
   "supabase-config.js",

@@ -6,8 +6,8 @@
   <meta name="theme-color" content="#3b82f6">
   <meta name="description" content="Chase — daily buy checks and wishlist tracking for Pokemon TCG card shows.">
   <title>Chase</title>
-  <link rel="manifest" href="manifest.webmanifest?v=16">
-  <link rel="icon" href="icon.svg?v=16" type="image/svg+xml">
+  <link rel="manifest" href="manifest.webmanifest?v=17">
+  <link rel="icon" href="icon.svg?v=17" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -930,6 +930,16 @@
       gap: 12px;
       align-items: start;
     }
+    .add-set-quick {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+    .add-set-quick .add-set-chip {
+      flex: 1 1 auto;
+      min-width: 42%;
+    }
     #listAddSet .add-set-card {
       cursor: pointer;
     }
@@ -1550,15 +1560,16 @@
   <div id="viewAddSet" class="view">
     <section class="view-intro">
       <h2>Add a set</h2>
-      <p>Type a set name (e.g. 30th Anniversary) or paste a TCGPlayer link. Pick the cards you want — they go straight on the wishlist.</p>
+      <p>Tap a set, tick the cards you want, then Add to wishlist. Nothing is added until you choose.</p>
     </section>
     <div class="toolbar">
-      <input type="search" id="addSetQuery" placeholder="30th Anniversary just dropped…" autocomplete="off">
+      <div class="add-set-quick" id="addSetQuick" aria-label="Quick sets"></div>
+      <input type="search" id="addSetQuery" placeholder="Or type another set name…" autocomplete="off">
       <button type="button" class="toggle-btn active" id="addSetFindBtn">Find set</button>
       <p class="stats" id="addSetStatus"></p>
       <div class="filters wishlist-filters" id="addSetFilters" hidden>
         <label class="toggle-btn" style="display:inline-flex;align-items:center;gap:0.4rem">
-          <input type="checkbox" id="addSetChaseOnly" checked>
+          <input type="checkbox" id="addSetChaseOnly">
           Chase only
         </label>
         <input type="search" id="addSetCardSearch" placeholder="Filter cards…" autocomplete="off">
@@ -1671,9 +1682,9 @@
   <div id="wishlistActionBar" class="wishlist-action-bar" hidden aria-live="polite"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-  <script src="supabase-config.js?v=16"></script>
-  <script src="show-sync.js?v=16"></script>
-  <script src="set-intake.js?v=16"></script>
+  <script src="supabase-config.js?v=17"></script>
+  <script src="show-sync.js?v=17"></script>
+  <script src="set-intake.js?v=17"></script>
   <script>
     function initEnergySparks() {
       const canvas = document.getElementById("energy-sparks");
@@ -2774,7 +2785,7 @@
 
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("service-worker.js?v=16").then(reg => {
+        navigator.serviceWorker.register("service-worker.js?v=17").then(reg => {
           if (reg.waiting) reg.waiting.postMessage({ type: "SKIP_WAITING" });
           reg.update().catch(() => {});
         }).catch(() => {});
