@@ -6,8 +6,8 @@
   <meta name="theme-color" content="#3b82f6">
   <meta name="description" content="Chase — daily buy checks and wishlist tracking for Pokemon TCG card shows.">
   <title>Chase</title>
-  <link rel="manifest" href="manifest.webmanifest?v=15">
-  <link rel="icon" href="icon.svg?v=15" type="image/svg+xml">
+  <link rel="manifest" href="manifest.webmanifest?v=16">
+  <link rel="icon" href="icon.svg?v=16" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -576,11 +576,8 @@
       display: grid;
       gap: 8px;
       margin-bottom: 12px;
-      position: sticky;
-      top: 0;
-      z-index: 2;
-      background: linear-gradient(var(--arena) 70%, transparent);
-      padding-bottom: 8px;
+      position: static;
+      padding-bottom: 0;
     }
     input, select {
       width: 100%;
@@ -607,9 +604,7 @@
       grid-template-columns: 1fr 1fr;
     }
     .set-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
+      display: none;
     }
     .set-chip-btn {
       border: 2px solid rgba(26, 39, 68, 0.1);
@@ -1022,9 +1017,6 @@
       background: none;
       padding-bottom: 0;
     }
-    #viewWishlist .set-buttons {
-      display: none;
-    }
     #viewWishlist .view-intro {
       margin-bottom: 10px;
       padding: 12px 14px;
@@ -1416,11 +1408,7 @@
     }
     @media (max-width: 420px) {
       .quick-controls {
-        position: sticky;
-        top: 0;
-        z-index: 4;
         padding: 6px 0;
-        background: linear-gradient(var(--bg) 75%, transparent);
       }
       body.images-on .card-layout.has-image {
         grid-template-columns: 66px minmax(0, 1fr);
@@ -1486,7 +1474,7 @@
   <div id="viewBuyList" class="view active">
     <section class="view-intro">
       <h2>Should I buy today?</h2>
-      <p>Buy-now cards from your wishlist. Tap a card to check the live max buy, type the asking price, then hit Purchased.</p>
+      <p>Buy-now cards from your wishlist. Tap a card, check the max buy, then hit Purchased when you get it.</p>
       <span class="intro-count" id="buyListIntroCount">Loading…</span>
     </section>
     <div class="toolbar">
@@ -1683,9 +1671,9 @@
   <div id="wishlistActionBar" class="wishlist-action-bar" hidden aria-live="polite"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-  <script src="supabase-config.js?v=15"></script>
-  <script src="show-sync.js?v=15"></script>
-  <script src="set-intake.js?v=15"></script>
+  <script src="supabase-config.js?v=16"></script>
+  <script src="show-sync.js?v=16"></script>
+  <script src="set-intake.js?v=16"></script>
   <script>
     function initEnergySparks() {
       const canvas = document.getElementById("energy-sparks");
@@ -1784,7 +1772,7 @@
       // Prefer live phone prices from Supabase over the static snapshot.
       const fromRemote = remote.map(w => {
         const floor = floorsByKey.get(w.card_key) || {};
-        const hasLivePrice = Boolean(w.priced_at) || w.target_buy_gbp != null;
+        const hasLivePrice = Boolean(w.priced_at);
         return {
           ...floor,
           ...w,
@@ -1957,7 +1945,7 @@
         } else if (status === "error") {
           statusNote = '<p class="wishlist-action-note">Price check failed. Tap the card again to retry.</p>';
         } else if (card.priced_at) {
-          statusNote = `<p class="wishlist-action-note">Priced ${escapeHtml(formatUpdated(card.priced_at) || "just now")}</p>`;
+          statusNote = `<p class="wishlist-action-note">Priced ${escapeHtml(formatSnapshotDateTime(card.priced_at) || "just now")}</p>`;
         } else {
           statusNote = '<p class="wishlist-action-note">Checking this card’s max buy…</p>';
         }
@@ -2228,6 +2216,10 @@
     }
 
     function signalBadge(card) {
+      const status = String(card.price_status || "").toLowerCase();
+      if (status === "checking") {
+        return '<span class="badge checking">Checking price</span>';
+      }
       const buy = isBuyNow(card);
       return buy
         ? '<span class="badge signal-buy">Buy now</span>'
@@ -2271,55 +2263,13 @@
       return `#${view}?card=${encodeURIComponent(cardSlug(card))}`;
     }
 
-    function renderDealCalculator(card) {
-      const slug = cardSlug(card);
-      return `
-        <div class="deal-calc">
-          <label for="ask_${escapeHtml(slug)}">Dealer asking price</label>
-          <input type="number" inputmode="decimal" min="0" step="0.01" placeholder="£ asking price" id="ask_${escapeHtml(slug)}" data-deal-card="${escapeHtml(slug)}">
-          <div class="deal-result" id="deal_${escapeHtml(slug)}">Enter an asking price to compare against the max buy.</div>
-        </div>
-      `;
+    function renderDealCalculator(_card) {
+      return "";
     }
 
-    function updateDealResults() {
-      document.querySelectorAll("[data-deal-card]").forEach(input => {
-        const slug = input.dataset.dealCard;
-        const card = findCardBySlug(slug);
-        const out = document.getElementById(`deal_${slug}`);
-        if (!card || !out) return;
-        const asking = Number(input.value);
-        const target = Number(card.target_buy_gbp);
-        const floor = Number(card.floor_gbp);
-        out.className = "deal-result";
-        if (!Number.isFinite(asking) || asking <= 0) {
-          out.textContent = "Enter an asking price to compare against the max buy.";
-          return;
-        }
-        if (Number.isFinite(target) && asking <= target) {
-          out.classList.add("good");
-          out.textContent = `Good deal: ${money(target - asking)} under max buy.`;
-        } else if (Number.isFinite(floor) && asking <= floor) {
-          out.classList.add("warn");
-          out.textContent = Number.isFinite(target)
-            ? `Near floor, but above target by ${money(asking - target)}. Check condition hard.`
-            : "Near estimated floor. Ask before buying if condition is not clearly clean.";
-        } else if (Number.isFinite(target)) {
-          out.classList.add("bad");
-          out.textContent = `Too high: ${money(asking - target)} over max buy.`;
-        } else {
-          out.classList.add("warn");
-          out.textContent = "No target price yet. Ask before buying.";
-        }
-      });
-    }
+    function updateDealResults() {}
 
-    function wireDealInputs() {
-      document.querySelectorAll("[data-deal-card]").forEach(input => {
-        input.addEventListener("input", updateDealResults);
-      });
-      updateDealResults();
-    }
+    function wireDealInputs() {}
 
     function scrollHighlightedCard() {
       if (!selectedCardSlug) return;
@@ -2384,7 +2334,7 @@
         if (!filtered.length) {
           list.innerHTML = cards.length
             ? '<div class="empty">No buy-now cards match your filters.</div>'
-            : '<div class="empty">No Buy now signals today. Open Wishlist to see Holds and wait for the next morning refresh.</div>';
+            : '<div class="empty">No Buy now signals yet. Open Wishlist and tap a card to check its price.</div>';
           return;
         }
         list.innerHTML = filtered.map(card => {
@@ -2411,14 +2361,12 @@
                   <p class="buy-note">Look for a clean raw copy at or below ${money(card.target_buy_gbp)}. If condition is weak, skip it.</p>
                   ${timingText ? `<p class="timing">${escapeHtml(timingText)}</p>` : ""}
                   <p class="why">${escapeHtml(card.floor_justification || card.card_show_price_note || "Check price and condition before buying.")}</p>
-                  ${renderDealCalculator(card)}
                 </div>
               </div>
             </article>
           `;
         }).join("");
         wireCardPurchaseSelection(list, "buy-list");
-        wireDealInputs();
         scrollHighlightedCard();
         renderWishlistActionBar();
       }
@@ -2486,13 +2434,11 @@
                   </p>
                   ${timing ? `<p class="timing">${escapeHtml(timing)}</p>` : ""}
                   <p class="why">${escapeHtml(card.floor_justification || card.card_show_price_note || "")}</p>
-                  ${renderDealCalculator(card)}
                 </div>
               </div>
             </article>
           `;
         }).join("");
-        wireDealInputs();
         scrollHighlightedCard();
       }
 
@@ -2602,13 +2548,12 @@
               </div>
               <div class="wish-extra">
                 ${why ? `<p class="why">${escapeHtml(why)}</p>` : ""}
-                ${buy ? renderDealCalculator(card) : '<p class="timing">Hold for now — tap Purchased only if you already bought it.</p>'}
+                ${buy ? "" : '<p class="timing">Hold for now — tap Purchased only if you already bought it.</p>'}
               </div>
             </article>
           `;
         }).join("");
         wireWishlistSelection(list);
-        wireDealInputs();
         scrollHighlightedCard();
         renderWishlistActionBar();
       }
@@ -2829,7 +2774,7 @@
 
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("service-worker.js?v=15").then(reg => {
+        navigator.serviceWorker.register("service-worker.js?v=16").then(reg => {
           if (reg.waiting) reg.waiting.postMessage({ type: "SKIP_WAITING" });
           reg.update().catch(() => {});
         }).catch(() => {});
@@ -2860,9 +2805,9 @@
       .catch(err => {
         document.getElementById("meta").textContent = "Could not load floors.json";
         document.getElementById("homeError").innerHTML =
-          `<div class="error">${escapeHtml(err.message || err)}<br><br>Run the morning batch with export on your laptop first.</div>`;
+          `<div class="error">${escapeHtml(err.message || err)}<br><br>Pull to refresh. If this keeps happening, the live price list is still loading.</div>`;
         document.getElementById("listFloors").innerHTML =
-          `<div class="error">${escapeHtml(err.message || err)}<br><br>Run the morning batch with export on your laptop first.</div>`;
+          `<div class="error">${escapeHtml(err.message || err)}<br><br>Pull to refresh. If this keeps happening, the live price list is still loading.</div>`;
       });
   </script>
 </body>

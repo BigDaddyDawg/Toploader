@@ -1,4 +1,4 @@
-const CACHE_NAME = "chase-static-v15";
+const CACHE_NAME = "chase-static-v16";
 const CORE_ASSETS = [
   "./",
   "index.html",
