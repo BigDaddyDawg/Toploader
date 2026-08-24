@@ -1,4 +1,4 @@
-const CACHE_NAME = "toploader-static-v11";
+const CACHE_NAME = "toploader-static-v12";
 const CORE_ASSETS = [
   "./",
   "index.html",
@@ -10,6 +10,7 @@ const CORE_ASSETS = [
   "icon.svg",
   "supabase-config.js",
   "show-sync.js",
+  "set-intake.js",
 ];
 
 /** Network-first with offline fallback — keeps HTML/JS fresh after publishes. */
@@ -75,6 +76,7 @@ self.addEventListener("fetch", event => {
 
   if (
     path.endsWith("/show-sync.js") ||
+    path.endsWith("/set-intake.js") ||
     path.endsWith("/supabase-config.js") ||
     path.endsWith("/service-worker.js") ||
     path.endsWith("/manifest.webmanifest") ||

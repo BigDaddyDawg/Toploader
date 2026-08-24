@@ -1,19 +1,21 @@
 /**
- * Live card-show sync via Supabase.
+ * Live Toploader sync via Supabase (panelbook).
  *
- * Tapping "Purchased" on a wishlist card moves it to the shared, permanent
- * Owned list and removes it from everyone's wishlist within seconds. Unlike the
- * old per-show "Got it" marks, ownership is keyed by card_key and never resets.
+ * Wishlist + purchased state live in:
+ *   toploader_wishlist_cards
+ *   toploader_owned_cards
+ *
+ * Purchased removes a card from the wishlist so it disappears from the phone app.
  */
 (function () {
   const BUYER_NAME_KEY = "toploader_buyer_name_v1";
-  // Kept the v1 key so existing phones keep their "hide" preference.
   const HIDE_OWNED_KEY = "toploader_hide_bought_v1";
 
   let client = null;
   let showDate = "";
-  let ownedMap = new Map(); // card_key -> owned record (with metadata)
-  let cardIndex = new Map(); // card_key -> full card object from latest snapshot
+  let ownedMap = new Map();
+  let wishlistMap = new Map();
+  let cardIndex = new Map();
   let ready = false;
   let live = false;
   let channel = null;
@@ -32,12 +34,21 @@
     return String(card?.card_key || "").trim();
   }
 
+  function makeCardKey(name, number, setName) {
+    return [
+      String(name || "").trim().toLowerCase(),
+      String(number || "").trim(),
+      String(setName || "").trim().toLowerCase(),
+    ].join("|");
+  }
+
   function numOrNull(value) {
     const n = Number(value);
     return Number.isFinite(n) ? n : null;
   }
 
   function loadHideOwned() {
+    // Owned cards always drop off the active lists; preference kept for older callers.
     try {
       const raw = localStorage.getItem(HIDE_OWNED_KEY);
       return raw === null ? true : raw === "1";
@@ -78,7 +89,7 @@
     return trimmed;
   }
 
-  function ingestRows(rows) {
+  function ingestOwnedRows(rows) {
     ownedMap = new Map();
     (rows || []).forEach(row => {
       const key = String(row.card_key || "").trim();
@@ -99,6 +110,30 @@
     });
   }
 
+  function ingestWishlistRows(rows) {
+    wishlistMap = new Map();
+    (rows || []).forEach(row => {
+      const key = String(row.card_key || "").trim();
+      if (!key) return;
+      wishlistMap.set(key, {
+        card_key: key,
+        card_name: String(row.card_name || "").trim(),
+        card: String(row.card_name || "").trim(),
+        number: String(row.number || "").trim(),
+        set_name: String(row.set_name || "").trim(),
+        scrape_query: String(row.scrape_query || "").trim(),
+        rarity: String(row.rarity || "").trim(),
+        image_small_url: String(row.image_small_url || "").trim(),
+        image_large_url: String(row.image_large_url || "").trim(),
+        target_buy_gbp: numOrNull(row.target_buy_gbp),
+        floor_gbp: numOrNull(row.floor_gbp),
+        added_by: String(row.added_by || "").trim(),
+        added_at: row.added_at || "",
+        watchlist_status: 1,
+      });
+    });
+  }
+
   function notifyChange() {
     if (typeof onChangeCb === "function") onChangeCb();
   }
@@ -111,19 +146,42 @@
         "card_key,card_name,number,set_name,image_small_url,image_large_url,target_buy_gbp,floor_gbp,bought_by,bought_price_gbp,bought_at"
       );
     if (error) throw error;
-    ingestRows(data);
+    ingestOwnedRows(data);
+  }
+
+  async function fetchWishlist() {
+    if (!client) return;
+    const { data, error } = await client
+      .from("toploader_wishlist_cards")
+      .select(
+        "card_key,card_name,number,set_name,scrape_query,rarity,image_small_url,image_large_url,target_buy_gbp,floor_gbp,added_by,added_at"
+      )
+      .order("added_at", { ascending: false });
+    if (error) throw error;
+    ingestWishlistRows(data);
+  }
+
+  async function refreshAll() {
+    await Promise.all([fetchOwned(), fetchWishlist()]);
     notifyChange();
   }
 
   function subscribe() {
     if (!client || channel) return;
     channel = client
-      .channel("owned-cards")
+      .channel("toploader-live")
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "toploader_owned_cards" },
         () => {
-          fetchOwned().catch(() => {});
+          refreshAll().catch(() => {});
+        }
+      )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "toploader_wishlist_cards" },
+        () => {
+          refreshAll().catch(() => {});
         }
       )
       .subscribe(status => {
@@ -137,6 +195,7 @@
     live = false;
     showDate = String(snapshot?.local_date || "").trim();
     ownedMap = new Map();
+    wishlistMap = new Map();
     cardIndex = new Map();
     (snapshot?.cards || []).forEach(card => {
       const key = cardKey(card);
@@ -161,13 +220,13 @@
     const cfg = config();
     client = window.supabase.createClient(cfg.url.trim(), cfg.anonKey.trim());
     try {
-      await fetchOwned();
+      await refreshAll();
       subscribe();
       ready = true;
       notifyChange();
       return true;
     } catch (err) {
-      console.warn("Owned sync init failed:", err);
+      console.warn("Toploader sync init failed:", err);
       notifyChange();
       return false;
     }
@@ -176,6 +235,11 @@
   function isOwned(card) {
     const key = cardKey(card);
     return key ? ownedMap.has(key) : false;
+  }
+
+  function isWishlisted(card) {
+    const key = cardKey(card);
+    return key ? wishlistMap.has(key) && !ownedMap.has(key) : false;
   }
 
   function ownedInfo(card) {
@@ -188,8 +252,14 @@
     );
   }
 
+  function wishlistList() {
+    return Array.from(wishlistMap.values())
+      .filter(row => !ownedMap.has(row.card_key))
+      .sort((a, b) => String(b.added_at || "").localeCompare(String(a.added_at || "")));
+  }
+
   function hideOwned() {
-    return loadHideOwned();
+    return true; // purchased cards always leave active lists
   }
 
   function setHideOwned(value) {
@@ -198,8 +268,7 @@
   }
 
   function filterCards(cards) {
-    if (!hideOwned()) return cards.slice();
-    return cards.filter(card => !isOwned(card));
+    return (cards || []).filter(card => !isOwned(card));
   }
 
   function ownedCount(cards) {
@@ -209,14 +278,62 @@
   function statusText() {
     if (!isConfigured()) return "";
     if (!ready) return "Connecting live sync…";
-    const owned = ownedMap.size;
+    const wish = wishlistMap.size;
     const liveBit = live ? "Live" : "Polling";
-    return owned ? `${liveBit} · ${owned} owned` : `${liveBit} · synced`;
+    return wish ? `${liveBit} · ${wish} wishlist` : `${liveBit} · synced`;
   }
 
   function statusClass() {
     if (!isConfigured() || !ready) return "sync-off";
     return live ? "sync-live" : "sync-warn";
+  }
+
+  async function addWishlistCards(cards, addedBy = "") {
+    if (!client) return { ok: false, error: "Sync not ready" };
+    const rows = (cards || [])
+      .map(card => {
+        const name = String(card.card_name || card.card || card.name || "").trim();
+        const number = String(card.number || "").trim();
+        const setName = String(card.set_name || "").trim();
+        const key = String(card.card_key || makeCardKey(name, number, setName)).trim();
+        if (!key || !name || !number || !setName) return null;
+        const scrape =
+          String(card.scrape_query || "").trim() ||
+          [name, setName, number].filter(Boolean).join(" ");
+        return {
+          card_key: key,
+          card_name: name.slice(0, 200),
+          number: number.slice(0, 40),
+          set_name: setName.slice(0, 200),
+          scrape_query: scrape.slice(0, 400),
+          rarity: String(card.rarity || "").slice(0, 80),
+          image_small_url: String(card.image_small_url || ""),
+          image_large_url: String(card.image_large_url || ""),
+          target_buy_gbp: numOrNull(card.target_buy_gbp),
+          floor_gbp: numOrNull(card.floor_gbp),
+          added_by: String(addedBy || buyerName() || "").slice(0, 80),
+          updated_at: new Date().toISOString(),
+        };
+      })
+      .filter(Boolean);
+
+    if (!rows.length) return { ok: false, error: "No valid cards to add" };
+
+    const { error } = await client
+      .from("toploader_wishlist_cards")
+      .upsert(rows, { onConflict: "card_key" });
+    if (error) return { ok: false, error: error.message };
+
+    rows.forEach(row => {
+      wishlistMap.set(row.card_key, {
+        ...row,
+        card: row.card_name,
+        watchlist_status: 1,
+        added_at: row.updated_at,
+      });
+    });
+    notifyChange();
+    return { ok: true, count: rows.length };
   }
 
   async function markPurchased(card) {
@@ -230,12 +347,10 @@
       if (!name) return { ok: false, error: "Name required" };
     }
 
-    // Prefer richer metadata from the current snapshot so the Owned list still
-    // renders after the card drops off future floors.json exports.
-    const meta = cardIndex.get(key) || card || {};
+    const meta = cardIndex.get(key) || wishlistMap.get(key) || card || {};
     const row = {
       card_key: key,
-      card_name: String(meta.card || card.card || "").slice(0, 200),
+      card_name: String(meta.card || meta.card_name || card.card || "").slice(0, 200),
       number: String(meta.number || card.number || "").slice(0, 40),
       set_name: String(meta.set_name || card.set_name || "").slice(0, 200),
       image_small_url: String(meta.image_small_url || card.image_small_url || ""),
@@ -251,7 +366,10 @@
       .upsert(row, { onConflict: "card_key" });
     if (error) return { ok: false, error: error.message };
 
+    await client.from("toploader_wishlist_cards").delete().eq("card_key", key);
+
     ownedMap.set(key, { ...row, card: row.card_name, bought_price_gbp: null });
+    wishlistMap.delete(key);
     notifyChange();
     return { ok: true };
   }
@@ -303,15 +421,8 @@
     const key = cardKey(card);
     if (!key) return "";
 
-    const info = ownedInfo(card);
-    if (info) {
-      const who = info.bought_by ? escapeHtml(info.bought_by) : "Someone";
-      return `
-        <div class="got-it-row">
-          <span class="badge got-badge">Owned · ${who}</span>
-          <button type="button" class="undo-got-btn" data-unpurchase="${escapeHtml(key)}">Undo</button>
-        </div>
-      `;
+    if (isOwned(card)) {
+      return ""; // purchased cards leave the active UI
     }
 
     if (!ready) {
@@ -330,16 +441,44 @@
   }
 
   function cardExtraClass(card) {
-    // Reuse existing ".card-bought" styling for owned cards.
     return isOwned(card) ? "card-bought" : "";
+  }
+
+  function catalogFunctionUrl() {
+    const cfg = config();
+    const base = (cfg.url || "").replace(/\/$/, "");
+    return base ? `${base}/functions/v1/toploader-catalog` : "";
+  }
+
+  async function resolveSetCatalog(query) {
+    const fn = catalogFunctionUrl();
+    if (!fn) return { status: "error", message: "Supabase not configured" };
+    const cfg = config();
+    const url = `${fn}?action=resolve&q=${encodeURIComponent(query || "")}`;
+    const res = await fetch(url, {
+      headers: {
+        apikey: cfg.anonKey,
+        Authorization: `Bearer ${cfg.anonKey}`,
+      },
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      return { status: "error", message: data.message || `Lookup failed (${res.status})` };
+    }
+    return data;
   }
 
   window.showSync = {
     init,
     isConfigured,
     isOwned,
+    isWishlisted,
     ownedInfo,
     ownedList,
+    wishlistList,
+    addWishlistCards,
+    resolveSetCatalog,
+    makeCardKey,
     hideOwned,
     setHideOwned,
     filterCards,
@@ -355,7 +494,6 @@
     onChange(cb) {
       onChangeCb = cb;
     },
-    // Backwards-compatible aliases for older markup / callers.
     isBought: isOwned,
     boughtInfo: ownedInfo,
     hideBought: hideOwned,

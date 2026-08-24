@@ -896,6 +896,26 @@
       gap: 12px;
       align-items: start;
     }
+    #listAddSet .add-set-card {
+      cursor: pointer;
+    }
+    #listAddSet .wish-row {
+      display: grid;
+      grid-template-columns: 72px minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+    }
+    #listAddSet .wish-row .card-image {
+      display: block;
+      width: 72px;
+    }
+    #listAddSet input[type="checkbox"] {
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+    #addSetStatus.error {
+      color: #fca5a5;
+    }
     #listWishlist .wish-row .card-image {
       display: block;
       width: 72px;
@@ -1410,7 +1430,7 @@
   <nav class="tabs" aria-label="Main">
     <button type="button" class="tab active" id="tabBuyList" data-view="buy-list"><span class="tab-icon" aria-hidden="true">●</span>Today</button>
     <button type="button" class="tab" id="tabWishlist" data-view="wishlist"><span class="tab-icon" aria-hidden="true">◇</span>Wishlist</button>
-    <button type="button" class="tab" id="tabOwned" data-view="owned"><span class="tab-icon" aria-hidden="true">✓</span>Owned</button>
+    <button type="button" class="tab" id="tabAddSet" data-view="add-set"><span class="tab-icon" aria-hidden="true">＋</span>Add set</button>
   </nav>
 
   <div id="viewHome" class="view" hidden aria-hidden="true">
@@ -1488,7 +1508,6 @@
           <option value="expensive">Most expensive first</option>
           <option value="set">Set order</option>
         </select>
-        <button type="button" class="toggle-btn" id="toggleHideBought" aria-pressed="true">Hide owned</button>
       </div>
       <div class="set-buttons" id="setButtonsWishlist" aria-label="Wishlist set shortcuts"></div>
       <p class="stats" id="statsWishlist"></p>
@@ -1496,27 +1515,34 @@
     <div id="listWishlist" class="list"></div>
   </div>
 
-  <div id="viewOwned" class="view">
+  <div id="viewAddSet" class="view">
     <section class="view-intro">
-      <h2>Owned</h2>
-      <p>Cards you’ve marked Purchased. Shared live — undo from here if you tapped the wrong one.</p>
+      <h2>Add a set</h2>
+      <p>Type a set name (e.g. 30th Anniversary) or paste a TCGPlayer link. Pick the cards you want — they go straight on the wishlist.</p>
     </section>
     <div class="toolbar">
-      <input type="search" id="searchOwned" placeholder="Search owned cards…" autocomplete="off">
-      <div class="filters wishlist-filters">
-        <select id="setFilterOwned" aria-label="Filter by set">
-          <option value="">All sets</option>
-        </select>
-        <select id="sortOwned" aria-label="Sort owned cards">
-          <option value="recent">Recently bought</option>
-          <option value="set">Set order</option>
-          <option value="cheapest">Cheapest first</option>
-          <option value="expensive">Most expensive first</option>
-        </select>
+      <input type="search" id="addSetQuery" placeholder="30th Anniversary just dropped…" autocomplete="off">
+      <button type="button" class="toggle-btn active" id="addSetFindBtn">Find set</button>
+      <p class="stats" id="addSetStatus"></p>
+      <div class="filters wishlist-filters" id="addSetFilters" hidden>
+        <label class="toggle-btn" style="display:inline-flex;align-items:center;gap:0.4rem">
+          <input type="checkbox" id="addSetChaseOnly" checked>
+          Chase only
+        </label>
+        <input type="search" id="addSetCardSearch" placeholder="Filter cards…" autocomplete="off">
       </div>
-      <div class="set-buttons" id="setButtonsOwned" aria-label="Owned set shortcuts"></div>
-      <p class="stats" id="statsOwned"></p>
+      <div class="filters wishlist-filters" id="addSetActions" hidden>
+        <span class="stats" id="addSetSelectedCount">0 selected</span>
+        <button type="button" class="toggle-btn" id="addSetSelectVisible">Select visible</button>
+        <button type="button" class="toggle-btn" id="addSetClearSel">Clear</button>
+        <button type="button" class="toggle-btn active" id="addSetAddBtn">Add to wishlist</button>
+      </div>
     </div>
+    <div id="listAddSet" class="list"></div>
+  </div>
+
+  <div id="viewOwned" class="view" hidden aria-hidden="true">
+    <!-- Owned list removed from the phone UI; purchased cards simply leave Wishlist/Today. -->
     <div id="listOwned" class="list"></div>
   </div>
 
@@ -1613,8 +1639,9 @@
   <div id="wishlistActionBar" class="wishlist-action-bar" hidden aria-live="polite"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-  <script src="supabase-config.js?v=11"></script>
-  <script src="show-sync.js?v=11"></script>
+  <script src="supabase-config.js?v=12"></script>
+  <script src="show-sync.js?v=12"></script>
+  <script src="set-intake.js?v=12"></script>
   <script>
     function initEnergySparks() {
       const canvas = document.getElementById("energy-sparks");
@@ -1690,7 +1717,48 @@
     }
 
     function isWatched(card) {
+      if (window.showSync && typeof showSync.isWishlisted === "function" && showSync.isConfigured()) {
+        // Prefer live Supabase wishlist when available.
+        if (showSync.wishlistList().length) {
+          return showSync.isWishlisted(card);
+        }
+      }
       return Number(card.watchlist_status) === 1;
+    }
+
+    function activeWishlistCards() {
+      const floors = snapshotData?.cards || [];
+      const floorsByKey = new Map(
+        floors.map(c => [String(c.card_key || "").trim(), c]).filter(([k]) => k)
+      );
+      const syncReady = window.showSync
+        && showSync.isConfigured()
+        && typeof showSync.isReady === "function"
+        && showSync.isReady();
+      const remote = syncReady ? showSync.wishlistList() : [];
+      if (syncReady) {
+        return remote.map(w => {
+          const floor = floorsByKey.get(w.card_key) || {};
+          return {
+            ...floor,
+            ...w,
+            card: w.card_name || w.card || floor.card || "",
+            number: w.number || floor.number || "",
+            set_name: w.set_name || floor.set_name || "",
+            watchlist_status: 1,
+            target_buy_gbp: floor.target_buy_gbp ?? w.target_buy_gbp,
+            floor_gbp: floor.floor_gbp ?? w.floor_gbp,
+            advisor_decision: floor.advisor_decision,
+            floor_justification: floor.floor_justification || floor.card_show_price_note || "",
+            card_show_price_note: floor.card_show_price_note || "",
+            image_small_url: w.image_small_url || floor.image_small_url || "",
+            image_large_url: w.image_large_url || floor.image_large_url || "",
+            scrape_query: w.scrape_query || floor.scrape_query || "",
+          };
+        });
+      }
+      const wishAll = floors.filter(c => Number(c.watchlist_status) === 1);
+      return window.showSync ? showSync.filterCards(wishAll) : wishAll;
     }
 
     function loadPreference(key, fallback) {
@@ -1757,7 +1825,11 @@
     }
 
     function findCardBySlug(slug) {
-      if (!slug || !snapshotData) return null;
+      if (!slug) return null;
+      const wish = activeWishlistCards();
+      const hit = wish.find(c => cardSlug(c) === slug);
+      if (hit) return hit;
+      if (!snapshotData) return null;
       return (snapshotData.cards || []).find(c => cardSlug(c) === slug) || null;
     }
 
@@ -1897,15 +1969,15 @@
     }
 
     function setView(view) {
-      // Phone-only surface: keep people on Today / Wishlist / Owned.
-      if (view === "home" || view === "floors" || view === "helper" || view === "buying-guide") {
+      // Phone surface: Today / Wishlist / Add set.
+      if (view === "home" || view === "floors" || view === "helper" || view === "buying-guide" || view === "owned") {
         view = view === "helper" ? "wishlist" : "buy-list";
       }
       activeView = view;
       document.body.classList.remove("home-view");
       const route = view === "buy-list" ? "buy-list"
         : view === "wishlist" ? "wishlist"
-        : view === "owned" ? "owned"
+        : view === "add-set" ? "add-set"
         : "buy-list";
       const hash = `#${route}${selectedCardSlug ? `?card=${encodeURIComponent(selectedCardSlug)}` : ""}`;
       if (location.hash !== hash) {
@@ -1915,20 +1987,24 @@
       document.getElementById("viewBuyList").classList.toggle("active", view === "buy-list");
       document.getElementById("viewFloors").classList.remove("active");
       document.getElementById("viewWishlist").classList.toggle("active", view === "wishlist");
-      document.getElementById("viewOwned").classList.toggle("active", view === "owned");
+      document.getElementById("viewAddSet")?.classList.toggle("active", view === "add-set");
+      document.getElementById("viewOwned")?.classList.remove("active");
       document.getElementById("viewHelper").classList.remove("active");
       document.getElementById("viewBuyingGuide").classList.remove("active");
       document.getElementById("tabBuyList").classList.toggle("active", view === "buy-list");
       document.getElementById("tabWishlist").classList.toggle("active", view === "wishlist");
-      document.getElementById("tabOwned").classList.toggle("active", view === "owned");
+      document.getElementById("tabAddSet")?.classList.toggle("active", view === "add-set");
       document.title = view === "buy-list" ? "Toploader — Today"
         : view === "wishlist" ? "Toploader — Wishlist"
-        : view === "owned" ? "Toploader — Owned"
+        : view === "add-set" ? "Toploader — Add set"
         : "Toploader";
       if (snapshotData) updateMeta();
       if (view === "buy-list") renderBuyList();
       else if (view === "wishlist") renderWishlist();
-      else if (view === "owned") renderOwned();
+      else if (view === "add-set") {
+        document.getElementById("addSetFilters")?.removeAttribute("hidden");
+        document.getElementById("addSetActions")?.removeAttribute("hidden");
+      }
       renderWishlistActionBar();
     }
 
@@ -1936,7 +2012,8 @@
       const parsed = parseHashParts();
       selectedCardSlug = parsed.card;
       if (parsed.route === "wishlist" || parsed.route === "helper") return "wishlist";
-      if (parsed.route === "owned") return "owned";
+      if (parsed.route === "add-set") return "add-set";
+      if (parsed.route === "owned") return "buy-list";
       return "buy-list";
     }
 
@@ -1946,21 +2023,17 @@
       const cacheNote = snapshotData._from_cache ? " · offline cache" : "";
       const errNote = snapshotData._load_error ? " · fetch issue" : "";
       const syncNote = syncStatusHtml();
-      const all = snapshotData.cards || [];
-      const wishAll = all.filter(isWatched);
-      const wish = window.showSync ? showSync.filterCards(wishAll) : wishAll;
-      const gotCount = window.showSync ? showSync.boughtCount(wishAll) : 0;
-      const buy = buildBuyCandidates(window.showSync ? showSync.filterCards(all) : all);
+      const wish = activeWishlistCards();
+      const buy = buildBuyCandidates(wish);
       if (activeView === "buy-list") {
         document.getElementById("meta").innerHTML =
           `${buy.length} to check today · updated ${updated}${cacheNote}${errNote}${syncNote}`;
       } else if (activeView === "wishlist") {
         document.getElementById("meta").innerHTML =
-          `${wish.length} left${gotCount ? ` · ${gotCount} got` : ""} · updated ${updated}${cacheNote}${errNote}${syncNote}`;
-      } else if (activeView === "owned") {
-        const ownedTotal = window.showSync ? showSync.ownedList().length : 0;
+          `${wish.length} on wishlist · updated ${updated}${cacheNote}${errNote}${syncNote}`;
+      } else if (activeView === "add-set") {
         document.getElementById("meta").innerHTML =
-          `${ownedTotal} owned · updated ${updated}${cacheNote}${errNote}${syncNote}`;
+          `Add cards to wishlist · ${updated}${cacheNote}${errNote}${syncNote}`;
       } else {
         document.getElementById("meta").innerHTML =
           `${wish.length} wishlist · ${buy.length} buy now · updated ${updated}${cacheNote}${errNote}${syncNote}`;
@@ -2099,25 +2172,17 @@
     }
 
     function applyHideBoughtToggle() {
-      [document.getElementById("toggleHideBought"), document.getElementById("toggleHideBoughtHelper")].forEach(btn => {
-        if (!btn || !window.showSync) return;
-        const configured = showSync.isConfigured();
-        btn.style.display = configured ? "" : "none";
-        if (!configured) return;
-        const hidden = showSync.hideBought();
-        btn.classList.toggle("active", hidden);
-        btn.textContent = hidden ? "Hide owned" : "Show owned";
-        btn.setAttribute("aria-pressed", hidden ? "true" : "false");
-      });
+      // Owned cards always leave the list; no toggle on the phone UI.
     }
 
     function rerenderActiveView() {
       if (!snapshotData) return;
       updateMeta();
-      applyHideBoughtToggle();
       if (activeView === "buy-list") renderBuyList();
       else if (activeView === "wishlist") renderWishlist();
-      else if (activeView === "owned") renderOwned();
+      else if (activeView === "add-set") {
+        /* picker state lives in set-intake.js */
+      }
     }
 
     function detailLink(view, card) {
@@ -2138,7 +2203,7 @@
     function updateDealResults() {
       document.querySelectorAll("[data-deal-card]").forEach(input => {
         const slug = input.dataset.dealCard;
-        const card = (snapshotData.cards || []).find(c => cardSlug(c) === slug);
+        const card = findCardBySlug(slug);
         const out = document.getElementById(`deal_${slug}`);
         if (!card || !out) return;
         const asking = Number(input.value);
@@ -2202,8 +2267,7 @@
     }
 
     function renderBuyList() {
-      const allCards = snapshotData.cards || [];
-      const cards = buildBuyCandidates(window.showSync ? showSync.filterCards(allCards) : allCards);
+      const cards = buildBuyCandidates(activeWishlistCards());
       const setSelect = document.getElementById("setFilterBuyList");
       const setButtons = document.getElementById("setButtonsBuyList");
       const intro = document.getElementById("buyListIntroCount");
@@ -2379,8 +2443,7 @@
     }
 
     function renderWishlist() {
-      const wishAll = (snapshotData.cards || []).filter(isWatched);
-      const cards = window.showSync ? showSync.filterCards(wishAll) : wishAll;
+      const cards = activeWishlistCards();
       const setSelect = document.getElementById("setFilterWishlist");
       const setButtons = document.getElementById("setButtonsWishlist");
       const buyCount = cards.filter(isBuyNow).length;
@@ -2422,15 +2485,13 @@
           return buyRank(b) - buyRank(a) || priceValue(a) - priceValue(b);
         });
         document.getElementById("statsWishlist").textContent =
-          `Showing ${filtered.length} of ${cards.length}${window.showSync && showSync.boughtCount(wishAll) ? ` · ${showSync.boughtCount(wishAll)} got` : ""}`;
+          `Showing ${filtered.length} of ${cards.length}`;
         updateSetButtons(setButtons, setVal);
         const list = document.getElementById("listWishlist");
         if (!filtered.length) {
           list.innerHTML = cards.length
             ? '<div class="empty">No wishlist cards match that filter.</div>'
-            : wishAll.length && window.showSync && showSync.boughtCount(wishAll)
-              ? '<div class="empty">Everything on the list is marked got. Toggle “Show owned” to review.</div>'
-              : '<div class="empty">No wishlist cards in today’s snapshot yet. When the morning prices publish, your wants will show up here.</div>';
+            : '<div class="empty">Wishlist is empty. Open <strong>Add set</strong> to pull in a new set and pick cards.</div>';
           renderWishlistActionBar();
           return;
         }
@@ -2658,7 +2719,7 @@
 
     document.getElementById("tabBuyList").addEventListener("click", () => setView("buy-list"));
     document.getElementById("tabWishlist").addEventListener("click", () => setView("wishlist"));
-    document.getElementById("tabOwned").addEventListener("click", () => setView("owned"));
+    document.getElementById("tabAddSet")?.addEventListener("click", () => setView("add-set"));
     document.querySelectorAll("[data-signal]").forEach(btn => {
       btn.addEventListener("click", () => {
         wishlistSignalFilter = btn.dataset.signal || "";
@@ -2666,17 +2727,12 @@
         if (activeView === "wishlist" && snapshotData) renderWishlist();
       });
     });
-    document.getElementById("toggleHideBought").addEventListener("click", () => {
-      if (!window.showSync) return;
-      showSync.setHideBought(!showSync.hideBought());
-    });
-    const hideBoughtHelper = document.getElementById("toggleHideBoughtHelper");
-    if (hideBoughtHelper) {
-      hideBoughtHelper.addEventListener("click", () => {
-        if (!window.showSync) return;
-        showSync.setHideBought(!showSync.hideBought());
-      });
-    }
+    window.toploaderOnWishlistChanged = () => {
+      if (snapshotData) {
+        setView("wishlist");
+      }
+    };
+    if (window.toploaderSetIntake) toploaderSetIntake.wire();
     if (window.showSync) {
       showSync.onChange(() => rerenderActiveView());
     }
