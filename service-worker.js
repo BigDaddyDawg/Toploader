@@ -1,4 +1,4 @@
-const CACHE_NAME = "toploader-static-v14";
+const CACHE_NAME = "chase-static-v15";
 const CORE_ASSETS = [
   "./",
   "index.html",
@@ -45,7 +45,7 @@ self.addEventListener("activate", event => {
       .then(() => self.clients.matchAll({ type: "window" }))
       .then(clients => {
         for (const client of clients) {
-          client.postMessage({ type: "TOPLOADER_SW_UPDATED", cache: CACHE_NAME });
+          client.postMessage({ type: "CHASE_SW_UPDATED", cache: CACHE_NAME });
         }
       })
   );

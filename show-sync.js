@@ -1,5 +1,5 @@
 /**
- * Live Toploader sync via Supabase (panelbook).
+ * Live Chase sync via Supabase (panelbook).
  *
  * Wishlist + purchased state live in:
  *   toploader_wishlist_cards
@@ -127,6 +127,11 @@
         image_large_url: String(row.image_large_url || "").trim(),
         target_buy_gbp: numOrNull(row.target_buy_gbp),
         floor_gbp: numOrNull(row.floor_gbp),
+        advisor_decision: String(row.advisor_decision || "").trim(),
+        floor_justification: String(row.floor_justification || "").trim(),
+        card_show_price_note: String(row.card_show_price_note || "").trim(),
+        price_status: String(row.price_status || "").trim(),
+        priced_at: row.priced_at || "",
         added_by: String(row.added_by || "").trim(),
         added_at: row.added_at || "",
         watchlist_status: 1,
@@ -153,9 +158,7 @@
     if (!client) return;
     const { data, error } = await client
       .from("toploader_wishlist_cards")
-      .select(
-        "card_key,card_name,number,set_name,scrape_query,rarity,image_small_url,image_large_url,target_buy_gbp,floor_gbp,added_by,added_at"
-      )
+      .select("*")
       .order("added_at", { ascending: false });
     if (error) throw error;
     ingestWishlistRows(data);
@@ -234,7 +237,7 @@
       notifyChange();
       return true;
     } catch (err) {
-      console.warn("Toploader sync init failed:", err);
+      console.warn("Chase sync init failed:", err);
       notifyChange();
       return false;
     }
@@ -458,6 +461,110 @@
     return base ? `${base}/functions/v1/toploader-catalog` : "";
   }
 
+  function priceCheckFunctionUrl() {
+    const cfg = config();
+    const base = (cfg.url || "").replace(/\/$/, "");
+    return base ? `${base}/functions/v1/toploader-price-check` : "";
+  }
+
+  async function wakePriceWorker(cardKey) {
+    const fn = priceCheckFunctionUrl();
+    const cfg = config();
+    if (!fn || !cfg.anonKey) return;
+    try {
+      await fetch(fn, {
+        method: "POST",
+        headers: {
+          apikey: cfg.anonKey,
+          Authorization: `Bearer ${cfg.anonKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ card_key: cardKey || "" }),
+      });
+    } catch (_) {
+      // The queued job still runs on the next scheduled worker pass.
+    }
+  }
+
+  function recentlyPriced(row, minutes = 20) {
+    const raw = row?.priced_at || "";
+    if (!raw) return false;
+    const d = new Date(raw);
+    if (!Number.isFinite(d.getTime())) return false;
+    return Date.now() - d.getTime() < minutes * 60 * 1000;
+  }
+
+  async function requestPriceCheck(card) {
+    if (!client) return { ok: false, error: "Sync not ready" };
+    const key = cardKey(card);
+    if (!key) return { ok: false, error: "Missing card key" };
+    const existing = wishlistMap.get(key) || {};
+    if (String(existing.price_status || "").toLowerCase() === "checking") {
+      return { ok: true, queued: false, reason: "already-checking" };
+    }
+    if (recentlyPriced(existing) && String(existing.price_status || "") === "ok") {
+      return { ok: true, queued: false, reason: "fresh" };
+    }
+
+    const meta = cardIndex.get(key) || existing || card || {};
+    const name = String(meta.card || meta.card_name || card.card || "").trim();
+    const number = String(meta.number || card.number || "").trim();
+    const setName = String(meta.set_name || card.set_name || "").trim();
+    const scrape =
+      String(meta.scrape_query || card.scrape_query || "").trim() ||
+      [name, setName, number].filter(Boolean).join(" ");
+
+    const { data: pending, error: pendingErr } = await client
+      .from("toploader_price_jobs")
+      .select("id")
+      .eq("card_key", key)
+      .eq("status", "pending")
+      .limit(1);
+    if (pendingErr) return { ok: false, error: pendingErr.message };
+    if (pending && pending.length) {
+      wishlistMap.set(key, { ...existing, ...card, card_key: key, price_status: "checking" });
+      notifyChange();
+      wakePriceWorker(key);
+      return { ok: true, queued: true, reason: "already-queued" };
+    }
+
+    const { error: jobErr } = await client.from("toploader_price_jobs").insert({
+      card_key: key,
+      card_name: name.slice(0, 200),
+      number: number.slice(0, 40),
+      set_name: setName.slice(0, 200),
+      scrape_query: scrape.slice(0, 400),
+      job_type: "card",
+      status: "pending",
+    });
+    if (jobErr) return { ok: false, error: jobErr.message };
+
+    const { error: wishErr } = await client
+      .from("toploader_wishlist_cards")
+      .update({ price_status: "checking", updated_at: new Date().toISOString() })
+      .eq("card_key", key);
+    if (wishErr) {
+      // Job is queued even if the status column is not on this project yet.
+      console.warn("price_status update skipped:", wishErr.message);
+    }
+
+    wishlistMap.set(key, {
+      ...existing,
+      ...card,
+      card_key: key,
+      card: name,
+      card_name: name,
+      number,
+      set_name: setName,
+      scrape_query: scrape,
+      price_status: "checking",
+      watchlist_status: 1,
+    });
+    notifyChange();
+    wakePriceWorker(key);
+    return { ok: true, queued: true };
+  }
+
   async function resolveSetCatalog(query) {
     const fn = catalogFunctionUrl();
     if (!fn) return { status: "error", message: "Supabase not configured" };
@@ -485,6 +592,7 @@
     ownedList,
     wishlistList,
     addWishlistCards,
+    requestPriceCheck,
     resolveSetCatalog,
     makeCardKey,
     hideOwned,

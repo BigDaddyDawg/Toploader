@@ -1,6 +1,6 @@
 {
-  "name": "Toploader",
-  "short_name": "Toploader",
+  "name": "Chase",
+  "short_name": "Chase",
   "description": "Daily buy checks and wishlist tracking for Pokemon TCG card shows.",
   "start_url": "./#buy-list",
   "scope": "./",

@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#3b82f6">
-  <meta name="description" content="Toploader phone app — daily buy checks and wishlist tracking for Pokemon TCG card shows.">
-  <title>Toploader</title>
-  <link rel="manifest" href="manifest.webmanifest?v=14">
-  <link rel="icon" href="icon.svg?v=14" type="image/svg+xml">
+  <meta name="description" content="Chase — daily buy checks and wishlist tracking for Pokemon TCG card shows.">
+  <title>Chase</title>
+  <link rel="manifest" href="manifest.webmanifest?v=15">
+  <link rel="icon" href="icon.svg?v=15" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -749,6 +749,10 @@
       opacity: 0.55;
       cursor: wait;
     }
+    .badge.checking {
+      background: rgba(245, 197, 66, 0.18);
+      color: #8a6200;
+    }
     .wishlist-action-owned {
       width: 100%;
       border-radius: 16px;
@@ -1459,8 +1463,8 @@
     <div class="brand-lockup">
       <div class="brand-mark" aria-hidden="true"></div>
       <div>
-        <div class="brand-title">Toploader</div>
-        <div class="brand-sub">Card show companion</div>
+        <div class="brand-title">Chase</div>
+        <div class="brand-sub">Your card-show wishlist</div>
       </div>
     </div>
     <p class="meta" id="meta">Loading snapshot…</p>
@@ -1482,7 +1486,7 @@
   <div id="viewBuyList" class="view active">
     <section class="view-intro">
       <h2>Should I buy today?</h2>
-      <p>Buy-now cards from your wishlist. Check the max buy, type the asking price, tap the card, then hit Purchased.</p>
+      <p>Buy-now cards from your wishlist. Tap a card to check the live max buy, type the asking price, then hit Purchased.</p>
       <span class="intro-count" id="buyListIntroCount">Loading…</span>
     </section>
     <div class="toolbar">
@@ -1528,6 +1532,7 @@
   <div id="viewWishlist" class="view">
     <section class="view-intro">
       <h2>Wishlist</h2>
+      <p>Tap a card to check its live max buy. Hit Purchased when you buy it.</p>
       <span class="intro-count" id="wishlistIntroCount">Loading…</span>
     </section>
     <div class="toolbar">
@@ -1678,9 +1683,9 @@
   <div id="wishlistActionBar" class="wishlist-action-bar" hidden aria-live="polite"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-  <script src="supabase-config.js?v=14"></script>
-  <script src="show-sync.js?v=14"></script>
-  <script src="set-intake.js?v=14"></script>
+  <script src="supabase-config.js?v=15"></script>
+  <script src="show-sync.js?v=15"></script>
+  <script src="set-intake.js?v=15"></script>
   <script>
     function initEnergySparks() {
       const canvas = document.getElementById("energy-sparks");
@@ -1776,9 +1781,10 @@
       const remote = syncReady ? showSync.wishlistList() : [];
       const remoteKeys = new Set(remote.map(w => String(w.card_key || "").trim()).filter(Boolean));
 
-      // Prefer live rows when present, enriched with floor pricing.
+      // Prefer live phone prices from Supabase over the static snapshot.
       const fromRemote = remote.map(w => {
         const floor = floorsByKey.get(w.card_key) || {};
+        const hasLivePrice = Boolean(w.priced_at) || w.target_buy_gbp != null;
         return {
           ...floor,
           ...w,
@@ -1786,14 +1792,16 @@
           number: w.number || floor.number || "",
           set_name: w.set_name || floor.set_name || "",
           watchlist_status: 1,
-          target_buy_gbp: floor.target_buy_gbp ?? w.target_buy_gbp,
-          floor_gbp: floor.floor_gbp ?? w.floor_gbp,
-          advisor_decision: floor.advisor_decision,
-          floor_justification: floor.floor_justification || floor.card_show_price_note || "",
-          card_show_price_note: floor.card_show_price_note || "",
+          target_buy_gbp: hasLivePrice && w.target_buy_gbp != null ? w.target_buy_gbp : (floor.target_buy_gbp ?? w.target_buy_gbp),
+          floor_gbp: hasLivePrice && w.floor_gbp != null ? w.floor_gbp : (floor.floor_gbp ?? w.floor_gbp),
+          advisor_decision: w.advisor_decision || floor.advisor_decision,
+          floor_justification: w.floor_justification || floor.floor_justification || floor.card_show_price_note || "",
+          card_show_price_note: w.card_show_price_note || floor.card_show_price_note || "",
           image_small_url: w.image_small_url || floor.image_small_url || "",
           image_large_url: w.image_large_url || floor.image_large_url || "",
           scrape_query: w.scrape_query || floor.scrape_query || "",
+          updated_at_utc: w.priced_at || floor.updated_at_utc,
+          price_status: w.price_status || "",
         };
       });
 
@@ -1893,6 +1901,19 @@
     function selectCardForPurchase(slug, view = "wishlist") {
       selectedCardSlug = slug || "";
       setView(view);
+      const card = findCardBySlug(slug);
+      if (
+        card &&
+        window.showSync &&
+        typeof showSync.requestPriceCheck === "function" &&
+        showSync.isConfigured() &&
+        typeof showSync.isReady === "function" &&
+        showSync.isReady()
+      ) {
+        showSync.requestPriceCheck(card).then(() => {
+          renderWishlistActionBar();
+        }).catch(() => {});
+      }
     }
 
     function renderWishlistActionBar() {
@@ -1929,7 +1950,18 @@
       } else if (!ready) {
         actionHtml = '<button type="button" class="wishlist-action-purchase" id="wishlistPurchaseBtn" disabled>Purchased (connecting…)</button>';
       } else {
-        actionHtml = '<button type="button" class="wishlist-action-purchase" id="wishlistPurchaseBtn">Purchased</button>';
+        const status = String(card.price_status || "").toLowerCase();
+        let statusNote = "";
+        if (status === "checking") {
+          statusNote = '<p class="wishlist-action-note">Checking live solds… the max buy will update on this card.</p>';
+        } else if (status === "error") {
+          statusNote = '<p class="wishlist-action-note">Price check failed. Tap the card again to retry.</p>';
+        } else if (card.priced_at) {
+          statusNote = `<p class="wishlist-action-note">Priced ${escapeHtml(formatUpdated(card.priced_at) || "just now")}</p>`;
+        } else {
+          statusNote = '<p class="wishlist-action-note">Checking this card’s max buy…</p>';
+        }
+        actionHtml = `${statusNote}<button type="button" class="wishlist-action-purchase" id="wishlistPurchaseBtn">Purchased</button>`;
       }
 
       bar.innerHTML = `
@@ -2044,10 +2076,10 @@
       document.getElementById("tabBuyList").classList.toggle("active", view === "buy-list");
       document.getElementById("tabWishlist").classList.toggle("active", view === "wishlist");
       document.getElementById("tabAddSet")?.classList.toggle("active", view === "add-set");
-      document.title = view === "buy-list" ? "Toploader — Today"
-        : view === "wishlist" ? "Toploader — Wishlist"
-        : view === "add-set" ? "Toploader — Add set"
-        : "Toploader";
+      document.title = view === "buy-list" ? "Chase — Today"
+        : view === "wishlist" ? "Chase — Wishlist"
+        : view === "add-set" ? "Chase — Add set"
+        : "Chase";
       if (snapshotData) updateMeta();
       if (view === "buy-list") renderBuyList();
       else if (view === "wishlist") renderWishlist();
@@ -2777,12 +2809,12 @@
         if (activeView === "wishlist" && snapshotData) renderWishlist();
       });
     });
-    window.toploaderOnWishlistChanged = () => {
+    window.chaseOnWishlistChanged = () => {
       if (snapshotData) {
         setView("wishlist");
       }
     };
-    if (window.toploaderSetIntake) toploaderSetIntake.wire();
+    if (window.chaseSetIntake) chaseSetIntake.wire();
     if (window.showSync) {
       showSync.onChange(() => rerenderActiveView());
     }
@@ -2797,7 +2829,7 @@
 
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("service-worker.js?v=14").then(reg => {
+        navigator.serviceWorker.register("service-worker.js?v=15").then(reg => {
           if (reg.waiting) reg.waiting.postMessage({ type: "SKIP_WAITING" });
           reg.update().catch(() => {});
         }).catch(() => {});
@@ -2808,7 +2840,7 @@
           window.location.reload();
         });
         navigator.serviceWorker.addEventListener("message", event => {
-          if (event.data && event.data.type === "TOPLOADER_SW_UPDATED" && !refreshing) {
+          if (event.data && event.data.type === "CHASE_SW_UPDATED" && !refreshing) {
             refreshing = true;
             window.location.reload();
           }
