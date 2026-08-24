@@ -1,4 +1,4 @@
-const CACHE_NAME = "toploader-static-v13";
+const CACHE_NAME = "toploader-static-v14";
 const CORE_ASSETS = [
   "./",
   "index.html",

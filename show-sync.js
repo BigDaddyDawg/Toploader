@@ -221,6 +221,14 @@
     client = window.supabase.createClient(cfg.url.trim(), cfg.anonKey.trim());
     try {
       await refreshAll();
+      // One-time bridge: if live wishlist is empty, seed it from the morning snapshot
+      // so Add-set mode doesn't blank the existing floors.json chase list.
+      if (wishlistMap.size === 0) {
+        const seed = (snapshot?.cards || []).filter(c => Number(c.watchlist_status) === 1 && !isOwned(c));
+        if (seed.length) {
+          await addWishlistCards(seed, "snapshot");
+        }
+      }
       subscribe();
       ready = true;
       notifyChange();

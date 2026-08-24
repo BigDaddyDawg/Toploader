@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#FFCB05">
+  <meta name="theme-color" content="#3b82f6">
   <meta name="description" content="Toploader phone app — daily buy checks and wishlist tracking for Pokemon TCG card shows.">
   <title>Toploader</title>
-  <link rel="manifest" href="manifest.webmanifest?v=13">
-  <link rel="icon" href="icon.svg?v=13" type="image/svg+xml">
+  <link rel="manifest" href="manifest.webmanifest?v=14">
+  <link rel="icon" href="icon.svg?v=14" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -21,15 +21,15 @@
       --line: rgba(26, 39, 68, 0.12);
       --text: #1a2744;
       --muted: #5c6b88;
-      --energy: #ffcb05;
-      --energy-soft: #ffe566;
+      --energy: #3b82f6;
+      --energy-soft: #93c5fd;
       --foil: #ffd54a;
       --ok: #1fad6a;
       --buy: #1fad6a;
       --sky: #3b9eff;
       --coral: #ff6b3d;
       --warn: #e39b00;
-      --gold: #ffcb05;
+      --gold: #3b82f6;
       --ink: #1a2744;
       --sleeve: #f4fbff;
       --font-brand: "Fredoka", "Nunito", system-ui, sans-serif;
@@ -56,7 +56,7 @@
       z-index: -1;
       pointer-events: none;
       background:
-        radial-gradient(ellipse 80% 50% at 12% -8%, rgba(255, 203, 5, 0.55), transparent 55%),
+        radial-gradient(ellipse 80% 50% at 12% -8%, rgba(59, 130, 246, 0.55), transparent 55%),
         radial-gradient(ellipse 70% 45% at 100% 8%, rgba(59, 158, 255, 0.32), transparent 52%),
         radial-gradient(ellipse 55% 40% at 70% 100%, rgba(31, 173, 106, 0.18), transparent 50%),
         linear-gradient(180deg, #dcebff 0%, #eef6ff 42%, #fff8ec 100%);
@@ -82,7 +82,7 @@
       border-radius: 18px;
       border: 3px solid rgba(255, 255, 255, 0.85);
       background:
-        linear-gradient(145deg, rgba(255, 203, 5, 0.35), rgba(59, 158, 255, 0.22)),
+        linear-gradient(145deg, rgba(59, 130, 246, 0.35), rgba(59, 158, 255, 0.22)),
         #fff;
       box-shadow: 0 22px 40px rgba(26, 39, 68, 0.14);
       transform: rotate(11deg);
@@ -108,7 +108,7 @@
     .energy-orb-a {
       top: -18%;
       left: -12%;
-      background: radial-gradient(circle, rgba(255, 203, 5, 0.75), transparent 70%);
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.75), transparent 70%);
     }
     .energy-orb-b {
       right: -18%;
@@ -156,9 +156,9 @@
       width: 42px;
       height: 48px;
       border-radius: 12px;
-      background: linear-gradient(160deg, #ffe566 0%, #ffcb05 55%, #f0b400 100%);
+      background: linear-gradient(160deg, #93c5fd 0%, #3b82f6 55%, #2563eb 100%);
       border: 2px solid #fff;
-      box-shadow: 0 10px 22px rgba(255, 179, 0, 0.35);
+      box-shadow: 0 10px 22px rgba(37, 99, 235, 0.35);
       color: transparent;
       font-size: 0;
       overflow: hidden;
@@ -242,10 +242,10 @@
       line-height: 1;
     }
     .tab.active {
-      background: linear-gradient(160deg, #ffe566, #ffcb05);
+      background: linear-gradient(160deg, #dbeafe, #93c5fd);
       color: var(--ink);
       border-color: #fff;
-      box-shadow: 0 8px 18px rgba(255, 179, 0, 0.28);
+      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.2);
       transform: translateY(-2px);
     }
     .quick-controls {
@@ -260,7 +260,7 @@
       border-radius: 22px;
       border: 2px solid #fff;
       background:
-        radial-gradient(circle at 92% 0%, rgba(255, 203, 5, 0.45), transparent 40%),
+        radial-gradient(circle at 92% 0%, rgba(59, 130, 246, 0.45), transparent 40%),
         radial-gradient(circle at 0% 100%, rgba(59, 158, 255, 0.2), transparent 42%),
         linear-gradient(160deg, #ffffff 0%, #f3f9ff 100%);
       box-shadow: var(--shadow);
@@ -288,7 +288,7 @@
       padding: 7px 12px;
       border-radius: 999px;
       background: #1a2744;
-      color: #ffcb05;
+      color: #fff;
       font-size: 0.78rem;
       font-weight: 800;
     }
@@ -299,8 +299,8 @@
     }
     .signal-hold {
       border-color: rgba(227, 155, 0, 0.35) !important;
-      background: rgba(255, 203, 5, 0.22) !important;
-      color: #8a5a00 !important;
+      background: rgba(59, 130, 246, 0.22) !important;
+      color: #1e3a8a !important;
     }
     .wishlist-signal-row {
       display: flex;
@@ -740,10 +740,10 @@
       font-size: 1.05rem;
       font-weight: 700;
       letter-spacing: 0.01em;
-      color: var(--ink);
-      background: linear-gradient(160deg, #ffe566, #ffcb05);
+      color: #fff;
+      background: linear-gradient(160deg, #ff7a59, #ef4444);
       cursor: pointer;
-      box-shadow: 0 12px 28px rgba(255, 179, 0, 0.3);
+      box-shadow: 0 12px 28px rgba(239, 68, 68, 0.28);
     }
     .wishlist-action-purchase:disabled {
       opacity: 0.55;
@@ -865,13 +865,13 @@
       align-items: center;
       border-radius: 999px;
       padding: 7px 11px;
-      color: var(--ink);
-      background: linear-gradient(160deg, #ffe566, #ffcb05);
+      color: #fff;
+      background: linear-gradient(160deg, #ff7a59, #ef4444);
       border: 1px solid #fff;
       font-size: 0.8rem;
       font-weight: 800;
       letter-spacing: 0.01em;
-      box-shadow: 0 6px 14px rgba(255, 179, 0, 0.25);
+      box-shadow: 0 6px 14px rgba(239, 68, 68, 0.25);
     }
     .buy-note {
       color: #3d4f72;
@@ -881,7 +881,7 @@
       font-weight: 600;
     }
     .timing {
-      border-left: 3px solid #ffcb05;
+      border-left: 3px solid #3b82f6;
       padding-left: 9px;
       color: #3d4f72;
       font-size: 0.82rem;
@@ -915,7 +915,7 @@
       --wish-accent: 255, 107, 61;
     }
     #listWishlist .card:nth-child(4n) {
-      --wish-accent: 255, 203, 5;
+      --wish-accent: 59, 130, 246;
     }
     #listWishlist .card::before {
       content: "";
@@ -1092,7 +1092,7 @@
       background: #f3f7ff;
       font-weight: 700;
     }
-    .badge.watch { border-color: rgba(227, 155, 0, 0.35); color: #8a5a00; background: #fff4cc; }
+    .badge.watch { border-color: rgba(227, 155, 0, 0.35); color: #1e3a8a; background: #dbeafe; }
     .badge.got-badge {
       border-color: rgba(45, 212, 191, 0.55);
       color: #99f6e4;
@@ -1124,10 +1124,10 @@
       font-size: 0.88rem;
       font-weight: 700;
       letter-spacing: 0.01em;
-      color: var(--ink);
-      background: linear-gradient(160deg, #ffe566, #ffcb05);
+      color: #fff;
+      background: linear-gradient(160deg, #ff7a59, #ef4444);
       cursor: pointer;
-      box-shadow: 0 8px 20px rgba(255, 179, 0, 0.28);
+      box-shadow: 0 8px 20px rgba(239, 68, 68, 0.28);
     }
     .got-it-btn:disabled,
     .undo-got-btn:disabled {
@@ -1179,7 +1179,7 @@
     .guide-hero {
       border: 2px solid #fff;
       background:
-        radial-gradient(circle at 88% 8%, rgba(255, 203, 5, 0.35), transparent 34%),
+        radial-gradient(circle at 88% 8%, rgba(59, 130, 246, 0.35), transparent 34%),
         radial-gradient(circle at 0% 100%, rgba(59, 158, 255, 0.18), transparent 40%),
         #ffffff;
       border-radius: 24px;
@@ -1205,8 +1205,8 @@
       margin-top: 12px;
       border: 2px solid #fff;
       border-radius: 999px;
-      color: #8a5a00;
-      background: #fff4cc;
+      color: #1e3a8a;
+      background: #dbeafe;
       padding: 6px 10px;
       font-size: 0.82rem;
       font-weight: 800;
@@ -1678,9 +1678,9 @@
   <div id="wishlistActionBar" class="wishlist-action-bar" hidden aria-live="polite"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-  <script src="supabase-config.js?v=13"></script>
-  <script src="show-sync.js?v=13"></script>
-  <script src="set-intake.js?v=13"></script>
+  <script src="supabase-config.js?v=14"></script>
+  <script src="show-sync.js?v=14"></script>
+  <script src="set-intake.js?v=14"></script>
   <script>
     function initEnergySparks() {
       const canvas = document.getElementById("energy-sparks");
@@ -1712,7 +1712,7 @@
           const twinkle = reduce ? 0.65 : 0.3 + 0.7 * Math.abs(Math.sin(t * spark.s + spark.p));
           ctx.beginPath();
           ctx.fillStyle = spark.warm
-            ? `rgba(255, 203, 5, ${twinkle * spark.a * 0.55})`
+            ? `rgba(59, 130, 246, ${twinkle * spark.a * 0.55})`
             : `rgba(59, 158, 255, ${twinkle * spark.a * 0.45})`;
           ctx.arc(spark.x, spark.y, spark.r, 0, Math.PI * 2);
           ctx.fill();
@@ -1756,13 +1756,12 @@
     }
 
     function isWatched(card) {
+      // Floors snapshot is always a valid source. Live Supabase wishlist is additive.
+      if (Number(card.watchlist_status) === 1) return true;
       if (window.showSync && typeof showSync.isWishlisted === "function" && showSync.isConfigured()) {
-        // Prefer live Supabase wishlist when available.
-        if (showSync.wishlistList().length) {
-          return showSync.isWishlisted(card);
-        }
+        return showSync.isWishlisted(card);
       }
-      return Number(card.watchlist_status) === 1;
+      return false;
     }
 
     function activeWishlistCards() {
@@ -1775,29 +1774,41 @@
         && typeof showSync.isReady === "function"
         && showSync.isReady();
       const remote = syncReady ? showSync.wishlistList() : [];
-      if (syncReady) {
-        return remote.map(w => {
-          const floor = floorsByKey.get(w.card_key) || {};
-          return {
-            ...floor,
-            ...w,
-            card: w.card_name || w.card || floor.card || "",
-            number: w.number || floor.number || "",
-            set_name: w.set_name || floor.set_name || "",
-            watchlist_status: 1,
-            target_buy_gbp: floor.target_buy_gbp ?? w.target_buy_gbp,
-            floor_gbp: floor.floor_gbp ?? w.floor_gbp,
-            advisor_decision: floor.advisor_decision,
-            floor_justification: floor.floor_justification || floor.card_show_price_note || "",
-            card_show_price_note: floor.card_show_price_note || "",
-            image_small_url: w.image_small_url || floor.image_small_url || "",
-            image_large_url: w.image_large_url || floor.image_large_url || "",
-            scrape_query: w.scrape_query || floor.scrape_query || "",
-          };
+      const remoteKeys = new Set(remote.map(w => String(w.card_key || "").trim()).filter(Boolean));
+
+      // Prefer live rows when present, enriched with floor pricing.
+      const fromRemote = remote.map(w => {
+        const floor = floorsByKey.get(w.card_key) || {};
+        return {
+          ...floor,
+          ...w,
+          card: w.card_name || w.card || floor.card || "",
+          number: w.number || floor.number || "",
+          set_name: w.set_name || floor.set_name || "",
+          watchlist_status: 1,
+          target_buy_gbp: floor.target_buy_gbp ?? w.target_buy_gbp,
+          floor_gbp: floor.floor_gbp ?? w.floor_gbp,
+          advisor_decision: floor.advisor_decision,
+          floor_justification: floor.floor_justification || floor.card_show_price_note || "",
+          card_show_price_note: floor.card_show_price_note || "",
+          image_small_url: w.image_small_url || floor.image_small_url || "",
+          image_large_url: w.image_large_url || floor.image_large_url || "",
+          scrape_query: w.scrape_query || floor.scrape_query || "",
+        };
+      });
+
+      // Keep snapshot wishlist cards that are not yet in Supabase (and not owned).
+      const fromFloors = floors
+        .filter(c => Number(c.watchlist_status) === 1)
+        .filter(c => {
+          const key = String(c.card_key || "").trim();
+          if (key && remoteKeys.has(key)) return false;
+          if (window.showSync && showSync.isOwned(c)) return false;
+          return true;
         });
-      }
-      const wishAll = floors.filter(c => Number(c.watchlist_status) === 1);
-      return window.showSync ? showSync.filterCards(wishAll) : wishAll;
+
+      const merged = [...fromRemote, ...fromFloors];
+      return window.showSync ? showSync.filterCards(merged) : merged;
     }
 
     function loadPreference(key, fallback) {
@@ -2530,7 +2541,7 @@
         if (!filtered.length) {
           list.innerHTML = cards.length
             ? '<div class="empty">No wishlist cards match that filter.</div>'
-            : '<div class="empty">Wishlist is empty. Open <strong>Add set</strong> to pull in a new set and pick cards.</div>';
+            : '<div class="empty">No wishlist cards right now. Snapshot chase cards will reappear here, or use <strong>Add set</strong> to pick more.</div>';
           renderWishlistActionBar();
           return;
         }
@@ -2786,7 +2797,7 @@
 
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("service-worker.js?v=13").then(reg => {
+        navigator.serviceWorker.register("service-worker.js?v=14").then(reg => {
           if (reg.waiting) reg.waiting.postMessage({ type: "SKIP_WAITING" });
           reg.update().catch(() => {});
         }).catch(() => {});

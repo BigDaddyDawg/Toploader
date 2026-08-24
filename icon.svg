@@ -1,19 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Toploader icon">
   <defs>
     <linearGradient id="arena" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#3b9eff"/>
-      <stop offset="100%" stop-color="#1a2744"/>
-    </linearGradient>
-    <linearGradient id="energy" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#ffe566"/>
-      <stop offset="100%" stop-color="#ffcb05"/>
+      <stop offset="0%" stop-color="#60a5fa"/>
+      <stop offset="100%" stop-color="#1e3a8a"/>
     </linearGradient>
   </defs>
   <rect width="512" height="512" rx="112" fill="url(#arena)"/>
-  <rect x="126" y="76" width="226" height="328" rx="34" fill="url(#energy)" opacity="0.7" transform="rotate(-9 239 240)"/>
-  <rect x="160" y="108" width="226" height="328" rx="34" fill="#ffffff" opacity="0.95" transform="rotate(8 273 272)"/>
-  <rect x="188" y="142" width="136" height="192" rx="18" fill="#e8f3ff"/>
-  <rect x="204" y="158" width="104" height="148" rx="12" fill="#ffcb05"/>
+  <rect x="126" y="76" width="226" height="328" rx="34" fill="#93c5fd" opacity="0.75" transform="rotate(-9 239 240)"/>
+  <rect x="160" y="108" width="226" height="328" rx="34" fill="#ffffff" opacity="0.96" transform="rotate(8 273 272)"/>
+  <rect x="188" y="142" width="136" height="192" rx="18" fill="#dbeafe"/>
+  <rect x="204" y="158" width="104" height="148" rx="12" fill="#ef4444"/>
   <circle cx="256" cy="218" r="28" fill="#1a2744"/>
-  <circle cx="256" cy="218" r="12" fill="#ffcb05"/>
+  <circle cx="256" cy="218" r="12" fill="#ffffff"/>
 </svg>
