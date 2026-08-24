@@ -1,5 +1,5 @@
 {
-  "updated_at_utc": "2026-08-24T19:04:56.862422+00:00",
+  "updated_at_utc": "2026-08-24T19:12:31.720418+00:00",
   "sets": {
     "30th Celebration": {
       "set_name": "30th Celebration",
@@ -195,8 +195,38 @@
         "me06 delta reign"
       ],
       "group_id": 24831,
-      "note": "Working list from Japanese Storm Emeralda (113 cards) with JP card art. English numbers/art may shift at Delta Reign release.",
+      "note": "Includes Delta Reign promos at the top (Kyogre ETB MEP 117, Seel blister MEP 116), then the Storm Emeralda working list with JP art. English numbers may shift at release.",
       "cards": [
+        {
+          "name": "Kyogre",
+          "number": "117",
+          "rarity": "ETB Promo",
+          "set_name": "Mega Evolution Promos",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709233_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709233_400w.jpg",
+          "product_id": 709233,
+          "promo_note": "Delta Reign Elite Trainer Box promo (MEP 117)"
+        },
+        {
+          "name": "Kyogre (Pok\u00e9mon Center)",
+          "number": "117",
+          "rarity": "ETB Promo \u00b7 Pok\u00e9mon Center",
+          "set_name": "Mega Evolution Promos",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709233_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709233_400w.jpg",
+          "product_id": 709233,
+          "promo_note": "Pok\u00e9mon Center stamped ETB promo"
+        },
+        {
+          "name": "Seel",
+          "number": "116",
+          "rarity": "Blister Promo",
+          "set_name": "Mega Evolution Promos",
+          "image_small_url": "",
+          "image_large_url": "",
+          "product_id": null,
+          "promo_note": "Delta Reign 3-pack blister promo (MEP 116)"
+        },
         {
           "name": "Heracross",
           "number": "001",
@@ -828,14 +858,6 @@
           "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709232_200w.jpg",
           "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709232_400w.jpg",
           "product_id": 709232
-        },
-        {
-          "name": "Kyogre",
-          "number": "080",
-          "rarity": "Illustration Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709233_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709233_400w.jpg",
-          "product_id": 709233
         },
         {
           "name": "Electivire",

@@ -13,6 +13,7 @@
     "double rare",
     "futuristic",
     "mega ultra",
+    "promo",
   ];
 
   const QUICK_SETS = [
@@ -166,7 +167,11 @@
       return;
     }
 
-    const multiSet = lastResult.set_name === "Chase picks";
+    const multiSet =
+      lastResult.set_name === "Chase picks" ||
+      (lastResult.cards || []).some(
+        c => c.set_name && c.set_name !== lastResult.set_name
+      );
     list.innerHTML = cards
       .map(card => {
         const key = cardKeyFor(card);
@@ -175,7 +180,7 @@
           ? `<img class="card-image" src="${escapeHtml(card.image_small_url)}" alt="" loading="lazy">`
           : '<div class="card-image" aria-hidden="true"></div>';
         const setLine = multiSet
-          ? `${escapeHtml(card.set_name || "")} · ${escapeHtml(card.rarity || "—")}`
+          ? `${escapeHtml(card.set_name || lastResult.set_name || "")} · ${escapeHtml(card.rarity || "—")}${card.promo_note ? ` · ${escapeHtml(card.promo_note)}` : ""}`
           : escapeHtml(card.rarity || "—");
         return `
           <label class="card add-set-card" data-key="${escapeHtml(key)}">

@@ -6,8 +6,8 @@
   <meta name="theme-color" content="#3b82f6">
   <meta name="description" content="Chase — daily buy checks and wishlist tracking for Pokemon TCG card shows.">
   <title>Chase</title>
-  <link rel="manifest" href="manifest.webmanifest?v=19">
-  <link rel="icon" href="icon.svg?v=19" type="image/svg+xml">
+  <link rel="manifest" href="manifest.webmanifest?v=20">
+  <link rel="icon" href="icon.svg?v=20" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -209,10 +209,7 @@
       bottom: 0;
       z-index: 50;
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 6px;
-      margin: 0;
-      padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px));
+      grid-template-columns: repeat(4, 1fr);
       background: rgba(255, 255, 255, 0.92);
       border-top: 1px solid rgba(26, 39, 68, 0.08);
       backdrop-filter: blur(16px);
@@ -223,8 +220,8 @@
       border-radius: 16px;
       background: transparent;
       color: var(--muted);
-      padding: 10px 6px 8px;
-      font-size: 0.74rem;
+      padding: 10px 4px 8px;
+      font-size: 0.68rem;
       font-weight: 800;
       letter-spacing: 0.01em;
       cursor: pointer;
@@ -234,6 +231,22 @@
       gap: 2px;
       justify-items: center;
       line-height: 1.15;
+      position: relative;
+    }
+    .tab-badge {
+      position: absolute;
+      top: 2px;
+      right: calc(50% - 22px);
+      min-width: 1.1rem;
+      height: 1.1rem;
+      padding: 0 4px;
+      border-radius: 999px;
+      background: #ef4444;
+      color: #fff;
+      font-size: 0.62rem;
+      font-weight: 800;
+      line-height: 1.1rem;
+      text-align: center;
     }
     .tab .tab-icon {
       font-size: 1.1rem;
@@ -779,6 +792,11 @@
       border: 2px solid rgba(59, 130, 246, 0.28);
       box-shadow: 0 14px 36px rgba(26, 39, 68, 0.16);
       backdrop-filter: blur(12px);
+      cursor: pointer;
+      text-align: left;
+      font: inherit;
+      color: inherit;
+      width: auto;
     }
     @media (min-width: 720px) {
       .price-check-bar {
@@ -854,6 +872,68 @@
     }
     @media (prefers-reduced-motion: reduce) {
       .price-check-fill { animation: none; width: 100%; opacity: 0.55; }
+    }
+    .check-row-card {
+      display: grid;
+      gap: 8px;
+      padding: 12px;
+      border-radius: 16px;
+      background: #fff;
+      border: 2px solid rgba(26, 39, 68, 0.08);
+      box-shadow: 0 8px 20px rgba(26, 39, 68, 0.06);
+    }
+    .check-row-top {
+      display: grid;
+      grid-template-columns: 56px minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+    }
+    .check-row-top img,
+    .check-row-top .card-image {
+      width: 56px;
+      height: auto;
+      border-radius: 8px;
+      display: block;
+      background: #eef6ff;
+    }
+    .check-row-copy h3 {
+      margin: 0;
+      font-family: var(--font-brand);
+      font-size: 0.95rem;
+      line-height: 1.2;
+    }
+    .check-row-copy p {
+      margin: 3px 0 0;
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+    .check-row-status {
+      font-family: var(--font-brand);
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #2563eb;
+      text-align: right;
+    }
+    .check-row-card.is-done .check-row-status { color: #147a48; }
+    .check-row-card.is-error .check-row-status { color: #b91c1c; }
+    .check-progress {
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(59, 130, 246, 0.12);
+      overflow: hidden;
+    }
+    .check-progress > span {
+      display: block;
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #60a5fa, #2563eb);
+      transition: width 0.4s ease;
+    }
+    .check-row-card.is-done .check-progress > span {
+      background: #1fad6a;
+    }
+    .check-row-card.is-error .check-progress > span {
+      background: #ef4444;
     }
     .card-layout {
       display: grid;
@@ -1484,7 +1564,7 @@
         padding: 20px 16px calc(88px + env(safe-area-inset-bottom, 0px));
       }
       .tabs {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(4, 1fr);
         max-width: 560px;
         left: 50%;
         transform: translateX(-50%);
@@ -1555,12 +1635,14 @@
       </div>
     </div>
     <p class="meta" id="meta">Loading snapshot…</p>
-    <div id="priceCheckBar" class="price-check-bar" hidden aria-live="polite"></div>
   </header>
+
+  <button type="button" id="priceCheckBar" class="price-check-bar" hidden aria-live="polite"></button>
 
   <nav class="tabs" aria-label="Main">
     <button type="button" class="tab active" id="tabBuyList" data-view="buy-list"><span class="tab-icon" aria-hidden="true">●</span>Today</button>
     <button type="button" class="tab" id="tabWishlist" data-view="wishlist"><span class="tab-icon" aria-hidden="true">◇</span>Wishlist</button>
+    <button type="button" class="tab" id="tabChecks" data-view="checks"><span class="tab-icon" aria-hidden="true">⟳</span>Checks<span class="tab-badge" id="tabChecksBadge" hidden>0</span></button>
     <button type="button" class="tab" id="tabAddSet" data-view="add-set"><span class="tab-icon" aria-hidden="true">＋</span>Add set</button>
   </nav>
 
@@ -1645,6 +1727,15 @@
       <p class="stats" id="statsWishlist"></p>
     </div>
     <div id="listWishlist" class="list"></div>
+  </div>
+
+  <div id="viewChecks" class="view">
+    <section class="view-intro">
+      <h2>Price checks</h2>
+      <p>Every card you tap for a live max buy shows up here. Leave anytime — progress keeps updating.</p>
+      <span class="intro-count" id="checksIntroCount">None running</span>
+    </section>
+    <div id="listChecks" class="list"></div>
   </div>
 
   <div id="viewAddSet" class="view">
@@ -1772,9 +1863,9 @@
   <div id="wishlistActionBar" class="wishlist-action-bar" hidden aria-live="polite"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-  <script src="supabase-config.js?v=19"></script>
-  <script src="show-sync.js?v=19"></script>
-  <script src="set-intake.js?v=19"></script>
+  <script src="supabase-config.js?v=20"></script>
+  <script src="show-sync.js?v=20"></script>
+  <script src="set-intake.js?v=20"></script>
   <script>
     function initEnergySparks() {
       const canvas = document.getElementById("energy-sparks");
@@ -1962,15 +2053,23 @@
     let wishlistSignalFilter = "";
     let showImages = loadPreference(PREF_IMAGES_KEY, true);
     let compactCards = loadPreference(PREF_COMPACT_KEY, false);
-    /** @type {Map<string, { name: string, number: string, startedAt: number }>} */
-    const priceCheckStarts = new Map();
-    /** @type {{ mode: string, name: string, number: string, detail: string, at: number } | null} */
-    let priceCheckDone = null;
+    /** @type {Map<string, object>} */
+    const priceChecks = new Map();
+    const PRICE_CHECK_STORE = "chase_price_checks_v1";
+    const PRICE_CHECK_ESTIMATE_MS = 120000;
     let priceCheckTick = 0;
-    let priceCheckHideTimer = 0;
 
     function cardKeyOf(card) {
-      return String(card?.card_key || "").trim();
+      const direct = String(card?.card_key || "").trim();
+      if (direct) return direct;
+      if (window.showSync?.makeCardKey) {
+        return showSync.makeCardKey(
+          card?.card || card?.card_name,
+          card?.number,
+          card?.set_name
+        );
+      }
+      return "";
     }
 
     function formatElapsed(ms) {
@@ -1980,124 +2079,222 @@
       return m > 0 ? `${m}:${String(s).padStart(2, "0")}` : `0:${String(s).padStart(2, "0")}`;
     }
 
-    function rememberPriceCheckStart(card) {
+    function progressPct(job) {
+      if (job.status === "done" || job.status === "error") return 100;
+      const elapsed = Date.now() - job.startedAt;
+      return Math.max(6, Math.min(92, Math.round((elapsed / PRICE_CHECK_ESTIMATE_MS) * 100)));
+    }
+
+    function loadPriceChecks() {
+      try {
+        const raw = localStorage.getItem(PRICE_CHECK_STORE);
+        if (!raw) return;
+        const rows = JSON.parse(raw);
+        if (!Array.isArray(rows)) return;
+        const cutoff = Date.now() - 6 * 60 * 60 * 1000;
+        rows.forEach(row => {
+          if (!row?.key || !row.startedAt || row.startedAt < cutoff) return;
+          priceChecks.set(row.key, row);
+        });
+      } catch (_) {}
+    }
+
+    function savePriceChecks() {
+      try {
+        localStorage.setItem(PRICE_CHECK_STORE, JSON.stringify([...priceChecks.values()]));
+      } catch (_) {}
+    }
+
+    function rememberPriceCheckStart(card, status = "checking") {
       const key = cardKeyOf(card);
-      if (!key || priceCheckStarts.has(key)) return;
-      priceCheckStarts.set(key, {
-        name: String(card.card || card.card_name || "Card").trim(),
-        number: String(card.number || "").trim(),
-        startedAt: Date.now(),
-      });
+      if (!key) return null;
+      const existing = priceChecks.get(key);
+      const job = {
+        key,
+        name: String(card.card || card.card_name || existing?.name || "Card").trim(),
+        number: String(card.number || existing?.number || "").trim(),
+        set_name: String(card.set_name || existing?.set_name || "").trim(),
+        image: String(card.image_small_url || existing?.image || "").trim(),
+        startedAt: existing?.status === "checking" ? existing.startedAt : Date.now(),
+        status,
+        target_buy_gbp: card.target_buy_gbp ?? existing?.target_buy_gbp ?? null,
+        finishedAt: status === "checking" ? null : Date.now(),
+      };
+      priceChecks.set(key, job);
+      savePriceChecks();
       ensurePriceCheckTicker();
+      return job;
     }
 
     function ensurePriceCheckTicker() {
       if (priceCheckTick) return;
       priceCheckTick = window.setInterval(() => {
-        if (!priceCheckStarts.size && !priceCheckDone) {
+        const active = [...priceChecks.values()].some(j => j.status === "checking");
+        if (!active && activeView !== "checks") {
           window.clearInterval(priceCheckTick);
           priceCheckTick = 0;
-          return;
         }
         renderPriceCheckBar();
+        updateChecksTabBadge();
+        if (activeView === "checks") renderChecks();
       }, 1000);
     }
 
     function syncPriceCheckTracking() {
-      const checking = activeWishlistCards().filter(
-        c => String(c.price_status || "").toLowerCase() === "checking"
-      );
-      const activeKeys = new Set(checking.map(cardKeyOf).filter(Boolean));
+      const wish = activeWishlistCards();
+      const byKey = new Map(wish.map(c => [cardKeyOf(c), c]).filter(([k]) => k));
 
-      checking.forEach(card => rememberPriceCheckStart(card));
+      wish.forEach(card => {
+        if (String(card.price_status || "").toLowerCase() !== "checking") return;
+        rememberPriceCheckStart(card, "checking");
+      });
 
-      for (const [key, meta] of [...priceCheckStarts.entries()]) {
-        if (activeKeys.has(key)) continue;
-        const card = activeWishlistCards().find(c => cardKeyOf(c) === key);
+      for (const [key, job] of [...priceChecks.entries()]) {
+        if (job.status !== "checking") continue;
+        const card = byKey.get(key);
         const status = String(card?.price_status || "").toLowerCase();
-        if (status === "ok" || status === "error" || card) {
-          priceCheckDone = {
-            mode: status === "error" ? "error" : "done",
-            name: meta.name,
-            number: meta.number,
-            detail:
-              status === "error"
-                ? "Price check failed — tap the card to retry."
-                : `Max buy ${moneyWishlist(card?.target_buy_gbp)} · you can keep browsing.`,
-            at: Date.now(),
-          };
-          window.clearTimeout(priceCheckHideTimer);
-          priceCheckHideTimer = window.setTimeout(() => {
-            if (priceCheckDone && Date.now() - priceCheckDone.at >= 3500) {
-              priceCheckDone = null;
-              renderPriceCheckBar();
-            }
-          }, 4000);
+        if (status === "checking") continue;
+        if (status === "error") {
+          priceChecks.set(key, {
+            ...job,
+            status: "error",
+            finishedAt: Date.now(),
+            target_buy_gbp: card?.target_buy_gbp ?? job.target_buy_gbp,
+          });
+        } else if (card || status === "ok" || status === "") {
+          // Finished (ok) or left checking without an error flag.
+          if (status === "ok" || (card && card.priced_at && status !== "checking")) {
+            priceChecks.set(key, {
+              ...job,
+              status: "done",
+              finishedAt: Date.now(),
+              target_buy_gbp: card?.target_buy_gbp ?? job.target_buy_gbp,
+            });
+          }
         }
-        priceCheckStarts.delete(key);
       }
+      savePriceChecks();
+    }
 
-      // Drop stale starts if the card vanished mid-check.
-      for (const key of [...priceCheckStarts.keys()]) {
-        if (!activeKeys.has(key) && !activeWishlistCards().some(c => cardKeyOf(c) === key)) {
-          priceCheckStarts.delete(key);
-        }
-      }
+    function activeCheckJobs() {
+      return [...priceChecks.values()]
+        .filter(j => j.status === "checking")
+        .sort((a, b) => a.startedAt - b.startedAt);
+    }
+
+    function recentCheckJobs() {
+      const cutoff = Date.now() - 45 * 60 * 1000;
+      return [...priceChecks.values()]
+        .filter(j => j.status !== "checking" && (j.finishedAt || j.startedAt) >= cutoff)
+        .sort((a, b) => (b.finishedAt || b.startedAt) - (a.finishedAt || a.startedAt));
+    }
+
+    function updateChecksTabBadge() {
+      const badge = document.getElementById("tabChecksBadge");
+      if (!badge) return;
+      const n = activeCheckJobs().length;
+      badge.hidden = n < 1;
+      badge.textContent = String(n);
     }
 
     function renderPriceCheckBar() {
       const bar = document.getElementById("priceCheckBar");
       if (!bar) return;
       syncPriceCheckTracking();
-
-      if (priceCheckStarts.size) {
-        const items = [...priceCheckStarts.values()].sort((a, b) => a.startedAt - b.startedAt);
-        const first = items[0];
-        const elapsed = formatElapsed(Date.now() - first.startedAt);
-        const label =
-          items.length === 1
-            ? `${first.name}${first.number ? ` #${first.number}` : ""}`
-            : `${items.length} cards`;
-        const longWait = Date.now() - first.startedAt > 3 * 60 * 1000;
-        bar.className = "price-check-bar";
-        bar.hidden = false;
-        bar.innerHTML = `
-          <div class="price-check-top">
-            <div class="price-check-copy">
-              <strong>Checking last solds · ${escapeHtml(label)}</strong>
-              <span>${
-                longWait
-                  ? "Still working — you can leave this screen. Tap the card again if it stalls."
-                  : "Usually 1–3 minutes. You can leave this card — the max buy updates when it’s ready."
-              }</span>
-            </div>
-            <div class="price-check-elapsed" aria-label="Elapsed">${escapeHtml(elapsed)}</div>
-          </div>
-          <div class="price-check-track" aria-hidden="true"><div class="price-check-fill"></div></div>
-        `;
-        ensurePriceCheckTicker();
+      updateChecksTabBadge();
+      const active = activeCheckJobs();
+      if (!active.length) {
+        bar.hidden = true;
+        bar.innerHTML = "";
         return;
       }
-
-      if (priceCheckDone) {
-        const done = priceCheckDone;
-        bar.className = `price-check-bar ${done.mode === "error" ? "is-error" : "is-done"}`;
-        bar.hidden = false;
-        bar.innerHTML = `
-          <div class="price-check-top">
-            <div class="price-check-copy">
-              <strong>${done.mode === "error" ? "Price check failed" : "Price ready"} · ${escapeHtml(done.name)}${done.number ? ` #${escapeHtml(done.number)}` : ""}</strong>
-              <span>${escapeHtml(done.detail)}</span>
-            </div>
-            <div class="price-check-elapsed">${done.mode === "error" ? "!" : "✓"}</div>
+      const first = active[0];
+      const elapsed = formatElapsed(Date.now() - first.startedAt);
+      const label =
+        active.length === 1
+          ? `${first.name}${first.number ? ` #${first.number}` : ""}`
+          : `${active.length} cards checking`;
+      const pct = Math.round(
+        active.reduce((sum, job) => sum + progressPct(job), 0) / active.length
+      );
+      bar.className = "price-check-bar";
+      bar.hidden = false;
+      bar.innerHTML = `
+        <div class="price-check-top">
+          <div class="price-check-copy">
+            <strong>Checking last solds · ${escapeHtml(label)}</strong>
+            <span>Tap for per-card progress · usually ~2 min each · safe to browse away</span>
           </div>
-        `;
-        return;
-      }
-
-      bar.hidden = true;
-      bar.innerHTML = "";
+          <div class="price-check-elapsed">${escapeHtml(elapsed)} · ${pct}%</div>
+        </div>
+        <div class="price-check-track" aria-hidden="true"><div class="price-check-fill" style="width:${pct}%;animation:none;transform:none"></div></div>
+      `;
+      ensurePriceCheckTicker();
     }
+
+    function renderChecks() {
+      const list = document.getElementById("listChecks");
+      const intro = document.getElementById("checksIntroCount");
+      if (!list) return;
+      syncPriceCheckTracking();
+      const active = activeCheckJobs();
+      const recent = recentCheckJobs();
+      if (intro) {
+        intro.textContent = active.length
+          ? `${active.length} running`
+          : recent.length
+            ? `${recent.length} finished recently`
+            : "None running";
+      }
+      updateChecksTabBadge();
+      if (!active.length && !recent.length) {
+        list.innerHTML =
+          '<div class="empty">Tap cards on Today or Wishlist to queue live max buys. Each one will show progress here.</div>';
+        return;
+      }
+
+      const renderJob = job => {
+        const pct = progressPct(job);
+        const elapsed = formatElapsed(Date.now() - job.startedAt);
+        const statusLabel =
+          job.status === "checking"
+            ? `${elapsed} · ~${pct}%`
+            : job.status === "error"
+              ? "Failed"
+              : `Done · ${moneyWishlist(job.target_buy_gbp)}`;
+        const img = job.image
+          ? `<img class="card-image" src="${escapeHtml(job.image)}" alt="" loading="lazy">`
+          : '<div class="card-image" aria-hidden="true"></div>';
+        return `
+          <article class="check-row-card ${job.status === "done" ? "is-done" : ""} ${job.status === "error" ? "is-error" : ""}">
+            <div class="check-row-top">
+              ${img}
+              <div class="check-row-copy">
+                <h3>${escapeHtml(job.name)} <span style="color:var(--muted)">#${escapeHtml(job.number || "")}</span></h3>
+                <p>${escapeHtml(job.set_name || "Wishlist")}${
+                  job.status === "checking"
+                    ? " · scraping solds"
+                    : job.status === "error"
+                      ? " · tap card to retry"
+                      : " · max buy ready"
+                }</p>
+              </div>
+              <div class="check-row-status">${escapeHtml(statusLabel)}</div>
+            </div>
+            <div class="check-progress" aria-hidden="true"><span style="width:${pct}%"></span></div>
+          </article>
+        `;
+      };
+
+      list.innerHTML = [
+        active.length ? `<p class="stats">${active.length} in progress</p>` : "",
+        ...active.map(renderJob),
+        recent.length ? `<p class="stats" style="margin-top:12px">Recently finished</p>` : "",
+        ...recent.map(renderJob),
+      ].join("");
+    }
+
+    loadPriceChecks();
 
     function cardSlug(card) {
       return [card.card, card.number, card.set_name]
@@ -2135,11 +2332,13 @@
         typeof showSync.isReady === "function" &&
         showSync.isReady()
       ) {
-        showSync.requestPriceCheck(card).then(result => {
-          if (result && result.queued) rememberPriceCheckStart(card);
-          else if (result && result.reason === "already-checking") rememberPriceCheckStart(card);
+        showSync.requestPriceCheck(card, { force: true }).then(result => {
+          if (result && (result.queued || result.reason === "already-checking")) {
+            rememberPriceCheckStart(card, "checking");
+          }
           renderWishlistActionBar();
           renderPriceCheckBar();
+          if (activeView === "checks") renderChecks();
         }).catch(() => {});
       }
     }
@@ -2182,15 +2381,15 @@
         let statusNote = "";
         if (status === "checking") {
           const key = cardKeyOf(card);
-          const started = priceCheckStarts.get(key)?.startedAt || Date.now();
+          const started = priceChecks.get(key)?.startedAt || Date.now();
           const elapsed = formatElapsed(Date.now() - started);
-          statusNote = `<p class="wishlist-action-note">Checking last solds… ${escapeHtml(elapsed)} in. You can close this and keep browsing — the max buy updates on the card.</p>`;
+          statusNote = `<p class="wishlist-action-note">Checking last solds… ${escapeHtml(elapsed)} in. Open <strong>Checks</strong> for progress — safe to leave this card.</p>`;
         } else if (status === "error") {
           statusNote = '<p class="wishlist-action-note">Price check failed. Tap the card again to retry.</p>';
         } else if (card.priced_at) {
           statusNote = `<p class="wishlist-action-note">Priced ${escapeHtml(formatSnapshotDateTime(card.priced_at) || "just now")}</p>`;
         } else {
-          statusNote = '<p class="wishlist-action-note">Starting max-buy check… usually 1–3 minutes. Safe to leave this card.</p>';
+          statusNote = '<p class="wishlist-action-note">Starting max-buy check… usually ~2 minutes. Track it on the Checks tab.</p>';
         }
         actionHtml = `${statusNote}<button type="button" class="wishlist-action-purchase" id="wishlistPurchaseBtn">Purchased</button>`;
       }
@@ -2282,7 +2481,7 @@
     }
 
     function setView(view) {
-      // Phone surface: Today / Wishlist / Add set.
+      // Phone surface: Today / Wishlist / Checks / Add set.
       if (view === "home" || view === "floors" || view === "helper" || view === "buying-guide" || view === "owned") {
         view = view === "helper" ? "wishlist" : "buy-list";
       }
@@ -2290,9 +2489,10 @@
       document.body.classList.remove("home-view");
       const route = view === "buy-list" ? "buy-list"
         : view === "wishlist" ? "wishlist"
+        : view === "checks" ? "checks"
         : view === "add-set" ? "add-set"
         : "buy-list";
-      const hash = `#${route}${selectedCardSlug ? `?card=${encodeURIComponent(selectedCardSlug)}` : ""}`;
+      const hash = `#${route}${selectedCardSlug && view !== "checks" ? `?card=${encodeURIComponent(selectedCardSlug)}` : ""}`;
       if (location.hash !== hash) {
         history.replaceState(null, "", hash);
       }
@@ -2300,31 +2500,37 @@
       document.getElementById("viewBuyList").classList.toggle("active", view === "buy-list");
       document.getElementById("viewFloors").classList.remove("active");
       document.getElementById("viewWishlist").classList.toggle("active", view === "wishlist");
+      document.getElementById("viewChecks")?.classList.toggle("active", view === "checks");
       document.getElementById("viewAddSet")?.classList.toggle("active", view === "add-set");
       document.getElementById("viewOwned")?.classList.remove("active");
       document.getElementById("viewHelper").classList.remove("active");
       document.getElementById("viewBuyingGuide").classList.remove("active");
       document.getElementById("tabBuyList").classList.toggle("active", view === "buy-list");
       document.getElementById("tabWishlist").classList.toggle("active", view === "wishlist");
+      document.getElementById("tabChecks")?.classList.toggle("active", view === "checks");
       document.getElementById("tabAddSet")?.classList.toggle("active", view === "add-set");
       document.title = view === "buy-list" ? "Chase — Today"
         : view === "wishlist" ? "Chase — Wishlist"
+        : view === "checks" ? "Chase — Checks"
         : view === "add-set" ? "Chase — Add set"
         : "Chase";
       if (snapshotData) updateMeta();
       if (view === "buy-list") renderBuyList();
       else if (view === "wishlist") renderWishlist();
+      else if (view === "checks") renderChecks();
       else if (view === "add-set") {
         document.getElementById("addSetFilters")?.removeAttribute("hidden");
         document.getElementById("addSetActions")?.removeAttribute("hidden");
       }
       renderWishlistActionBar();
+      renderPriceCheckBar();
     }
 
     function parseHash() {
       const parsed = parseHashParts();
       selectedCardSlug = parsed.card;
       if (parsed.route === "wishlist" || parsed.route === "helper") return "wishlist";
+      if (parsed.route === "checks") return "checks";
       if (parsed.route === "add-set") return "add-set";
       if (parsed.route === "owned") return "buy-list";
       return "buy-list";
@@ -2338,12 +2544,16 @@
       const syncNote = syncStatusHtml();
       const wish = activeWishlistCards();
       const buy = buildBuyCandidates(wish);
+      const checking = activeCheckJobs().length;
       if (activeView === "buy-list") {
         document.getElementById("meta").innerHTML =
           `${buy.length} to check today · updated ${updated}${cacheNote}${errNote}${syncNote}`;
       } else if (activeView === "wishlist") {
         document.getElementById("meta").innerHTML =
           `${wish.length} on wishlist · updated ${updated}${cacheNote}${errNote}${syncNote}`;
+      } else if (activeView === "checks") {
+        document.getElementById("meta").innerHTML =
+          `${checking} price check${checking === 1 ? "" : "s"} running · ${updated}${cacheNote}${errNote}${syncNote}`;
       } else if (activeView === "add-set") {
         document.getElementById("meta").innerHTML =
           `Add cards to wishlist · ${updated}${cacheNote}${errNote}${syncNote}`;
@@ -2498,6 +2708,7 @@
       renderPriceCheckBar();
       if (activeView === "buy-list") renderBuyList();
       else if (activeView === "wishlist") renderWishlist();
+      else if (activeView === "checks") renderChecks();
       else if (activeView === "add-set") {
         /* picker state lives in set-intake.js */
       }
@@ -2990,7 +3201,9 @@
 
     document.getElementById("tabBuyList").addEventListener("click", () => setView("buy-list"));
     document.getElementById("tabWishlist").addEventListener("click", () => setView("wishlist"));
+    document.getElementById("tabChecks")?.addEventListener("click", () => setView("checks"));
     document.getElementById("tabAddSet")?.addEventListener("click", () => setView("add-set"));
+    document.getElementById("priceCheckBar")?.addEventListener("click", () => setView("checks"));
     document.querySelectorAll("[data-signal]").forEach(btn => {
       btn.addEventListener("click", () => {
         wishlistSignalFilter = btn.dataset.signal || "";
@@ -3018,7 +3231,7 @@
 
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("service-worker.js?v=19").then(reg => {
+        navigator.serviceWorker.register("service-worker.js?v=20").then(reg => {
           if (reg.waiting) reg.waiting.postMessage({ type: "SKIP_WAITING" });
           reg.update().catch(() => {});
         }).catch(() => {});

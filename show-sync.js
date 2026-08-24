@@ -494,15 +494,16 @@
     return Date.now() - d.getTime() < minutes * 60 * 1000;
   }
 
-  async function requestPriceCheck(card) {
+  async function requestPriceCheck(card, options = {}) {
     if (!client) return { ok: false, error: "Sync not ready" };
+    const force = Boolean(options.force);
     const key = cardKey(card);
     if (!key) return { ok: false, error: "Missing card key" };
     const existing = wishlistMap.get(key) || {};
     if (String(existing.price_status || "").toLowerCase() === "checking") {
-      return { ok: true, queued: false, reason: "already-checking" };
+      return { ok: true, queued: true, reason: "already-checking" };
     }
-    if (recentlyPriced(existing) && String(existing.price_status || "") === "ok") {
+    if (!force && recentlyPriced(existing) && String(existing.price_status || "") === "ok") {
       return { ok: true, queued: false, reason: "fresh" };
     }
 
