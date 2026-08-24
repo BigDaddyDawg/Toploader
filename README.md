@@ -24,8 +24,6 @@ cd "C:\path\to\pokemon-tcg-terminal"
 
 The batch updates `docs/floors.json` and `docs/index.html` stays in the app repo; publish copies them to the public **Toploader** repo.
 
-Owned / purchased cards sync live via the **Family Vault** Supabase hub (`toploader_owned_cards`), not the old paused `toploader-show` project.
-
 ## GitHub Pages setup
 
 In the public **Toploader** repo: **Settings → Pages → Build from branch → `main` → `/` (root)**.

@@ -1,8 +1,8 @@
 {
   "name": "Toploader",
   "short_name": "Toploader",
-  "description": "Static Pokemon TCG card-show wishlist, floor checker, and buying helper.",
-  "start_url": "./",
+  "description": "Daily buy checks and wishlist tracking for Pokemon TCG card shows.",
+  "start_url": "./#buy-list",
   "scope": "./",
   "display": "standalone",
   "background_color": "#060b18",

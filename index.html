@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#060b18">
-  <meta name="description" content="Toploader static Pokemon TCG card-show wishlist, floors, and buy timing helper.">
+  <meta name="description" content="Toploader phone app — daily buy checks and wishlist tracking for Pokemon TCG card shows.">
   <title>Toploader</title>
-  <link rel="manifest" href="manifest.webmanifest?v=8">
-  <link rel="icon" href="icon.svg?v=8" type="image/svg+xml">
+  <link rel="manifest" href="manifest.webmanifest?v=10">
+  <link rel="icon" href="icon.svg?v=10" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
@@ -45,7 +45,7 @@
       background: var(--arena);
       color: var(--text);
       min-height: 100vh;
-      padding: 12px 12px 32px;
+      padding: 12px 12px calc(88px + env(safe-area-inset-bottom, 0px));
       overflow-x: hidden;
       z-index: 0;
     }
@@ -182,30 +182,49 @@
       line-height: 1.4;
     }
     .tabs {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 50;
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 8px;
-      margin: 12px 0;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+      margin: 0;
+      padding: 8px 10px calc(8px + env(safe-area-inset-bottom, 0px));
+      background: linear-gradient(180deg, rgba(6, 11, 24, 0.72), rgba(6, 11, 24, 0.97));
+      border-top: 1px solid rgba(246, 226, 164, 0.18);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 -16px 40px rgba(0, 0, 0, 0.35);
     }
     .tab {
-      flex: 1;
-      border: 1px solid var(--line);
+      border: 1px solid transparent;
       border-radius: 14px;
-      background: rgba(8, 16, 32, 0.55);
-      backdrop-filter: blur(10px);
+      background: transparent;
       color: var(--muted);
-      padding: 12px 14px;
-      font-size: 0.95rem;
-      font-weight: 700;
+      padding: 10px 6px 8px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
       cursor: pointer;
       font-family: inherit;
-      transition: border-color 0.18s, background 0.18s, color 0.18s, transform 0.18s;
+      transition: border-color 0.18s, background 0.18s, color 0.18s;
+      display: grid;
+      gap: 2px;
+      justify-items: center;
+      line-height: 1.15;
+    }
+    .tab .tab-icon {
+      font-size: 1.05rem;
+      font-weight: 800;
+      font-family: var(--font-brand);
+      line-height: 1;
     }
     .tab.active {
       background: linear-gradient(145deg, rgba(245, 197, 66, 0.28), rgba(45, 212, 191, 0.12));
       color: var(--text);
       border-color: rgba(245, 197, 66, 0.45);
-      box-shadow: 0 0 0 1px rgba(245, 197, 66, 0.12), 0 10px 28px rgba(245, 197, 66, 0.12);
+      box-shadow: 0 0 0 1px rgba(245, 197, 66, 0.12);
     }
     .quick-controls {
       display: grid;
@@ -213,9 +232,64 @@
       gap: 8px;
       margin: 0 0 12px;
     }
-    body.home-view .tabs,
-    body.home-view .quick-controls {
-      display: none;
+    .view-intro {
+      margin: 0 0 12px;
+      padding: 14px 14px 12px;
+      border-radius: 18px;
+      border: 1px solid rgba(246, 226, 164, 0.18);
+      background:
+        radial-gradient(circle at 90% 10%, rgba(45, 212, 191, 0.16), transparent 36%),
+        linear-gradient(145deg, rgba(12, 22, 42, 0.92), rgba(10, 18, 36, 0.84));
+    }
+    .view-intro h2 {
+      margin: 0 0 4px;
+      font-family: var(--font-brand);
+      font-size: clamp(1.35rem, 4.8vw, 1.7rem);
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      font-weight: 800;
+    }
+    .view-intro p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.4;
+    }
+    .view-intro .intro-count {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(45, 212, 191, 0.14);
+      color: #99f6e4;
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+    .signal-buy {
+      border-color: rgba(45, 212, 191, 0.55) !important;
+      background: rgba(45, 212, 191, 0.16) !important;
+      color: #99f6e4 !important;
+    }
+    .signal-hold {
+      border-color: rgba(245, 197, 66, 0.4) !important;
+      background: rgba(245, 197, 66, 0.12) !important;
+      color: var(--energy-soft) !important;
+    }
+    .wishlist-signal-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 6px 0 2px;
+      align-items: center;
+    }
+    .segmented {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+    .segmented .toggle-btn {
+      padding: 9px 8px;
+      font-size: 0.78rem;
     }
     .toggle-btn {
       border: 1px solid var(--line);
@@ -577,16 +651,17 @@
     .card.selectable:active {
       transform: scale(0.995);
     }
-    #viewWishlist.has-selection {
-      padding-bottom: calc(132px + env(safe-area-inset-bottom, 0px));
+    #viewWishlist.has-selection,
+    #viewBuyList.has-selection {
+      padding-bottom: calc(220px + env(safe-area-inset-bottom, 0px));
     }
     .wishlist-action-bar {
       position: fixed;
       left: 0;
       right: 0;
-      bottom: 0;
+      bottom: calc(64px + env(safe-area-inset-bottom, 0px));
       z-index: 40;
-      padding: 14px 16px calc(14px + env(safe-area-inset-bottom, 0px));
+      padding: 14px 16px;
       background: linear-gradient(180deg, rgba(6, 11, 24, 0.72), rgba(6, 11, 24, 0.98));
       border-top: 1px solid rgba(246, 226, 164, 0.2);
       box-shadow: 0 -18px 48px rgba(0, 0, 0, 0.38);
@@ -1289,124 +1364,54 @@
       <div class="brand-mark" aria-hidden="true"></div>
       <div>
         <div class="brand-title">Toploader</div>
-        <div class="brand-sub">Card-show companion</div>
+        <div class="brand-sub">Daily buy companion</div>
       </div>
     </div>
     <p class="meta" id="meta">Loading snapshot…</p>
   </header>
 
-  <nav class="tabs" aria-label="View">
-    <button type="button" class="tab active" id="tabHome" data-view="home">Home</button>
-    <button type="button" class="tab" id="tabBuyList" data-view="buy-list">Buy list</button>
-    <button type="button" class="tab" id="tabFloors" data-view="floors">Floors</button>
-    <button type="button" class="tab" id="tabWishlist" data-view="wishlist">Wishlist</button>
-    <button type="button" class="tab" id="tabOwned" data-view="owned">Owned</button>
-    <button type="button" class="tab" id="tabHelper" data-view="helper">Helper</button>
-    <button type="button" class="tab" id="tabBuyingGuide" data-view="buying-guide">Buying guide</button>
+  <nav class="tabs" aria-label="Main">
+    <button type="button" class="tab active" id="tabBuyList" data-view="buy-list"><span class="tab-icon" aria-hidden="true">●</span>Today</button>
+    <button type="button" class="tab" id="tabWishlist" data-view="wishlist"><span class="tab-icon" aria-hidden="true">◇</span>Wishlist</button>
+    <button type="button" class="tab" id="tabOwned" data-view="owned"><span class="tab-icon" aria-hidden="true">✓</span>Owned</button>
   </nav>
-  <div class="quick-controls" aria-label="Display options">
-    <button type="button" class="toggle-btn active" id="toggleCompact">Compact cards</button>
-    <button type="button" class="toggle-btn" id="toggleImages">Images off</button>
+
+  <div id="viewHome" class="view" hidden aria-hidden="true">
+    <div id="homeChips" hidden></div>
+    <div id="homeBuyCount" hidden>—</div>
+    <div id="homeWishlistCount" hidden>—</div>
+    <div id="homeUpdated" hidden>—</div>
   </div>
 
-  <div id="viewHome" class="view active">
-    <section class="tl-hero">
-      <div class="hero-glow" aria-hidden="true"></div>
-      <div class="tl-eyebrow">Today’s snapshot</div>
-      <h2>Card-show helper in your pocket</h2>
-      <p>Floor prices, target buys, and the wishlist — tuned for the hunt on your phone.</p>
-      <div class="chip-row" id="homeChips" aria-label="Snapshot highlights"></div>
+  <div id="viewBuyList" class="view active">
+    <section class="view-intro">
+      <h2>Should I buy today?</h2>
+      <p>Buy-now cards from your wishlist. Check the max buy, type the asking price, tap the card, then hit Purchased.</p>
+      <span class="intro-count" id="buyListIntroCount">Loading…</span>
     </section>
-    <div class="kpi-grid" aria-label="Snapshot summary">
-      <div class="kpi">
-        <div class="kpi-label">Priced cards</div>
-        <div class="kpi-value" id="homeCardCount">—</div>
-      </div>
-      <div class="kpi">
-        <div class="kpi-label">Wishlist</div>
-        <div class="kpi-value" id="homeWishlistCount">—</div>
-      </div>
-      <div class="kpi">
-        <div class="kpi-label">Updated</div>
-        <div class="kpi-value" id="homeUpdated" style="font-size:1.05rem;">—</div>
-      </div>
-    </div>
-    <div class="snapshot-strip" aria-label="Quick navigation">
-      <span class="strip-label">Jump to</span>
-      <button type="button" class="strip-btn" data-go="buy-list">Today’s buy list</button>
-      <button type="button" class="strip-btn" data-go="floors">Floor checker</button>
-      <button type="button" class="strip-btn" data-go="wishlist">Wishlist</button>
-      <button type="button" class="strip-btn" data-go="owned">Owned</button>
-      <button type="button" class="strip-btn" data-go="helper">Helper mode</button>
-      <button type="button" class="strip-btn" data-go="buying-guide">Buying guide</button>
-    </div>
-    <div class="home-grid">
-      <button type="button" class="action-card accent-floors" data-go="floors">
-        <div class="action-card-head">
-          <h2>Floor checker <span class="chev" aria-hidden="true">›</span></h2>
-          <span class="panel-badge price">Price check</span>
-        </div>
-        <p class="sub">Expected floors and ideal buy points for every card in the list.</p>
-      </button>
-      <button type="button" class="action-card accent-wishlist" data-go="buy-list">
-        <div class="action-card-head">
-          <h2>Today’s buy list <span class="chev" aria-hidden="true">›</span></h2>
-          <span class="panel-badge buy">Timing</span>
-        </div>
-        <p class="sub">Cards most worth checking today, ranked by buy signal and confidence.</p>
-      </button>
-      <button type="button" class="action-card accent-wishlist" data-go="wishlist">
-        <div class="action-card-head">
-          <h2>Wishlist <span class="chev" aria-hidden="true">›</span></h2>
-          <span class="panel-badge list">Card list</span>
-        </div>
-        <p class="sub">Backlog cards queued up for the next hunt.</p>
-      </button>
-      <button type="button" class="action-card accent-wishlist" data-go="owned">
-        <div class="action-card-head">
-          <h2>Owned <span class="chev" aria-hidden="true">›</span></h2>
-          <span class="panel-badge list">Collection</span>
-        </div>
-        <p class="sub">Cards bought and ticked off — shared live with everyone.</p>
-      </button>
-      <button type="button" class="action-card accent-guide" data-go="helper">
-        <div class="action-card-head">
-          <h2>Helper mode <span class="chev" aria-hidden="true">›</span></h2>
-          <span class="panel-badge helper">Simple view</span>
-        </div>
-        <p class="sub">A cleaner card-match view with images, exact numbers, and condition reminders.</p>
-      </button>
-      <button type="button" class="action-card accent-guide" data-go="buying-guide">
-        <div class="action-card-head">
-          <h2>Buying guide <span class="chev" aria-hidden="true">›</span></h2>
-          <span class="panel-badge helper">Photo helper</span>
-        </div>
-        <p class="sub">Simple photo checks for anyone helping buy raw cards from online listings or sellers.</p>
-      </button>
-    </div>
-    <div id="homeError"></div>
-  </div>
-
-  <div id="viewBuyList" class="view">
     <div class="toolbar">
-      <input type="search" id="searchBuyList" placeholder="Search buy list…" autocomplete="off">
+      <input type="search" id="searchBuyList" placeholder="Search today’s list…" autocomplete="off">
       <div class="filters">
         <select id="setFilterBuyList" aria-label="Filter by set">
           <option value="">All sets</option>
         </select>
-        <select id="timingFilterBuyList" aria-label="Filter by buy timing">
-          <option value="">All buy-now cards</option>
+        <select id="timingFilterBuyList" aria-label="Filter by freshness">
+          <option value="">All buy-now</option>
           <option value="fresh">Fresh data only</option>
-          <option value="watched">Wishlist only</option>
         </select>
       </div>
       <div class="set-buttons" id="setButtonsBuyList" aria-label="Buy list set shortcuts"></div>
       <p class="stats" id="statsBuyList"></p>
     </div>
     <div id="listBuyList" class="list"></div>
+    <div id="homeError"></div>
   </div>
 
   <div id="viewFloors" class="view">
+    <section class="view-intro">
+      <h2>Floor checker</h2>
+      <p>Compare asking prices against floor and max buy. Use this when you need a deeper price check.</p>
+    </section>
     <div class="toolbar">
       <input type="search" id="searchFloors" placeholder="Search card, number, set…" autocomplete="off">
       <div class="filters">
@@ -1425,13 +1430,24 @@
   </div>
 
   <div id="viewWishlist" class="view">
+    <section class="view-intro">
+      <h2>Your wishlist</h2>
+      <p>Everything you want. Filter Buy now vs Hold, tap a card to mark Purchased when you get it.</p>
+      <span class="intro-count" id="wishlistIntroCount">Loading…</span>
+    </section>
     <div class="toolbar">
-      <input type="search" id="searchWishlist" placeholder="Search card, number, set…" autocomplete="off">
+      <input type="search" id="searchWishlist" placeholder="Search wishlist…" autocomplete="off">
+      <div class="segmented" role="group" aria-label="Signal filter">
+        <button type="button" class="toggle-btn active" id="signalFilterAll" data-signal="">All</button>
+        <button type="button" class="toggle-btn" id="signalFilterBuy" data-signal="buy">Buy now</button>
+        <button type="button" class="toggle-btn" id="signalFilterHold" data-signal="hold">Hold</button>
+      </div>
       <div class="filters wishlist-filters">
         <select id="setFilterWishlist" aria-label="Filter by set">
           <option value="">All sets</option>
         </select>
         <select id="sortWishlist" aria-label="Sort wishlist">
+          <option value="priority">Buy now first</option>
           <option value="cheapest">Cheapest first</option>
           <option value="expensive">Most expensive first</option>
           <option value="set">Set order</option>
@@ -1442,14 +1458,12 @@
       <p class="stats" id="statsWishlist"></p>
     </div>
     <div id="listWishlist" class="list"></div>
-    <div id="wishlistActionBar" class="wishlist-action-bar" hidden aria-live="polite"></div>
   </div>
 
   <div id="viewOwned" class="view">
-    <section class="guide-hero">
-      <h2>Owned collection</h2>
-      <p>Cards someone has bought and ticked off. These are shared live with everyone and stay here for good.</p>
-      <span class="guide-note">Tapped the wrong one? Use “Move back to wishlist” to undo.</span>
+    <section class="view-intro">
+      <h2>Owned</h2>
+      <p>Cards you’ve marked Purchased. Shared live — undo from here if you tapped the wrong one.</p>
     </section>
     <div class="toolbar">
       <input type="search" id="searchOwned" placeholder="Search owned cards…" autocomplete="off">
@@ -1560,9 +1574,11 @@
     </section>
   </div>
 
+  <div id="wishlistActionBar" class="wishlist-action-bar" hidden aria-live="polite"></div>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-  <script src="supabase-config.js?v=vault1"></script>
-  <script src="show-sync.js?v=vault1"></script>
+  <script src="supabase-config.js?v=10"></script>
+  <script src="show-sync.js?v=10"></script>
   <script>
     function initEnergySparks() {
       const canvas = document.getElementById("energy-sparks");
@@ -1612,8 +1628,8 @@
     initEnergySparks();
 
     const CACHE_KEY = "toploader_floors_v1";
-    const PREF_IMAGES_KEY = "toploader_show_images_v1";
-    const PREF_COMPACT_KEY = "toploader_compact_cards_v1";
+    const PREF_IMAGES_KEY = "toploader_show_images_v2";
+    const PREF_COMPACT_KEY = "toploader_compact_cards_v2";
 
     function money(v) {
       if (v === null || v === undefined || v === "") return "n/a";
@@ -1690,10 +1706,11 @@
     }
 
     let snapshotData = null;
-    let activeView = "home";
+    let activeView = "buy-list";
     let selectedCardSlug = "";
-    let showImages = loadPreference(PREF_IMAGES_KEY, false);
-    let compactCards = loadPreference(PREF_COMPACT_KEY, true);
+    let wishlistSignalFilter = "";
+    let showImages = loadPreference(PREF_IMAGES_KEY, true);
+    let compactCards = loadPreference(PREF_COMPACT_KEY, false);
 
     function cardSlug(card) {
       return [card.card, card.number, card.set_name]
@@ -1708,32 +1725,35 @@
       return (snapshotData.cards || []).find(c => cardSlug(c) === slug) || null;
     }
 
-    function selectWishlistCard(slug) {
-      selectedCardSlug = slug || "";
-      setView("wishlist");
-    }
-
     function clearWishlistSelection() {
       if (!selectedCardSlug) return;
       selectedCardSlug = "";
-      setView("wishlist");
+      if (activeView === "wishlist" || activeView === "buy-list") setView(activeView);
+      else setView("wishlist");
+    }
+
+    function selectCardForPurchase(slug, view = "wishlist") {
+      selectedCardSlug = slug || "";
+      setView(view);
     }
 
     function renderWishlistActionBar() {
       const bar = document.getElementById("wishlistActionBar");
-      const view = document.getElementById("viewWishlist");
-      if (!bar || !view) return;
+      const wishView = document.getElementById("viewWishlist");
+      const buyView = document.getElementById("viewBuyList");
+      if (!bar) return;
+      if (wishView) wishView.classList.remove("has-selection");
+      if (buyView) buyView.classList.remove("has-selection");
 
-      if (activeView !== "wishlist" || !selectedCardSlug || !snapshotData) {
+      const onTrackView = activeView === "wishlist" || activeView === "buy-list";
+      if (!onTrackView || !selectedCardSlug || !snapshotData) {
         bar.hidden = true;
-        view.classList.remove("has-selection");
         return;
       }
 
       const card = findCardBySlug(selectedCardSlug);
       if (!card || !isWatched(card)) {
         bar.hidden = true;
-        view.classList.remove("has-selection");
         return;
       }
 
@@ -1758,14 +1778,15 @@
         <div class="wishlist-action-top">
           <div class="wishlist-action-copy">
             <h3>${escapeHtml(card.card || "")} <span style="color:var(--muted)">#${escapeHtml(card.number || "")}</span></h3>
-            <p>${escapeHtml(card.set_name || "Unknown set")} · Target ${moneyWishlist(card.target_buy_gbp)}</p>
+            <p>${escapeHtml(card.set_name || "Unknown set")} · Max buy ${moneyWishlist(card.target_buy_gbp)}</p>
           </div>
           <button type="button" class="wishlist-action-dismiss" id="wishlistActionDismiss" aria-label="Close">×</button>
         </div>
         ${actionHtml}
       `;
       bar.hidden = false;
-      view.classList.add("has-selection");
+      if (activeView === "wishlist" && wishView) wishView.classList.add("has-selection");
+      if (activeView === "buy-list" && buyView) buyView.classList.add("has-selection");
 
       const dismiss = document.getElementById("wishlistActionDismiss");
       if (dismiss) dismiss.addEventListener("click", clearWishlistSelection);
@@ -1785,20 +1806,30 @@
       }
     }
 
-    function wireWishlistSelection(listEl) {
+    function wireCardPurchaseSelection(listEl, view) {
       if (!listEl) return;
       listEl.querySelectorAll("[data-select-wishlist]").forEach(el => {
         el.addEventListener("click", event => {
-          if (event.target.closest("a, button, input, select, textarea")) return;
-          selectWishlistCard(el.dataset.selectWishlist || "");
+          if (event.target.closest("a, button, input, select, textarea, .deal-calc")) return;
+          const slug = el.dataset.selectWishlist || "";
+          if (selectedCardSlug === slug) clearWishlistSelection();
+          else selectCardForPurchase(slug, view);
         });
         el.addEventListener("keydown", event => {
           if (event.key === "Enter" || event.key === " ") {
             event.preventDefault();
-            selectWishlistCard(el.dataset.selectWishlist || "");
+            selectCardForPurchase(el.dataset.selectWishlist || "", view);
           }
         });
       });
+    }
+
+    function selectWishlistCard(slug) {
+      selectCardForPurchase(slug, "wishlist");
+    }
+
+    function wireWishlistSelection(listEl) {
+      wireCardPurchaseSelection(listEl, "wishlist");
     }
 
     function cardImageUrl(card) {
@@ -1814,15 +1845,11 @@
     }
 
     function applyDisplayPreferences() {
-      document.body.classList.toggle("images-on", showImages);
-      document.body.classList.toggle("compact-on", compactCards);
-      document.body.classList.toggle("detail-on", !compactCards);
-      document.getElementById("toggleImages").classList.toggle("active", showImages);
-      document.getElementById("toggleImages").textContent = showImages ? "Hide images" : "Show images";
-      document.getElementById("toggleImages").setAttribute("aria-pressed", showImages ? "true" : "false");
-      document.getElementById("toggleCompact").classList.toggle("active", compactCards);
-      document.getElementById("toggleCompact").textContent = compactCards ? "Show details" : "Compact cards";
-      document.getElementById("toggleCompact").setAttribute("aria-pressed", compactCards ? "false" : "true");
+      // Phone app always shows card images and full buy detail.
+      showImages = true;
+      compactCards = false;
+      document.body.classList.add("images-on", "detail-on");
+      document.body.classList.remove("compact-on");
     }
 
     function parseHashParts() {
@@ -1834,47 +1861,47 @@
     }
 
     function setView(view) {
-      activeView = view;
-      document.body.classList.toggle("home-view", view === "home");
-      const route = view === "buying-guide" ? "buying-guide" : view === "buy-list" ? "buy-list" : view === "helper" ? "helper" : view === "wishlist" ? "wishlist" : view === "owned" ? "owned" : view === "floors" ? "floors" : "";
-      const hash = route ? `#${route}${selectedCardSlug ? `?card=${encodeURIComponent(selectedCardSlug)}` : ""}` : "";
-      if (location.hash !== hash) {
-        history.replaceState(null, "", hash ? hash : location.pathname);
+      // Phone-only surface: keep people on Today / Wishlist / Owned.
+      if (view === "home" || view === "floors" || view === "helper" || view === "buying-guide") {
+        view = view === "helper" ? "wishlist" : "buy-list";
       }
-      document.getElementById("viewHome").classList.toggle("active", view === "home");
+      activeView = view;
+      document.body.classList.remove("home-view");
+      const route = view === "buy-list" ? "buy-list"
+        : view === "wishlist" ? "wishlist"
+        : view === "owned" ? "owned"
+        : "buy-list";
+      const hash = `#${route}${selectedCardSlug ? `?card=${encodeURIComponent(selectedCardSlug)}` : ""}`;
+      if (location.hash !== hash) {
+        history.replaceState(null, "", hash);
+      }
+      document.getElementById("viewHome").classList.remove("active");
       document.getElementById("viewBuyList").classList.toggle("active", view === "buy-list");
-      document.getElementById("viewFloors").classList.toggle("active", view === "floors");
+      document.getElementById("viewFloors").classList.remove("active");
       document.getElementById("viewWishlist").classList.toggle("active", view === "wishlist");
       document.getElementById("viewOwned").classList.toggle("active", view === "owned");
-      document.getElementById("viewHelper").classList.toggle("active", view === "helper");
-      document.getElementById("viewBuyingGuide").classList.toggle("active", view === "buying-guide");
-      document.getElementById("tabHome").classList.toggle("active", view === "home");
+      document.getElementById("viewHelper").classList.remove("active");
+      document.getElementById("viewBuyingGuide").classList.remove("active");
       document.getElementById("tabBuyList").classList.toggle("active", view === "buy-list");
-      document.getElementById("tabFloors").classList.toggle("active", view === "floors");
       document.getElementById("tabWishlist").classList.toggle("active", view === "wishlist");
       document.getElementById("tabOwned").classList.toggle("active", view === "owned");
-      document.getElementById("tabHelper").classList.toggle("active", view === "helper");
-      document.getElementById("tabBuyingGuide").classList.toggle("active", view === "buying-guide");
-      document.title = view === "buying-guide" ? "Toploader — Buying Guide" : view === "buy-list" ? "Toploader — Buy List" : view === "helper" ? "Toploader — Helper" : view === "wishlist" ? "Toploader — Wishlist" : view === "owned" ? "Toploader — Owned" : view === "floors" ? "Toploader — Floors" : "Toploader";
+      document.title = view === "buy-list" ? "Toploader — Today"
+        : view === "wishlist" ? "Toploader — Wishlist"
+        : view === "owned" ? "Toploader — Owned"
+        : "Toploader";
       if (snapshotData) updateMeta();
-      if (view === "home") renderHome();
-      else if (view === "buy-list") renderBuyList();
-      else if (view === "floors") renderFloors();
+      if (view === "buy-list") renderBuyList();
       else if (view === "wishlist") renderWishlist();
       else if (view === "owned") renderOwned();
-      else if (view === "helper") renderHelper();
       renderWishlistActionBar();
     }
 
     function parseHash() {
       const parsed = parseHashParts();
       selectedCardSlug = parsed.card;
-      if (parsed.route === "floors") return "floors";
-      if (parsed.route === "buy-list") return "buy-list";
-      if (parsed.route === "helper") return "helper";
-      if (parsed.route === "buying-guide") return "buying-guide";
+      if (parsed.route === "wishlist" || parsed.route === "helper") return "wishlist";
       if (parsed.route === "owned") return "owned";
-      return parsed.route === "wishlist" ? "wishlist" : "home";
+      return "buy-list";
     }
 
     function updateMeta() {
@@ -1888,28 +1915,19 @@
       const wish = window.showSync ? showSync.filterCards(wishAll) : wishAll;
       const gotCount = window.showSync ? showSync.boughtCount(wishAll) : 0;
       const buy = buildBuyCandidates(window.showSync ? showSync.filterCards(all) : all);
-      if (activeView === "home") {
+      if (activeView === "buy-list") {
         document.getElementById("meta").innerHTML =
-          `${all.length} cards · ${wish.length} wishlist${gotCount ? ` · ${gotCount} got` : ""} · ${buy.length} buy-now cards · updated ${updated}${cacheNote}${errNote}${syncNote}`;
-      } else if (activeView === "buy-list") {
-        document.getElementById("meta").innerHTML =
-          `${buy.length} buy-now cards · updated ${updated}${cacheNote}${errNote}${syncNote}`;
+          `${buy.length} to check today · updated ${updated}${cacheNote}${errNote}${syncNote}`;
       } else if (activeView === "wishlist") {
         document.getElementById("meta").innerHTML =
           `${wish.length} left${gotCount ? ` · ${gotCount} got` : ""} · updated ${updated}${cacheNote}${errNote}${syncNote}`;
-      } else if (activeView === "helper") {
-        document.getElementById("meta").innerHTML =
-          `${wish.length} helper cards${gotCount ? ` · ${gotCount} got` : ""} · updated ${updated}${cacheNote}${errNote}${syncNote}`;
       } else if (activeView === "owned") {
         const ownedTotal = window.showSync ? showSync.ownedList().length : 0;
         document.getElementById("meta").innerHTML =
           `${ownedTotal} owned · updated ${updated}${cacheNote}${errNote}${syncNote}`;
-      } else if (activeView === "buying-guide") {
-        document.getElementById("meta").textContent =
-          `Use this while checking listing photos · updated ${updated}${cacheNote}${errNote}`;
       } else {
         document.getElementById("meta").innerHTML =
-          `${all.length} cards · ${wish.length} on wishlist · updated ${updated}${cacheNote}${errNote}${syncNote}`;
+          `${wish.length} wishlist · ${buy.length} buy now · updated ${updated}${cacheNote}${errNote}${syncNote}`;
       }
     }
 
@@ -2005,10 +2023,24 @@
       let score = 0;
       const conf = String(card.floor_confidence || "").toLowerCase();
       if (isWatched(card)) score += 10;
+      if (isBuyNow(card)) score += 12;
       if (conf.includes("high")) score += 8;
       else if (conf.includes("medium")) score += 4;
       if (isStale(card)) score -= 8;
+      const target = Number(card.target_buy_gbp);
+      const floor = Number(card.floor_gbp);
+      if (Number.isFinite(target) && Number.isFinite(floor) && target > 0) {
+        const edge = (target - floor) / target;
+        if (edge > 0.15) score += 3;
+      }
       return score;
+    }
+
+    function signalBadge(card) {
+      const buy = isBuyNow(card);
+      return buy
+        ? '<span class="badge signal-buy">Buy now</span>'
+        : '<span class="badge signal-hold">Hold</span>';
     }
 
     function buildBuyCandidates(cards) {
@@ -2047,12 +2079,9 @@
       if (!snapshotData) return;
       updateMeta();
       applyHideBoughtToggle();
-      if (activeView === "home") renderHome();
-      else if (activeView === "buy-list") renderBuyList();
-      else if (activeView === "floors") renderFloors();
+      if (activeView === "buy-list") renderBuyList();
       else if (activeView === "wishlist") renderWishlist();
       else if (activeView === "owned") renderOwned();
-      else if (activeView === "helper") renderHelper();
     }
 
     function detailLink(view, card) {
@@ -2121,16 +2150,15 @@
       const wish = window.showSync ? showSync.filterCards(wishAll) : wishAll;
       const buy = buildBuyCandidates(window.showSync ? showSync.filterCards(cards) : cards);
       const when = snapshotData.generated_at_utc || snapshotData.local_date || "";
-      document.getElementById("homeCardCount").textContent = cards.length;
+      document.getElementById("homeBuyCount").textContent = buy.length;
       document.getElementById("homeWishlistCount").textContent = wish.length;
       document.getElementById("homeUpdated").textContent = formatSnapshotDateTime(when);
       const chips = [];
-      if (cards.length) chips.push(`${cards.length} cards priced`);
+      if (buy.length) chips.push(`${buy.length} to check today`);
       if (wish.length) chips.push(`${wish.length} on wishlist`);
       if (window.showSync && showSync.boughtCount(wishAll)) {
-        chips.push(`${showSync.boughtCount(wishAll)} got today`);
+        chips.push(`${showSync.boughtCount(wishAll)} got`);
       }
-      if (buy.length) chips.push(`${buy.length} to check today`);
       if (snapshotData._from_cache) chips.push("Offline cache");
       document.getElementById("homeChips").innerHTML = chips.length
         ? chips.map(c => `<span class="chip">${escapeHtml(c)}</span>`).join("")
@@ -2142,6 +2170,12 @@
       const cards = buildBuyCandidates(window.showSync ? showSync.filterCards(allCards) : allCards);
       const setSelect = document.getElementById("setFilterBuyList");
       const setButtons = document.getElementById("setButtonsBuyList");
+      const intro = document.getElementById("buyListIntroCount");
+      if (intro) {
+        intro.textContent = cards.length
+          ? `${cards.length} card${cards.length === 1 ? "" : "s"} worth checking`
+          : "Nothing flagged Buy now right now";
+      }
       fillSetOptions(setSelect, cards);
       renderSetButtons(setButtons, cards, setName => {
         setSelect.value = setName;
@@ -2155,7 +2189,6 @@
         let filtered = cards.slice();
         if (setVal) filtered = filtered.filter(c => c.set_name === setVal);
         if (timing === "fresh") filtered = filtered.filter(c => !isStale(c));
-        if (timing === "watched") filtered = filtered.filter(isWatched);
         if (q) {
           filtered = filtered.filter(c => {
             const blob = [c.card, c.number, c.set_name, c.scrape_query, c.advisor_decision, c.floor_justification].join(" ").toLowerCase();
@@ -2169,31 +2202,32 @@
         if (!filtered.length) {
           list.innerHTML = cards.length
             ? '<div class="empty">No buy-now cards match your filters.</div>'
-            : '<div class="empty">No buy-now recommendations in this snapshot. Use Floors or Wishlist for cards to watch.</div>';
+            : '<div class="empty">No Buy now signals today. Open Wishlist to see Holds and wait for the next morning refresh.</div>';
           return;
         }
         list.innerHTML = filtered.map(card => {
           const stale = isStale(card) ? '<span class="badge watch">stale data</span>' : "";
-          const timing = buyingWindowText(card);
+          const timingText = buyingWindowText(card);
+          const slug = cardSlug(card);
           return `
-            <article class="${cardArticleClass(card)}">
+            <article class="${cardArticleClass(card, "selectable")}" data-select-wishlist="${escapeHtml(slug)}" tabindex="0" role="button" aria-label="Select ${escapeHtml(card.card || "card")}">
               <div class="card-layout ${cardImageUrl(card) ? "has-image" : ""}">
                 ${renderCardImage(card)}
                 <div>
-                  <h2><a href="${detailLink("buy-list", card)}" style="color:inherit;text-decoration:none">${escapeHtml(card.card || "")} <span style="color:var(--muted)">#${escapeHtml(card.number || "")}</span></a></h2>
-                  <p class="sub">${escapeHtml(card.set_name || "")} · ${escapeHtml(buyTiming(card))}</p>
+                  <h2>${escapeHtml(card.card || "")} <span style="color:var(--muted)">#${escapeHtml(card.number || "")}</span></h2>
+                  <p class="sub">${escapeHtml(card.set_name || "")}</p>
                   <div class="prices">
                     <div class="price"><span class="label">Max buy</span><span class="value">${money(card.target_buy_gbp)}</span></div>
                     <div class="price"><span class="label">Floor</span><span class="value">${money(card.floor_gbp)}</span></div>
                     <div class="price"><span class="label">Action</span><span class="value"><span class="buy-cta">Check today</span></span></div>
                   </div>
                   <p>
-                    <span class="badge">Buy now</span>
+                    ${signalBadge(card)}
                     ${card.floor_confidence ? `<span class="badge">${escapeHtml(card.floor_confidence)}</span>` : ""}
                     ${stale}
                   </p>
                   <p class="buy-note">Look for a clean raw copy at or below ${money(card.target_buy_gbp)}. If condition is weak, skip it.</p>
-                  ${timing ? `<p class="timing">${escapeHtml(timing)}</p>` : ""}
+                  ${timingText ? `<p class="timing">${escapeHtml(timingText)}</p>` : ""}
                   <p class="why">${escapeHtml(card.floor_justification || card.card_show_price_note || "Check price and condition before buying.")}</p>
                   ${renderDealCalculator(card)}
                 </div>
@@ -2201,8 +2235,10 @@
             </article>
           `;
         }).join("");
+        wireCardPurchaseSelection(list, "buy-list");
         wireDealInputs();
         scrollHighlightedCard();
+        renderWishlistActionBar();
       }
 
       document.getElementById("searchBuyList").oninput = apply;
@@ -2299,11 +2335,26 @@
       return words.slice(0, 2).map(word => word[0]).join("").toUpperCase();
     }
 
+    function syncWishlistSignalButtons() {
+      document.querySelectorAll("[data-signal]").forEach(btn => {
+        const val = btn.dataset.signal || "";
+        btn.classList.toggle("active", val === wishlistSignalFilter);
+      });
+    }
+
     function renderWishlist() {
       const wishAll = (snapshotData.cards || []).filter(isWatched);
       const cards = window.showSync ? showSync.filterCards(wishAll) : wishAll;
       const setSelect = document.getElementById("setFilterWishlist");
       const setButtons = document.getElementById("setButtonsWishlist");
+      const buyCount = cards.filter(isBuyNow).length;
+      const intro = document.getElementById("wishlistIntroCount");
+      if (intro) {
+        intro.textContent = cards.length
+          ? `${cards.length} left · ${buyCount} Buy now`
+          : "Wishlist empty";
+      }
+      syncWishlistSignalButtons();
       fillSetOptions(setSelect, cards);
       renderSetButtons(setButtons, cards, setName => {
         setSelect.value = setName;
@@ -2315,21 +2366,24 @@
         const setVal = setSelect.value;
         const sortVal = document.getElementById("sortWishlist").value;
         let filtered = cards.slice();
+        if (wishlistSignalFilter === "buy") filtered = filtered.filter(isBuyNow);
+        if (wishlistSignalFilter === "hold") filtered = filtered.filter(c => !isBuyNow(c));
         if (setVal) filtered = filtered.filter(c => c.set_name === setVal);
         if (q) {
           filtered = filtered.filter(c => {
-            const blob = [c.card, c.number, c.set_name, c.scrape_query].join(" ").toLowerCase();
+            const blob = [c.card, c.number, c.set_name, c.scrape_query, c.advisor_decision].join(" ").toLowerCase();
             return blob.includes(q);
           });
         }
         filtered.sort((a, b) => {
           if (sortVal === "expensive") return priceValue(b) - priceValue(a);
+          if (sortVal === "cheapest") return priceValue(a) - priceValue(b);
           if (sortVal === "set") {
             return String(a.set_name || "").localeCompare(String(b.set_name || ""))
               || cardNumberValue(a) - cardNumberValue(b)
               || String(a.card || "").localeCompare(String(b.card || ""));
           }
-          return priceValue(a) - priceValue(b);
+          return buyRank(b) - buyRank(a) || priceValue(a) - priceValue(b);
         });
         document.getElementById("statsWishlist").textContent =
           `Showing ${filtered.length} of ${cards.length}${window.showSync && showSync.boughtCount(wishAll) ? ` · ${showSync.boughtCount(wishAll)} got` : ""}`;
@@ -2337,16 +2391,17 @@
         const list = document.getElementById("listWishlist");
         if (!filtered.length) {
           list.innerHTML = cards.length
-            ? '<div class="empty">No wishlist cards match that search.</div>'
+            ? '<div class="empty">No wishlist cards match that filter.</div>'
             : wishAll.length && window.showSync && showSync.boughtCount(wishAll)
-              ? '<div class="empty">Everything on the list is marked got. Toggle “Show got cards” to review.</div>'
-              : '<div class="empty">No watched cards in this snapshot. Toggle cards on the wishlist in the Toploader app, then run export and publish.</div>';
+              ? '<div class="empty">Everything on the list is marked got. Toggle “Show owned” to review.</div>'
+              : '<div class="empty">No wishlist cards in today’s snapshot yet. When the morning prices publish, your wants will show up here.</div>';
           renderWishlistActionBar();
           return;
         }
         list.innerHTML = filtered.map(card => {
           const timing = buyingWindowText(card);
           const slug = cardSlug(card);
+          const buy = isBuyNow(card);
           return `
             <article class="${cardArticleClass(card, "selectable")}" data-select-wishlist="${escapeHtml(slug)}" tabindex="0" role="button" aria-label="Select ${escapeHtml(card.card || "card")}">
               <div class="card-layout ${cardImageUrl(card) ? "has-image" : ""}">
@@ -2354,14 +2409,21 @@
                 <div>
                 <div class="wishlist-main">
                   <h2>${escapeHtml(card.card || "")} <span style="color:var(--muted)">#${escapeHtml(card.number || "")}</span></h2>
+                  <div class="wishlist-signal-row">
+                    ${signalBadge(card)}
+                    ${buy ? '<span class="buy-cta">Check today</span>' : ""}
+                    ${isStale(card) ? '<span class="badge watch">stale</span>' : ""}
+                  </div>
                   <div class="budget">
-                    <span class="label">Target</span>
+                    <span class="label">Max buy</span>
                     <span class="value">${moneyWishlist(card.target_buy_gbp)}</span>
                   </div>
                   <div class="prices">
-                    <div class="price"><span class="label">Expected floor</span><span class="value">${money(card.floor_gbp)}</span></div>
+                    <div class="price"><span class="label">Floor</span><span class="value">${money(card.floor_gbp)}</span></div>
                   </div>
                   ${timing ? `<p class="timing">${escapeHtml(timing)}</p>` : ""}
+                  <p class="why">${escapeHtml(card.floor_justification || card.card_show_price_note || "")}</p>
+                  ${buy ? renderDealCalculator(card) : ""}
                 </div>
                 <div class="wishlist-set" aria-label="Set: ${escapeHtml(card.set_name || "Unknown set")}">
                   <span class="wishlist-set-icon" aria-hidden="true">${escapeHtml(setIconText(card.set_name))}</span>
@@ -2376,6 +2438,7 @@
           `;
         }).join("");
         wireWishlistSelection(list);
+        wireDealInputs();
         scrollHighlightedCard();
         renderWishlistActionBar();
       }
@@ -2528,7 +2591,7 @@
             ? '<div class="empty">No helper cards match that search.</div>'
             : wishAll.length && window.showSync && showSync.boughtCount(wishAll)
               ? '<div class="empty">Everything on the list is marked got.</div>'
-              : '<div class="empty">No watched cards in this snapshot yet.</div>';
+              : '<div class="empty">No wishlist cards in today’s snapshot yet.</div>';
           return;
         }
         list.innerHTML = filtered.map(card => {
@@ -2566,31 +2629,27 @@
       apply();
     }
 
-    document.getElementById("tabHome").addEventListener("click", () => setView("home"));
     document.getElementById("tabBuyList").addEventListener("click", () => setView("buy-list"));
-    document.getElementById("tabFloors").addEventListener("click", () => setView("floors"));
     document.getElementById("tabWishlist").addEventListener("click", () => setView("wishlist"));
     document.getElementById("tabOwned").addEventListener("click", () => setView("owned"));
-    document.getElementById("tabHelper").addEventListener("click", () => setView("helper"));
-    document.getElementById("tabBuyingGuide").addEventListener("click", () => setView("buying-guide"));
-    document.getElementById("toggleImages").addEventListener("click", () => {
-      showImages = !showImages;
-      savePreference(PREF_IMAGES_KEY, showImages);
-      applyDisplayPreferences();
-    });
-    document.getElementById("toggleCompact").addEventListener("click", () => {
-      compactCards = !compactCards;
-      savePreference(PREF_COMPACT_KEY, compactCards);
-      applyDisplayPreferences();
+    document.querySelectorAll("[data-signal]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        wishlistSignalFilter = btn.dataset.signal || "";
+        syncWishlistSignalButtons();
+        if (activeView === "wishlist" && snapshotData) renderWishlist();
+      });
     });
     document.getElementById("toggleHideBought").addEventListener("click", () => {
       if (!window.showSync) return;
       showSync.setHideBought(!showSync.hideBought());
     });
-    document.getElementById("toggleHideBoughtHelper").addEventListener("click", () => {
-      if (!window.showSync) return;
-      showSync.setHideBought(!showSync.hideBought());
-    });
+    const hideBoughtHelper = document.getElementById("toggleHideBoughtHelper");
+    if (hideBoughtHelper) {
+      hideBoughtHelper.addEventListener("click", () => {
+        if (!window.showSync) return;
+        showSync.setHideBought(!showSync.hideBought());
+      });
+    }
     if (window.showSync) {
       showSync.onChange(() => rerenderActiveView());
     }
@@ -2605,7 +2664,7 @@
 
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("service-worker.js?v=8").then(reg => {
+        navigator.serviceWorker.register("service-worker.js?v=10").then(reg => {
           if (reg.waiting) reg.waiting.postMessage({ type: "SKIP_WAITING" });
           reg.update().catch(() => {});
         }).catch(() => {});
