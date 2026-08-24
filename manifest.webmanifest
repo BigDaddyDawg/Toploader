@@ -5,8 +5,8 @@
   "start_url": "./#buy-list",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#060b18",
-  "theme_color": "#060b18",
+  "background_color": "#e8f3ff",
+  "theme_color": "#ffcb05",
   "icons": [
     {
       "src": "icon.svg",
