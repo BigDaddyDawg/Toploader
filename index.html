@@ -2198,6 +2198,17 @@
         }
 
         if (status === "checking" || jobStatus === "pending" || jobStatus === "running") {
+          if (jobStatus === "running" && remoteJob?.started_at) {
+            const workerStarted = Date.parse(remoteJob.started_at);
+            if (Number.isFinite(workerStarted) && Date.now() - workerStarted > 35 * 60 * 1000) {
+              priceChecks.set(key, {
+                ...job,
+                status: "error",
+                finishedAt: Date.now(),
+                target_buy_gbp: card?.target_buy_gbp ?? job.target_buy_gbp,
+              });
+            }
+          }
           continue;
         }
 
@@ -3269,7 +3280,7 @@
 
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("service-worker.js?v=21").then(reg => {
+        navigator.serviceWorker.register("service-worker.js?v=22").then(reg => {
           if (reg.waiting) reg.waiting.postMessage({ type: "SKIP_WAITING" });
           reg.update().catch(() => {});
         }).catch(() => {});
