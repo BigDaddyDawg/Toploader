@@ -2081,8 +2081,22 @@
 
     function progressPct(job) {
       if (job.status === "done" || job.status === "error") return 100;
+      const remoteJob =
+        window.showSync && typeof showSync.priceJobFor === "function"
+          ? showSync.priceJobFor(job.key)
+          : null;
+      const remoteStatus = String(remoteJob?.status || "").toLowerCase();
+      if (remoteStatus === "done" || remoteStatus === "error") return 100;
+      if (remoteStatus === "pending") {
+        const elapsed = Date.now() - job.startedAt;
+        return Math.max(6, Math.min(40, Math.round((elapsed / PRICE_CHECK_ESTIMATE_MS) * 45)));
+      }
       const elapsed = Date.now() - job.startedAt;
-      return Math.max(6, Math.min(92, Math.round((elapsed / PRICE_CHECK_ESTIMATE_MS) * 100)));
+      const linear = Math.round((elapsed / PRICE_CHECK_ESTIMATE_MS) * 100);
+      if (linear < 92) return Math.max(6, linear);
+      // Creep toward 99 while the worker is still scraping past the usual ~2 min.
+      const overtimeMin = Math.max(0, elapsed - PRICE_CHECK_ESTIMATE_MS) / 60000;
+      return Math.min(99, 92 + Math.floor(overtimeMin));
     }
 
     function loadPriceChecks() {
@@ -2153,24 +2167,48 @@
         if (job.status !== "checking") continue;
         const card = byKey.get(key);
         const status = String(card?.price_status || "").toLowerCase();
-        if (status === "checking") continue;
-        if (status === "error") {
+        const remoteJob =
+          window.showSync && typeof showSync.priceJobFor === "function"
+            ? showSync.priceJobFor(key)
+            : null;
+        const jobStatus = String(remoteJob?.status || "").toLowerCase();
+
+        if (jobStatus === "error" || status === "error") {
           priceChecks.set(key, {
             ...job,
             status: "error",
             finishedAt: Date.now(),
             target_buy_gbp: card?.target_buy_gbp ?? job.target_buy_gbp,
           });
-        } else if (card || status === "ok" || status === "") {
-          // Finished (ok) or left checking without an error flag.
-          if (status === "ok" || (card && card.priced_at && status !== "checking")) {
-            priceChecks.set(key, {
-              ...job,
-              status: "done",
-              finishedAt: Date.now(),
-              target_buy_gbp: card?.target_buy_gbp ?? job.target_buy_gbp,
-            });
-          }
+          continue;
+        }
+
+        if (
+          jobStatus === "done" ||
+          status === "ok" ||
+          (card && card.priced_at && status !== "checking")
+        ) {
+          priceChecks.set(key, {
+            ...job,
+            status: "done",
+            finishedAt: Date.now(),
+            target_buy_gbp: card?.target_buy_gbp ?? job.target_buy_gbp,
+          });
+          continue;
+        }
+
+        if (status === "checking" || jobStatus === "pending" || jobStatus === "running") {
+          continue;
+        }
+
+        // Wishlist left checking without an explicit ok/error — treat as finished if priced.
+        if (card && card.priced_at) {
+          priceChecks.set(key, {
+            ...job,
+            status: "done",
+            finishedAt: Date.now(),
+            target_buy_gbp: card?.target_buy_gbp ?? job.target_buy_gbp,
+          });
         }
       }
       savePriceChecks();
@@ -3231,7 +3269,7 @@
 
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("service-worker.js?v=20").then(reg => {
+        navigator.serviceWorker.register("service-worker.js?v=21").then(reg => {
           if (reg.waiting) reg.waiting.postMessage({ type: "SKIP_WAITING" });
           reg.update().catch(() => {});
         }).catch(() => {});

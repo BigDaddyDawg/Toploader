@@ -15,10 +15,13 @@
   let showDate = "";
   let ownedMap = new Map();
   let wishlistMap = new Map();
+  /** @type {Map<string, object>} latest price job per card_key */
+  let priceJobsMap = new Map();
   let cardIndex = new Map();
   let ready = false;
   let live = false;
   let channel = null;
+  let priceJobPollTimer = 0;
   let onChangeCb = null;
 
   function config() {
@@ -137,6 +140,58 @@
         watchlist_status: 1,
       });
     });
+    syncPriceJobPolling();
+  }
+
+  function ingestPriceJobRows(rows) {
+    (rows || []).forEach(row => {
+      const key = String(row.card_key || "").trim();
+      if (!key) return;
+      const incoming = {
+        id: row.id || "",
+        card_key: key,
+        status: String(row.status || "").trim().toLowerCase(),
+        error_text: String(row.error_text || "").trim(),
+        requested_at: row.requested_at || "",
+        started_at: row.started_at || "",
+        finished_at: row.finished_at || "",
+      };
+      const existing = priceJobsMap.get(key);
+      if (!existing) {
+        priceJobsMap.set(key, incoming);
+        return;
+      }
+      const existingTs = Date.parse(existing.finished_at || existing.requested_at || "") || 0;
+      const incomingTs = Date.parse(incoming.finished_at || incoming.requested_at || "") || 0;
+      if (incomingTs >= existingTs) {
+        priceJobsMap.set(key, incoming);
+      }
+    });
+    syncPriceJobPolling();
+  }
+
+  function hasActivePriceJobs() {
+    for (const job of priceJobsMap.values()) {
+      const status = String(job.status || "").toLowerCase();
+      if (status === "pending" || status === "running") return true;
+    }
+    for (const row of wishlistMap.values()) {
+      if (String(row.price_status || "").toLowerCase() === "checking") return true;
+    }
+    return false;
+  }
+
+  function syncPriceJobPolling() {
+    if (!client || !ready) return;
+    const active = hasActivePriceJobs();
+    if (active && !priceJobPollTimer) {
+      priceJobPollTimer = window.setInterval(() => {
+        fetchPriceJobs().catch(() => {});
+      }, 15000);
+    } else if (!active && priceJobPollTimer) {
+      window.clearInterval(priceJobPollTimer);
+      priceJobPollTimer = 0;
+    }
   }
 
   function notifyChange() {
@@ -164,8 +219,34 @@
     ingestWishlistRows(data);
   }
 
+  async function fetchPriceJobs() {
+    if (!client) return;
+    const since = new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString();
+    const select =
+      "id,card_key,status,error_text,requested_at,started_at,finished_at";
+    const [activeRes, finishedRes] = await Promise.all([
+      client
+        .from("toploader_price_jobs")
+        .select(select)
+        .in("status", ["pending", "running"])
+        .order("requested_at", { ascending: false })
+        .limit(100),
+      client
+        .from("toploader_price_jobs")
+        .select(select)
+        .in("status", ["done", "error"])
+        .gte("finished_at", since)
+        .order("finished_at", { ascending: false })
+        .limit(100),
+    ]);
+    if (activeRes.error) throw activeRes.error;
+    if (finishedRes.error) throw finishedRes.error;
+    ingestPriceJobRows([...(activeRes.data || []), ...(finishedRes.data || [])]);
+    notifyChange();
+  }
+
   async function refreshAll() {
-    await Promise.all([fetchOwned(), fetchWishlist()]);
+    await Promise.all([fetchOwned(), fetchWishlist(), fetchPriceJobs()]);
     notifyChange();
   }
 
@@ -187,6 +268,13 @@
           refreshAll().catch(() => {});
         }
       )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "toploader_price_jobs" },
+        () => {
+          fetchPriceJobs().catch(() => {});
+        }
+      )
       .subscribe(status => {
         live = status === "SUBSCRIBED";
         notifyChange();
@@ -199,6 +287,7 @@
     showDate = String(snapshot?.local_date || "").trim();
     ownedMap = new Map();
     wishlistMap = new Map();
+    priceJobsMap = new Map();
     cardIndex = new Map();
     (snapshot?.cards || []).forEach(card => {
       const key = cardKey(card);
@@ -494,13 +583,28 @@
     return Date.now() - d.getTime() < minutes * 60 * 1000;
   }
 
+  function priceJobFor(cardOrKey) {
+    const key =
+      typeof cardOrKey === "string"
+        ? String(cardOrKey || "").trim()
+        : cardKey(cardOrKey);
+    return key ? priceJobsMap.get(key) || null : null;
+  }
+
+  function isJobActive(job) {
+    const status = String(job?.status || "").toLowerCase();
+    return status === "pending" || status === "running";
+  }
+
   async function requestPriceCheck(card, options = {}) {
     if (!client) return { ok: false, error: "Sync not ready" };
     const force = Boolean(options.force);
     const key = cardKey(card);
     if (!key) return { ok: false, error: "Missing card key" };
     const existing = wishlistMap.get(key) || {};
-    if (String(existing.price_status || "").toLowerCase() === "checking") {
+    const activeJob = priceJobFor(key);
+    if (isJobActive(activeJob)) {
+      wakePriceWorker(key);
       return { ok: true, queued: true, reason: "already-checking" };
     }
     if (!force && recentlyPriced(existing) && String(existing.price_status || "") === "ok") {
@@ -517,12 +621,21 @@
 
     const { data: pending, error: pendingErr } = await client
       .from("toploader_price_jobs")
-      .select("id")
+      .select("id,status")
       .eq("card_key", key)
-      .eq("status", "pending")
+      .in("status", ["pending", "running"])
+      .order("requested_at", { ascending: false })
       .limit(1);
     if (pendingErr) return { ok: false, error: pendingErr.message };
     if (pending && pending.length) {
+      ingestPriceJobRows([
+        {
+          id: pending[0].id,
+          card_key: key,
+          status: pending[0].status,
+          requested_at: new Date().toISOString(),
+        },
+      ]);
       wishlistMap.set(key, { ...existing, ...card, card_key: key, price_status: "checking" });
       notifyChange();
       wakePriceWorker(key);
@@ -561,6 +674,13 @@
       price_status: "checking",
       watchlist_status: 1,
     });
+    ingestPriceJobRows([
+      {
+        card_key: key,
+        status: "pending",
+        requested_at: new Date().toISOString(),
+      },
+    ]);
     notifyChange();
     wakePriceWorker(key);
     return { ok: true, queued: true };
@@ -594,6 +714,7 @@
     wishlistList,
     addWishlistCards,
     requestPriceCheck,
+    priceJobFor,
     resolveSetCatalog,
     makeCardKey,
     hideOwned,
