@@ -2079,14 +2079,31 @@
       return m > 0 ? `${m}:${String(s).padStart(2, "0")}` : `0:${String(s).padStart(2, "0")}`;
     }
 
-    function progressPct(job) {
-      if (job.status === "done" || job.status === "error") return 100;
+    function resolvedCheckStatus(job) {
       const remoteJob =
         window.showSync && typeof showSync.priceJobFor === "function"
           ? showSync.priceJobFor(job.key)
           : null;
       const remoteStatus = String(remoteJob?.status || "").toLowerCase();
-      if (remoteStatus === "done" || remoteStatus === "error") return 100;
+      const wish = activeWishlistCards().find(c => cardKeyOf(c) === job.key);
+      const wishStatus = String(wish?.price_status || "").toLowerCase();
+      if (job.status === "error" || remoteStatus === "error" || wishStatus === "error") {
+        return "error";
+      }
+      if (job.status === "done" || remoteStatus === "done" || wishStatus === "ok") {
+        return "done";
+      }
+      return "checking";
+    }
+
+    function progressPct(job) {
+      const resolved = resolvedCheckStatus(job);
+      if (resolved === "done" || resolved === "error") return 100;
+      const remoteJob =
+        window.showSync && typeof showSync.priceJobFor === "function"
+          ? showSync.priceJobFor(job.key)
+          : null;
+      const remoteStatus = String(remoteJob?.status || "").toLowerCase();
       if (remoteStatus === "pending") {
         const elapsed = Date.now() - job.startedAt;
         return Math.max(6, Math.min(40, Math.round((elapsed / PRICE_CHECK_ESTIMATE_MS) * 45)));
@@ -2094,7 +2111,6 @@
       const elapsed = Date.now() - job.startedAt;
       const linear = Math.round((elapsed / PRICE_CHECK_ESTIMATE_MS) * 100);
       if (linear < 92) return Math.max(6, linear);
-      // Creep toward 99 while the worker is still scraping past the usual ~2 min.
       const overtimeMin = Math.max(0, elapsed - PRICE_CHECK_ESTIMATE_MS) / 60000;
       return Math.min(99, 92 + Math.floor(overtimeMin));
     }
@@ -2143,7 +2159,7 @@
     function ensurePriceCheckTicker() {
       if (priceCheckTick) return;
       priceCheckTick = window.setInterval(() => {
-        const active = [...priceChecks.values()].some(j => j.status === "checking");
+        const active = [...priceChecks.values()].some(j => resolvedCheckStatus(j) === "checking");
         if (!active && activeView !== "checks") {
           window.clearInterval(priceCheckTick);
           priceCheckTick = 0;
@@ -2172,8 +2188,9 @@
             ? showSync.priceJobFor(key)
             : null;
         const jobStatus = String(remoteJob?.status || "").toLowerCase();
+        const resolved = resolvedCheckStatus(job);
 
-        if (jobStatus === "error" || status === "error") {
+        if (resolved === "error" || jobStatus === "error" || status === "error") {
           priceChecks.set(key, {
             ...job,
             status: "error",
@@ -2227,14 +2244,14 @@
 
     function activeCheckJobs() {
       return [...priceChecks.values()]
-        .filter(j => j.status === "checking")
+        .filter(j => resolvedCheckStatus(j) === "checking")
         .sort((a, b) => a.startedAt - b.startedAt);
     }
 
     function recentCheckJobs() {
       const cutoff = Date.now() - 45 * 60 * 1000;
       return [...priceChecks.values()]
-        .filter(j => j.status !== "checking" && (j.finishedAt || j.startedAt) >= cutoff)
+        .filter(j => resolvedCheckStatus(j) !== "checking" && (j.finishedAt || j.startedAt) >= cutoff)
         .sort((a, b) => (b.finishedAt || b.startedAt) - (a.finishedAt || a.startedAt));
     }
 
@@ -2303,27 +2320,28 @@
       }
 
       const renderJob = job => {
+        const resolved = resolvedCheckStatus(job);
         const pct = progressPct(job);
         const elapsed = formatElapsed(Date.now() - job.startedAt);
         const statusLabel =
-          job.status === "checking"
+          resolved === "checking"
             ? `${elapsed} · ~${pct}%`
-            : job.status === "error"
+            : resolved === "error"
               ? "Failed"
               : `Done · ${moneyWishlist(job.target_buy_gbp)}`;
         const img = job.image
           ? `<img class="card-image" src="${escapeHtml(job.image)}" alt="" loading="lazy">`
           : '<div class="card-image" aria-hidden="true"></div>';
         return `
-          <article class="check-row-card ${job.status === "done" ? "is-done" : ""} ${job.status === "error" ? "is-error" : ""}">
+          <article class="check-row-card ${resolved === "done" ? "is-done" : ""} ${resolved === "error" ? "is-error" : ""}">
             <div class="check-row-top">
               ${img}
               <div class="check-row-copy">
                 <h3>${escapeHtml(job.name)} <span style="color:var(--muted)">#${escapeHtml(job.number || "")}</span></h3>
                 <p>${escapeHtml(job.set_name || "Wishlist")}${
-                  job.status === "checking"
+                  resolved === "checking"
                     ? " · scraping solds"
-                    : job.status === "error"
+                    : resolved === "error"
                       ? " · tap card to retry"
                       : " · max buy ready"
                 }</p>
@@ -3280,7 +3298,7 @@
 
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("service-worker.js?v=22").then(reg => {
+        navigator.serviceWorker.register("service-worker.js?v=23").then(reg => {
           if (reg.waiting) reg.waiting.postMessage({ type: "SKIP_WAITING" });
           reg.update().catch(() => {});
         }).catch(() => {});

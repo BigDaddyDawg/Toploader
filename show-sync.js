@@ -143,6 +143,20 @@
     syncPriceJobPolling();
   }
 
+  function parseTs(raw) {
+    if (!raw) return 0;
+    const normalized = String(raw).trim().replace(" ", "T");
+    const t = Date.parse(normalized);
+    return Number.isFinite(t) ? t : 0;
+  }
+
+  function jobFreshness(row) {
+    const status = String(row.status || "").toLowerCase();
+    const terminal = status === "done" || status === "error" ? 1 : 0;
+    const ts = parseTs(row.finished_at) || parseTs(row.started_at) || parseTs(row.requested_at);
+    return terminal * 1e15 + ts;
+  }
+
   function ingestPriceJobRows(rows) {
     (rows || []).forEach(row => {
       const key = String(row.card_key || "").trim();
@@ -157,13 +171,7 @@
         finished_at: row.finished_at || "",
       };
       const existing = priceJobsMap.get(key);
-      if (!existing) {
-        priceJobsMap.set(key, incoming);
-        return;
-      }
-      const existingTs = Date.parse(existing.finished_at || existing.requested_at || "") || 0;
-      const incomingTs = Date.parse(incoming.finished_at || incoming.requested_at || "") || 0;
-      if (incomingTs >= existingTs) {
+      if (!existing || jobFreshness(incoming) >= jobFreshness(existing)) {
         priceJobsMap.set(key, incoming);
       }
     });
@@ -186,8 +194,8 @@
     const active = hasActivePriceJobs();
     if (active && !priceJobPollTimer) {
       priceJobPollTimer = window.setInterval(() => {
-        fetchPriceJobs().catch(() => {});
-      }, 15000);
+        Promise.all([fetchWishlist(), fetchPriceJobs()]).catch(() => {});
+      }, 8000);
     } else if (!active && priceJobPollTimer) {
       window.clearInterval(priceJobPollTimer);
       priceJobPollTimer = 0;
