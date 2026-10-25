@@ -150,11 +150,22 @@
     return Number.isFinite(t) ? t : 0;
   }
 
-  function jobFreshness(row) {
-    const status = String(row.status || "").toLowerCase();
-    const terminal = status === "done" || status === "error" ? 1 : 0;
-    const ts = parseTs(row.finished_at) || parseTs(row.started_at) || parseTs(row.requested_at);
-    return terminal * 1e15 + ts;
+  function jobRank(status) {
+    const s = String(status || "").toLowerCase();
+    if (s === "done" || s === "error") return 2;
+    return s === "running" ? 1 : 0;
+  }
+
+  function shouldReplaceJob(existing, incoming) {
+    if (!existing) return true;
+    if (existing.id && incoming.id && existing.id === incoming.id) {
+      return jobRank(incoming.status) >= jobRank(existing.status);
+    }
+    const inReq = parseTs(incoming.requested_at);
+    const exReq = parseTs(existing.requested_at);
+    // Local placeholders use the phone clock until the server row arrives.
+    if (!existing.id) return inReq >= exReq - 5 * 60 * 1000;
+    return inReq >= exReq;
   }
 
   function ingestPriceJobRows(rows) {
@@ -171,7 +182,7 @@
         finished_at: row.finished_at || "",
       };
       const existing = priceJobsMap.get(key);
-      if (!existing || jobFreshness(incoming) >= jobFreshness(existing)) {
+      if (shouldReplaceJob(existing, incoming)) {
         priceJobsMap.set(key, incoming);
       }
     });

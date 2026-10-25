@@ -916,6 +916,7 @@
     }
     .check-row-card.is-done .check-row-status { color: #147a48; }
     .check-row-card.is-error .check-row-status { color: #b91c1c; }
+    .check-row-card.is-queued .check-row-status { color: var(--muted); }
     .check-progress {
       height: 8px;
       border-radius: 999px;
@@ -1864,7 +1865,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="supabase-config.js?v=20"></script>
-  <script src="show-sync.js?v=20"></script>
+  <script src="show-sync.js?v=21"></script>
   <script src="set-intake.js?v=20"></script>
   <script>
     function initEnergySparks() {
@@ -2056,8 +2057,11 @@
     /** @type {Map<string, object>} */
     const priceChecks = new Map();
     const PRICE_CHECK_STORE = "chase_price_checks_v1";
-    const PRICE_CHECK_ESTIMATE_MS = 120000;
+    const PRICE_CHECK_ESTIMATE_MS = 60000;
+    const PRICE_CHECK_RECENT_MS = 3 * 60 * 60 * 1000;
     let priceCheckTick = 0;
+    let checkWishCache = { at: 0, map: null };
+    let checksRenderSig = "";
 
     function cardKeyOf(card) {
       const direct = String(card?.card_key || "").trim();
@@ -2079,40 +2083,108 @@
       return m > 0 ? `${m}:${String(s).padStart(2, "0")}` : `0:${String(s).padStart(2, "0")}`;
     }
 
+    // activeWishlistCards() merges the whole list; checks read it per card every second.
+    function checkWishByKey() {
+      const now = Date.now();
+      if (checkWishCache.map && now - checkWishCache.at < 500) return checkWishCache.map;
+      const map = new Map(
+        activeWishlistCards().map(c => [cardKeyOf(c), c]).filter(([k]) => k)
+      );
+      checkWishCache = { at: now, map };
+      return map;
+    }
+
+    function invalidateCheckCache() {
+      checkWishCache = { at: 0, map: null };
+    }
+
+    function remoteJobFor(key) {
+      return window.showSync && typeof showSync.priceJobFor === "function"
+        ? showSync.priceJobFor(key)
+        : null;
+    }
+
+    function parseJobTime(raw) {
+      const t = Date.parse(String(raw || "").trim().replace(" ", "T"));
+      return Number.isFinite(t) ? t : 0;
+    }
+
     function resolvedCheckStatus(job) {
-      const remoteJob =
-        window.showSync && typeof showSync.priceJobFor === "function"
-          ? showSync.priceJobFor(job.key)
-          : null;
-      const remoteStatus = String(remoteJob?.status || "").toLowerCase();
-      const wish = activeWishlistCards().find(c => cardKeyOf(c) === job.key);
-      const wishStatus = String(wish?.price_status || "").toLowerCase();
-      if (job.status === "error" || remoteStatus === "error" || wishStatus === "error") {
-        return "error";
-      }
-      if (job.status === "done" || remoteStatus === "done" || wishStatus === "ok") {
-        return "done";
-      }
+      if (job.status === "error" || job.status === "done") return job.status;
+      const remoteStatus = String(remoteJobFor(job.key)?.status || "").toLowerCase();
+      if (remoteStatus === "pending" || remoteStatus === "running") return "checking";
+      const wishStatus = String(checkWishByKey().get(job.key)?.price_status || "").toLowerCase();
+      if (remoteStatus === "error" || wishStatus === "error") return "error";
+      if (remoteStatus === "done" || wishStatus === "ok") return "done";
       return "checking";
     }
 
-    function progressPct(job) {
+    function queuePositions() {
+      const pending = [];
+      priceChecks.forEach((job, key) => {
+        const remote = remoteJobFor(key);
+        if (String(remote?.status || "").toLowerCase() === "pending") {
+          pending.push([key, parseJobTime(remote.requested_at) || job.startedAt]);
+        }
+      });
+      pending.sort((a, b) => a[1] - b[1]);
+      return new Map(pending.map(([key], i) => [key, i + 1]));
+    }
+
+    function checkInfo(job, positions) {
       const resolved = resolvedCheckStatus(job);
-      if (resolved === "done" || resolved === "error") return 100;
-      const remoteJob =
-        window.showSync && typeof showSync.priceJobFor === "function"
-          ? showSync.priceJobFor(job.key)
-          : null;
-      const remoteStatus = String(remoteJob?.status || "").toLowerCase();
-      if (remoteStatus === "pending") {
-        const elapsed = Date.now() - job.startedAt;
-        return Math.max(6, Math.min(40, Math.round((elapsed / PRICE_CHECK_ESTIMATE_MS) * 45)));
+      const card = checkWishByKey().get(job.key);
+      const remote = remoteJobFor(job.key);
+      if (resolved === "done") {
+        const target = card?.target_buy_gbp ?? job.target_buy_gbp;
+        return { resolved, phase: "done", pct: 100, label: `Done · ${moneyWishlist(target)}`, note: "max buy ready" };
       }
-      const elapsed = Date.now() - job.startedAt;
-      const linear = Math.round((elapsed / PRICE_CHECK_ESTIMATE_MS) * 100);
-      if (linear < 92) return Math.max(6, linear);
-      const overtimeMin = Math.max(0, elapsed - PRICE_CHECK_ESTIMATE_MS) / 60000;
-      return Math.min(99, 92 + Math.floor(overtimeMin));
+      if (resolved === "error") {
+        const why = String(remote?.error_text || card?.card_show_price_note || "").trim();
+        return { resolved, phase: "error", pct: 100, label: "Failed", note: why || "tap card to retry" };
+      }
+      if (String(remote?.status || "").toLowerCase() === "running") {
+        const started = parseJobTime(remote.started_at) || job.startedAt;
+        const elapsed = Math.max(0, Date.now() - started);
+        const pct = Math.min(95, Math.max(5, Math.round((elapsed / PRICE_CHECK_ESTIMATE_MS) * 100)));
+        return { resolved, phase: "running", pct, label: `Checking · ${formatElapsed(elapsed)}`, note: "pricing now" };
+      }
+      const pos = positions.get(job.key) || 0;
+      return {
+        resolved,
+        phase: "queued",
+        pct: 0,
+        pos,
+        label: pos ? `Queued · #${pos}` : "Queued",
+        note: pos === 1 ? "next up" : pos > 1 ? `${pos - 1} ahead` : "waiting for the price worker",
+      };
+    }
+
+    function checkRows() {
+      syncPriceCheckTracking();
+      const positions = queuePositions();
+      const cutoff = Date.now() - PRICE_CHECK_RECENT_MS;
+      const rank = { running: 0, queued: 1, error: 2, done: 2 };
+      return [...priceChecks.values()]
+        .map(job => ({ job, info: checkInfo(job, positions) }))
+        .filter(r => r.info.resolved === "checking" || (r.job.finishedAt || r.job.startedAt) >= cutoff)
+        .sort((a, b) =>
+          rank[a.info.phase] - rank[b.info.phase]
+          || (a.info.phase === "queued" ? (a.info.pos || 1e9) - (b.info.pos || 1e9) : 0)
+          || (b.job.finishedAt || 0) - (a.job.finishedAt || 0)
+        );
+    }
+
+    function checkSummary(rows) {
+      const count = phase => rows.filter(r => r.info.phase === phase).length;
+      return {
+        total: rows.length,
+        done: count("done"),
+        failed: count("error"),
+        running: count("running"),
+        queued: count("queued"),
+        current: rows.find(r => r.info.phase === "running") || null,
+      };
     }
 
     function loadPriceChecks() {
@@ -2135,7 +2207,7 @@
       } catch (_) {}
     }
 
-    function rememberPriceCheckStart(card, status = "checking") {
+    function rememberPriceCheckStart(card, status = "checking", { save = true } = {}) {
       const key = cardKeyOf(card);
       if (!key) return null;
       const existing = priceChecks.get(key);
@@ -2151,7 +2223,7 @@
         finishedAt: status === "checking" ? null : Date.now(),
       };
       priceChecks.set(key, job);
-      savePriceChecks();
+      if (save) savePriceChecks();
       ensurePriceCheckTicker();
       return job;
     }
@@ -2171,88 +2243,49 @@
     }
 
     function syncPriceCheckTracking() {
-      const wish = activeWishlistCards();
-      const byKey = new Map(wish.map(c => [cardKeyOf(c), c]).filter(([k]) => k));
+      const byKey = checkWishByKey();
+      let changed = false;
 
-      wish.forEach(card => {
+      byKey.forEach((card, key) => {
         if (String(card.price_status || "").toLowerCase() !== "checking") return;
-        rememberPriceCheckStart(card, "checking");
+        const existing = priceChecks.get(key);
+        if (existing?.status === "checking") return;
+        const remoteStatus = String(remoteJobFor(key)?.status || "").toLowerCase();
+        // A finished check only reopens when the worker queue has it again.
+        if (existing && remoteStatus !== "pending" && remoteStatus !== "running") return;
+        rememberPriceCheckStart(card, "checking", { save: false });
+        changed = true;
       });
 
       for (const [key, job] of [...priceChecks.entries()]) {
         if (job.status !== "checking") continue;
         const card = byKey.get(key);
-        const status = String(card?.price_status || "").toLowerCase();
-        const remoteJob =
-          window.showSync && typeof showSync.priceJobFor === "function"
-            ? showSync.priceJobFor(key)
-            : null;
-        const jobStatus = String(remoteJob?.status || "").toLowerCase();
-        const resolved = resolvedCheckStatus(job);
-
-        if (resolved === "error" || jobStatus === "error" || status === "error") {
-          priceChecks.set(key, {
-            ...job,
-            status: "error",
-            finishedAt: Date.now(),
-            target_buy_gbp: card?.target_buy_gbp ?? job.target_buy_gbp,
-          });
-          continue;
-        }
-
+        const remoteJob = remoteJobFor(key);
+        let resolved = resolvedCheckStatus(job);
         if (
-          jobStatus === "done" ||
-          status === "ok" ||
-          (card && card.priced_at && status !== "checking")
+          resolved === "checking"
+          && String(remoteJob?.status || "").toLowerCase() === "running"
+          && Date.now() - parseJobTime(remoteJob.started_at) > 35 * 60 * 1000
+          && parseJobTime(remoteJob.started_at) > 0
         ) {
-          priceChecks.set(key, {
-            ...job,
-            status: "done",
-            finishedAt: Date.now(),
-            target_buy_gbp: card?.target_buy_gbp ?? job.target_buy_gbp,
-          });
-          continue;
+          resolved = "error";
         }
-
-        if (status === "checking" || jobStatus === "pending" || jobStatus === "running") {
-          if (jobStatus === "running" && remoteJob?.started_at) {
-            const workerStarted = Date.parse(remoteJob.started_at);
-            if (Number.isFinite(workerStarted) && Date.now() - workerStarted > 35 * 60 * 1000) {
-              priceChecks.set(key, {
-                ...job,
-                status: "error",
-                finishedAt: Date.now(),
-                target_buy_gbp: card?.target_buy_gbp ?? job.target_buy_gbp,
-              });
-            }
-          }
-          continue;
-        }
-
-        // Wishlist left checking without an explicit ok/error — treat as finished if priced.
-        if (card && card.priced_at) {
-          priceChecks.set(key, {
-            ...job,
-            status: "done",
-            finishedAt: Date.now(),
-            target_buy_gbp: card?.target_buy_gbp ?? job.target_buy_gbp,
-          });
-        }
+        if (resolved === "checking") continue;
+        priceChecks.set(key, {
+          ...job,
+          status: resolved,
+          finishedAt: parseJobTime(remoteJob?.finished_at) || Date.now(),
+          target_buy_gbp: card?.target_buy_gbp ?? job.target_buy_gbp,
+        });
+        changed = true;
       }
-      savePriceChecks();
+      if (changed) savePriceChecks();
     }
 
     function activeCheckJobs() {
       return [...priceChecks.values()]
         .filter(j => resolvedCheckStatus(j) === "checking")
         .sort((a, b) => a.startedAt - b.startedAt);
-    }
-
-    function recentCheckJobs() {
-      const cutoff = Date.now() - 45 * 60 * 1000;
-      return [...priceChecks.values()]
-        .filter(j => resolvedCheckStatus(j) !== "checking" && (j.finishedAt || j.startedAt) >= cutoff)
-        .sort((a, b) => (b.finishedAt || b.startedAt) - (a.finishedAt || a.startedAt));
     }
 
     function updateChecksTabBadge() {
@@ -2266,35 +2299,41 @@
     function renderPriceCheckBar() {
       const bar = document.getElementById("priceCheckBar");
       if (!bar) return;
-      syncPriceCheckTracking();
+      const summary = checkSummary(checkRows());
       updateChecksTabBadge();
-      const active = activeCheckJobs();
-      if (!active.length) {
+      if (!summary.running && !summary.queued) {
         bar.hidden = true;
         bar.innerHTML = "";
+        delete bar.dataset.html;
         return;
       }
-      const first = active[0];
-      const elapsed = formatElapsed(Date.now() - first.startedAt);
-      const label =
-        active.length === 1
-          ? `${first.name}${first.number ? ` #${first.number}` : ""}`
-          : `${active.length} cards checking`;
-      const pct = Math.round(
-        active.reduce((sum, job) => sum + progressPct(job), 0) / active.length
-      );
-      bar.className = "price-check-bar";
-      bar.hidden = false;
-      bar.innerHTML = `
+      const finished = summary.done + summary.failed;
+      const pct = summary.total ? Math.round((finished / summary.total) * 100) : 0;
+      const current = summary.current?.job;
+      const label = current
+        ? `Pricing · ${current.name}${current.number ? ` #${current.number}` : ""}`
+        : "Queued · waiting for the price worker";
+      const sub = [
+        `${summary.queued} queued`,
+        summary.failed ? `${summary.failed} failed` : "",
+        "tap for each card",
+      ].filter(Boolean).join(" · ");
+      const html = `
         <div class="price-check-top">
           <div class="price-check-copy">
-            <strong>Checking last solds · ${escapeHtml(label)}</strong>
-            <span>Tap for per-card progress · usually ~2 min each · safe to browse away</span>
+            <strong>${escapeHtml(label)}</strong>
+            <span>${escapeHtml(sub)}</span>
           </div>
-          <div class="price-check-elapsed">${escapeHtml(elapsed)} · ${pct}%</div>
+          <div class="price-check-elapsed">${finished} of ${summary.total} done</div>
         </div>
         <div class="price-check-track" aria-hidden="true"><div class="price-check-fill" style="width:${pct}%;animation:none;transform:none"></div></div>
       `;
+      bar.className = "price-check-bar";
+      bar.hidden = false;
+      if (bar.dataset.html !== html) {
+        bar.innerHTML = html;
+        bar.dataset.html = html;
+      }
       ensurePriceCheckTicker();
     }
 
@@ -2302,62 +2341,77 @@
       const list = document.getElementById("listChecks");
       const intro = document.getElementById("checksIntroCount");
       if (!list) return;
-      syncPriceCheckTracking();
-      const active = activeCheckJobs();
-      const recent = recentCheckJobs();
+      const rows = checkRows();
+      const s = checkSummary(rows);
+      const anyActive = s.running + s.queued > 0;
       if (intro) {
-        intro.textContent = active.length
-          ? `${active.length} running`
-          : recent.length
-            ? `${recent.length} finished recently`
+        intro.textContent = anyActive
+          ? `${s.done + s.failed} of ${s.total} done`
+          : rows.length
+            ? `${rows.length} finished recently`
             : "None running";
       }
       updateChecksTabBadge();
-      if (!active.length && !recent.length) {
+      if (!rows.length) {
+        checksRenderSig = "";
         list.innerHTML =
           '<div class="empty">Tap cards on Today or Wishlist to queue live max buys. Each one will show progress here.</div>';
         return;
       }
 
-      const renderJob = job => {
-        const resolved = resolvedCheckStatus(job);
-        const pct = progressPct(job);
-        const elapsed = formatElapsed(Date.now() - job.startedAt);
-        const statusLabel =
-          resolved === "checking"
-            ? `${elapsed} · ~${pct}%`
-            : resolved === "error"
-              ? "Failed"
-              : `Done · ${moneyWishlist(job.target_buy_gbp)}`;
+      const stats = [
+        s.running ? `${s.running} pricing now` : "",
+        s.queued ? `${s.queued} queued` : "",
+        s.done ? `${s.done} done` : "",
+        s.failed ? `${s.failed} failed` : "",
+      ].filter(Boolean).join(" · ");
+
+      // Rebuilding every row each second reloads images and freezes the phone.
+      const sig = rows.map(r => `${r.job.key}\u0001${r.info.phase}`).join("\u0002");
+      if (sig === checksRenderSig) {
+        const statsEl = list.querySelector("[data-check-stats]");
+        if (statsEl && statsEl.textContent !== stats) statsEl.textContent = stats;
+        const infoByKey = new Map(rows.map(r => [r.job.key, r.info]));
+        list.querySelectorAll("[data-check-key]").forEach(el => {
+          const info = infoByKey.get(el.dataset.checkKey);
+          if (!info) return;
+          const label = el.querySelector("[data-check-label]");
+          const note = el.querySelector("[data-check-note]");
+          const fill = el.querySelector("[data-check-fill]");
+          if (label && label.textContent !== info.label) label.textContent = info.label;
+          if (note && note.textContent !== info.note) note.textContent = info.note;
+          if (fill) fill.style.width = `${info.pct}%`;
+        });
+        return;
+      }
+      checksRenderSig = sig;
+
+      const renderRow = ({ job, info }) => {
         const img = job.image
           ? `<img class="card-image" src="${escapeHtml(job.image)}" alt="" loading="lazy">`
           : '<div class="card-image" aria-hidden="true"></div>';
+        const cls = info.phase === "done" ? "is-done"
+          : info.phase === "error" ? "is-error"
+          : info.phase === "queued" ? "is-queued"
+          : "";
         return `
-          <article class="check-row-card ${resolved === "done" ? "is-done" : ""} ${resolved === "error" ? "is-error" : ""}">
+          <article class="check-row-card ${cls}" data-check-key="${escapeHtml(job.key)}">
             <div class="check-row-top">
               ${img}
               <div class="check-row-copy">
                 <h3>${escapeHtml(job.name)} <span style="color:var(--muted)">#${escapeHtml(job.number || "")}</span></h3>
-                <p>${escapeHtml(job.set_name || "Wishlist")}${
-                  resolved === "checking"
-                    ? " · scraping solds"
-                    : resolved === "error"
-                      ? " · tap card to retry"
-                      : " · max buy ready"
-                }</p>
+                <p>${escapeHtml(job.set_name || "Wishlist")} · <span data-check-note>${escapeHtml(info.note)}</span></p>
               </div>
-              <div class="check-row-status">${escapeHtml(statusLabel)}</div>
+              <div class="check-row-status" data-check-label>${escapeHtml(info.label)}</div>
             </div>
-            <div class="check-progress" aria-hidden="true"><span style="width:${pct}%"></span></div>
+            <div class="check-progress" aria-hidden="true"><span data-check-fill style="width:${info.pct}%"></span></div>
           </article>
         `;
       };
 
       list.innerHTML = [
-        active.length ? `<p class="stats">${active.length} in progress</p>` : "",
-        ...active.map(renderJob),
-        recent.length ? `<p class="stats" style="margin-top:12px">Recently finished</p>` : "",
-        ...recent.map(renderJob),
+        `<p class="stats" data-check-stats>${escapeHtml(stats)}</p>`,
+        ...rows.map(renderRow),
       ].join("");
     }
 
@@ -2771,6 +2825,7 @@
 
     function rerenderActiveView() {
       if (!snapshotData) return;
+      invalidateCheckCache();
       updateMeta();
       renderPriceCheckBar();
       if (activeView === "buy-list") renderBuyList();
@@ -3298,7 +3353,7 @@
 
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("service-worker.js?v=23").then(reg => {
+        navigator.serviceWorker.register("service-worker.js?v=24").then(reg => {
           if (reg.waiting) reg.waiting.postMessage({ type: "SKIP_WAITING" });
           reg.update().catch(() => {});
         }).catch(() => {});
