@@ -16,7 +16,7 @@ Old bookmarks to `wishlist.html` redirect to `#wishlist`.
 
 ## How it works
 
-The phone app is the product. Tap a card to check the live max buy, then hit **Purchased** when you buy it. Add sets from the phone. Prices update on the phone over live sync — you do not run a laptop batch to use the app.
+The phone app is the product. Tap a card, then **Check price** for a live max buy. Hit **Purchased** when you buy it. Add sets from the phone. Prices update on the phone over live sync — you do not run a laptop batch to use the app.
 
 A background worker (GitHub Actions) scrapes solds and writes prices into Supabase. The phone reads those live numbers. `floors.json` is a cache for poor signal.
 
@@ -24,7 +24,7 @@ A background worker (GitHub Actions) scrapes solds and writes prices into Supaba
 
 - **Today’s buy list** — cards most worth checking now, ranked by buy signal.
 - **Floor checker** — deeper price check against floor and max buy.
-- **Wishlist** — cards you want. Tap to check price. Name, set, number, and max buy.
+- **Wishlist** — cards you want. Tap a card, then Check price. Name, set, number, and max buy.
 - **Helper mode** — simplified cards for non-collectors.
 - **Add set** — type a set name or paste a TCGPlayer link; picked cards go on the wishlist.
 

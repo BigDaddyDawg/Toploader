@@ -690,7 +690,7 @@
     }
     #viewWishlist.has-selection,
     #viewBuyList.has-selection {
-      padding-bottom: calc(220px + env(safe-area-inset-bottom, 0px));
+      padding-bottom: calc(280px + env(safe-area-inset-bottom, 0px));
     }
     .wishlist-action-bar {
       position: fixed;
@@ -739,6 +739,11 @@
       cursor: pointer;
       font-family: inherit;
     }
+    .wishlist-action-buttons {
+      display: grid;
+      gap: 10px;
+    }
+    .wishlist-action-check,
     .wishlist-action-purchase {
       width: 100%;
       border: 2px solid #fff;
@@ -749,10 +754,17 @@
       font-weight: 700;
       letter-spacing: 0.01em;
       color: #fff;
-      background: linear-gradient(160deg, #ff7a59, #ef4444);
       cursor: pointer;
+    }
+    .wishlist-action-check {
+      background: linear-gradient(160deg, #60a5fa, #2563eb);
+      box-shadow: 0 12px 28px rgba(37, 99, 235, 0.28);
+    }
+    .wishlist-action-purchase {
+      background: linear-gradient(160deg, #ff7a59, #ef4444);
       box-shadow: 0 12px 28px rgba(239, 68, 68, 0.28);
     }
+    .wishlist-action-check:disabled,
     .wishlist-action-purchase:disabled {
       opacity: 0.55;
       cursor: wait;
@@ -773,7 +785,7 @@
       border: 2px solid rgba(31, 173, 106, 0.2);
     }
     .wishlist-action-note {
-      margin: 0;
+      margin: 0 0 10px;
       text-align: center;
       color: var(--muted);
       font-size: 0.82rem;
@@ -1657,7 +1669,7 @@
   <div id="viewBuyList" class="view active">
     <section class="view-intro">
       <h2>Should I buy today?</h2>
-      <p>Buy-now cards from your wishlist. Tap a card, check the max buy, then hit Purchased when you get it.</p>
+      <p>Buy-now cards from your wishlist. Tap a card, then Check price if you want a live max buy. Hit Purchased when you get it.</p>
       <span class="intro-count" id="buyListIntroCount">Loading…</span>
     </section>
     <div class="toolbar">
@@ -1703,7 +1715,7 @@
   <div id="viewWishlist" class="view">
     <section class="view-intro">
       <h2>Wishlist</h2>
-      <p>Tap a card to check its live max buy. Hit Purchased when you buy it.</p>
+      <p>Tap a card, then Check price for a live max buy. Hit Purchased when you buy it.</p>
       <span class="intro-count" id="wishlistIntroCount">Loading…</span>
     </section>
     <div class="toolbar">
@@ -1733,7 +1745,7 @@
   <div id="viewChecks" class="view">
     <section class="view-intro">
       <h2>Price checks</h2>
-      <p>Every card you tap for a live max buy shows up here. Leave anytime — progress keeps updating.</p>
+      <p>Cards you tap Check price on show up here. Leave anytime — progress keeps updating.</p>
       <span class="intro-count" id="checksIntroCount">None running</span>
     </section>
     <div id="listChecks" class="list"></div>
@@ -2059,6 +2071,7 @@
     const PRICE_CHECK_STORE = "chase_price_checks_v1";
     const PRICE_CHECK_ESTIMATE_MS = 60000;
     const PRICE_CHECK_RECENT_MS = 3 * 60 * 60 * 1000;
+    const PRICE_CHECK_STALE_MS = 90 * 1000;
     let priceCheckTick = 0;
     let checkWishCache = { at: 0, map: null };
     let checksRenderSig = "";
@@ -2109,13 +2122,25 @@
       return Number.isFinite(t) ? t : 0;
     }
 
+    function remoteJobStatus(key) {
+      return String(remoteJobFor(key)?.status || "").toLowerCase();
+    }
+
+    function isLiveWorkerJob(key) {
+      const status = remoteJobStatus(key);
+      return status === "pending" || status === "running";
+    }
+
     function resolvedCheckStatus(job) {
       if (job.status === "error" || job.status === "done") return job.status;
-      const remoteStatus = String(remoteJobFor(job.key)?.status || "").toLowerCase();
+      const remoteStatus = remoteJobStatus(job.key);
       if (remoteStatus === "pending" || remoteStatus === "running") return "checking";
       const wishStatus = String(checkWishByKey().get(job.key)?.price_status || "").toLowerCase();
       if (remoteStatus === "error" || wishStatus === "error") return "error";
       if (remoteStatus === "done" || wishStatus === "ok") return "done";
+      // No live worker job. Keep a brief local spinner, then fail instead of hanging.
+      const age = Date.now() - (job.startedAt || 0);
+      if (age > PRICE_CHECK_STALE_MS) return "error";
       return "checking";
     }
 
@@ -2141,7 +2166,7 @@
       }
       if (resolved === "error") {
         const why = String(remote?.error_text || card?.card_show_price_note || "").trim();
-        return { resolved, phase: "error", pct: 100, label: "Failed", note: why || "tap card to retry" };
+        return { resolved, phase: "error", pct: 100, label: "Failed", note: why || "tap Check price to retry" };
       }
       if (String(remote?.status || "").toLowerCase() === "running") {
         const started = parseJobTime(remote.started_at) || job.startedAt;
@@ -2156,7 +2181,7 @@
         pct: 0,
         pos,
         label: pos ? `Queued · #${pos}` : "Queued",
-        note: pos === 1 ? "next up" : pos > 1 ? `${pos - 1} ahead` : "waiting for the price worker",
+        note: pos === 1 ? "next up" : pos > 1 ? `${pos - 1} ahead` : "queued — starts shortly",
       };
     }
 
@@ -2247,12 +2272,9 @@
       let changed = false;
 
       byKey.forEach((card, key) => {
-        if (String(card.price_status || "").toLowerCase() !== "checking") return;
+        if (!isLiveWorkerJob(key)) return;
         const existing = priceChecks.get(key);
         if (existing?.status === "checking") return;
-        const remoteStatus = String(remoteJobFor(key)?.status || "").toLowerCase();
-        // A finished check only reopens when the worker queue has it again.
-        if (existing && remoteStatus !== "pending" && remoteStatus !== "running") return;
         rememberPriceCheckStart(card, "checking", { save: false });
         changed = true;
       });
@@ -2312,7 +2334,7 @@
       const current = summary.current?.job;
       const label = current
         ? `Pricing · ${current.name}${current.number ? ` #${current.number}` : ""}`
-        : "Queued · waiting for the price worker";
+        : "Queued · worker starting soon";
       const sub = [
         `${summary.queued} queued`,
         summary.failed ? `${summary.failed} failed` : "",
@@ -2355,7 +2377,7 @@
       if (!rows.length) {
         checksRenderSig = "";
         list.innerHTML =
-          '<div class="empty">Tap cards on Today or Wishlist to queue live max buys. Each one will show progress here.</div>';
+          '<div class="empty">Tap a card, then Check price, to queue a live max buy. Each one will show progress here.</div>';
         return;
       }
 
@@ -2444,24 +2466,41 @@
     function selectCardForPurchase(slug, view = "wishlist") {
       selectedCardSlug = slug || "";
       setView(view);
-      const card = findCardBySlug(slug);
+    }
+
+    async function startPriceCheck(card) {
       if (
-        card &&
-        window.showSync &&
-        typeof showSync.requestPriceCheck === "function" &&
-        showSync.isConfigured() &&
-        typeof showSync.isReady === "function" &&
-        showSync.isReady()
+        !card ||
+        !window.showSync ||
+        typeof showSync.requestPriceCheck !== "function" ||
+        !showSync.isConfigured() ||
+        typeof showSync.isReady !== "function" ||
+        !showSync.isReady()
       ) {
-        showSync.requestPriceCheck(card, { force: true }).then(result => {
-          if (result && (result.queued || result.reason === "already-checking")) {
-            rememberPriceCheckStart(card, "checking");
-          }
-          renderWishlistActionBar();
-          renderPriceCheckBar();
-          if (activeView === "checks") renderChecks();
-        }).catch(() => {});
+        return;
       }
+      rememberPriceCheckStart(card, "checking");
+      renderWishlistActionBar();
+      renderPriceCheckBar();
+      if (activeView === "checks") renderChecks();
+      try {
+        const result = await showSync.requestPriceCheck(card, { force: true });
+        if (result && result.ok === false) {
+          const key = cardKeyOf(card);
+          const existing = priceChecks.get(key);
+          if (existing) {
+            priceChecks.set(key, {
+              ...existing,
+              status: "error",
+              finishedAt: Date.now(),
+            });
+            savePriceChecks();
+          }
+        }
+      } catch (_) {}
+      renderWishlistActionBar();
+      renderPriceCheckBar();
+      if (activeView === "checks") renderChecks();
     }
 
     function renderWishlistActionBar() {
@@ -2498,21 +2537,30 @@
       } else if (!ready) {
         actionHtml = '<button type="button" class="wishlist-action-purchase" id="wishlistPurchaseBtn" disabled>Purchased (connecting…)</button>';
       } else {
-        const status = String(card.price_status || "").toLowerCase();
+        const key = cardKeyOf(card);
+        const checking = isLiveWorkerJob(key)
+          || resolvedCheckStatus(priceChecks.get(key) || { key, status: "done", startedAt: 0 }) === "checking";
+        const wishStatus = String(card.price_status || "").toLowerCase();
         let statusNote = "";
-        if (status === "checking") {
-          const key = cardKeyOf(card);
+        let checkLabel = "Check price";
+        if (checking) {
           const started = priceChecks.get(key)?.startedAt || Date.now();
           const elapsed = formatElapsed(Date.now() - started);
           statusNote = `<p class="wishlist-action-note">Checking last solds… ${escapeHtml(elapsed)} in. Open <strong>Checks</strong> for progress — safe to leave this card.</p>`;
-        } else if (status === "error") {
-          statusNote = '<p class="wishlist-action-note">Price check failed. Tap the card again to retry.</p>';
+          checkLabel = "Checking…";
+        } else if (wishStatus === "error") {
+          statusNote = '<p class="wishlist-action-note">Price check failed. Tap Check price to retry.</p>';
+          checkLabel = "Retry price";
         } else if (card.priced_at) {
-          statusNote = `<p class="wishlist-action-note">Priced ${escapeHtml(formatSnapshotDateTime(card.priced_at) || "just now")}</p>`;
+          statusNote = `<p class="wishlist-action-note">Priced ${escapeHtml(formatSnapshotDateTime(card.priced_at) || "just now")}. Tap Check price to refresh.</p>`;
+          checkLabel = "Refresh price";
         } else {
-          statusNote = '<p class="wishlist-action-note">Starting max-buy check… usually ~2 minutes. Track it on the Checks tab.</p>';
+          statusNote = '<p class="wishlist-action-note">Tap Check price for a live max buy. Usually ~2 minutes — track it on Checks.</p>';
         }
-        actionHtml = `${statusNote}<button type="button" class="wishlist-action-purchase" id="wishlistPurchaseBtn">Purchased</button>`;
+        actionHtml = `${statusNote}<div class="wishlist-action-buttons">
+          <button type="button" class="wishlist-action-check" id="wishlistCheckPriceBtn"${checking ? " disabled" : ""}>${checkLabel}</button>
+          <button type="button" class="wishlist-action-purchase" id="wishlistPurchaseBtn">Purchased</button>
+        </div>`;
       }
 
       bar.innerHTML = `
@@ -2531,6 +2579,11 @@
 
       const dismiss = document.getElementById("wishlistActionDismiss");
       if (dismiss) dismiss.addEventListener("click", clearWishlistSelection);
+
+      const checkBtn = document.getElementById("wishlistCheckPriceBtn");
+      if (checkBtn && configured && !owned && ready) {
+        checkBtn.addEventListener("click", () => startPriceCheck(card));
+      }
 
       const purchaseBtn = document.getElementById("wishlistPurchaseBtn");
       if (purchaseBtn && configured && !owned && ready) {
@@ -2790,8 +2843,10 @@
     }
 
     function signalBadge(card) {
-      const status = String(card.price_status || "").toLowerCase();
-      if (status === "checking") {
+      const key = cardKeyOf(card);
+      const checking = isLiveWorkerJob(key)
+        || resolvedCheckStatus(priceChecks.get(key) || { key, status: "done", startedAt: 0 }) === "checking";
+      if (checking) {
         return '<span class="badge checking">Checking price</span>';
       }
       const buy = isBuyNow(card);
@@ -2911,7 +2966,7 @@
         if (!filtered.length) {
           list.innerHTML = cards.length
             ? '<div class="empty">No buy-now cards match your filters.</div>'
-            : '<div class="empty">No Buy now signals yet. Open Wishlist and tap a card to check its price.</div>';
+            : '<div class="empty">No Buy now signals yet. Open Wishlist, tap a card, then Check price.</div>';
           return;
         }
         list.innerHTML = filtered.map(card => {
@@ -3353,7 +3408,7 @@
 
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("service-worker.js?v=24").then(reg => {
+        navigator.serviceWorker.register("service-worker.js?v=25").then(reg => {
           if (reg.waiting) reg.waiting.postMessage({ type: "SKIP_WAITING" });
           reg.update().catch(() => {});
         }).catch(() => {});

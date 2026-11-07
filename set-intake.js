@@ -13,7 +13,6 @@
     "double rare",
     "futuristic",
     "mega ultra",
-    "promo",
   ];
 
   const QUICK_SETS = [
@@ -167,11 +166,7 @@
       return;
     }
 
-    const multiSet =
-      lastResult.set_name === "Chase picks" ||
-      (lastResult.cards || []).some(
-        c => c.set_name && c.set_name !== lastResult.set_name
-      );
+    const multiSet = lastResult.set_name === "Chase picks";
     list.innerHTML = cards
       .map(card => {
         const key = cardKeyFor(card);
@@ -180,7 +175,7 @@
           ? `<img class="card-image" src="${escapeHtml(card.image_small_url)}" alt="" loading="lazy">`
           : '<div class="card-image" aria-hidden="true"></div>';
         const setLine = multiSet
-          ? `${escapeHtml(card.set_name || lastResult.set_name || "")} · ${escapeHtml(card.rarity || "—")}${card.promo_note ? ` · ${escapeHtml(card.promo_note)}` : ""}`
+          ? `${escapeHtml(card.set_name || "")} · ${escapeHtml(card.rarity || "—")}`
           : escapeHtml(card.rarity || "—");
         return `
           <label class="card add-set-card" data-key="${escapeHtml(key)}">
@@ -349,7 +344,7 @@
       return;
     }
     setStatus(
-      `Added ${result.count} card(s). They’re on Wishlist now — tap a card when you want a live max buy.`
+      `Added ${result.count} card(s). They’re on Wishlist now — tap a card, then Check price, when you want a live max buy.`
     );
     selected = new Set();
     updateSelectedCount();

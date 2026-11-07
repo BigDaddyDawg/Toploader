@@ -194,9 +194,6 @@
       const status = String(job.status || "").toLowerCase();
       if (status === "pending" || status === "running") return true;
     }
-    for (const row of wishlistMap.values()) {
-      if (String(row.price_status || "").toLowerCase() === "checking") return true;
-    }
     return false;
   }
 
@@ -622,7 +619,7 @@
     if (!key) return { ok: false, error: "Missing card key" };
     const existing = wishlistMap.get(key) || {};
     const activeJob = priceJobFor(key);
-    if (isJobActive(activeJob)) {
+    if (isJobActive(activeJob) && activeJob.id) {
       wakePriceWorker(key);
       return { ok: true, queued: true, reason: "already-checking" };
     }
@@ -661,15 +658,19 @@
       return { ok: true, queued: true, reason: "already-queued" };
     }
 
-    const { error: jobErr } = await client.from("toploader_price_jobs").insert({
-      card_key: key,
-      card_name: name.slice(0, 200),
-      number: number.slice(0, 40),
-      set_name: setName.slice(0, 200),
-      scrape_query: scrape.slice(0, 400),
-      job_type: "card",
-      status: "pending",
-    });
+    const { data: inserted, error: jobErr } = await client
+      .from("toploader_price_jobs")
+      .insert({
+        card_key: key,
+        card_name: name.slice(0, 200),
+        number: number.slice(0, 40),
+        set_name: setName.slice(0, 200),
+        scrape_query: scrape.slice(0, 400),
+        job_type: "card",
+        status: "pending",
+      })
+      .select("id")
+      .limit(1);
     if (jobErr) return { ok: false, error: jobErr.message };
 
     const { error: wishErr } = await client
@@ -695,6 +696,7 @@
     });
     ingestPriceJobRows([
       {
+        id: inserted?.[0]?.id || "",
         card_key: key,
         status: "pending",
         requested_at: new Date().toISOString(),
