@@ -838,6 +838,24 @@
       font-size: 0.95rem;
     }
     .live-status[hidden] { display: none; }
+    .rec-label {
+      display: inline-block;
+      margin-left: 6px;
+      padding: 1px 7px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      vertical-align: 1px;
+    }
+    .rec-label.hold {
+      color: #8a6200;
+      background: rgba(227, 155, 0, 0.16);
+    }
+    .rec-label.buy {
+      color: #147a48;
+      background: rgba(31, 173, 106, 0.14);
+    }
     .card-actions {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -1778,6 +1796,11 @@
       <div class="filters wishlist-filters">
         <select id="setFilterWishlist" aria-label="Which set">
           <option value="">All sets</option>
+        </select>
+        <select id="sortWishlist" aria-label="Sort cards">
+          <option value="set">Set by set</option>
+          <option value="price-high">Highest price</option>
+          <option value="price-low">Lowest price</option>
         </select>
       </div>
     </div>
@@ -3120,6 +3143,19 @@
       });
     }
 
+    function recommendationLabel(card) {
+      const raw = String(card.advisor_decision || "").trim();
+      const low = raw.toLowerCase();
+      if (!low) return "";
+      if (low.includes("buy")) {
+        return '<span class="rec-label buy">Buy</span>';
+      }
+      if (low.includes("hold") || low.includes("wait")) {
+        return '<span class="rec-label hold">Hold</span>';
+      }
+      return `<span class="rec-label hold">${escapeHtml(raw)}</span>`;
+    }
+
     function cardIsRefreshing(card) {
       const key = cardKeyOf(card);
       if (!key) return false;
@@ -3175,11 +3211,27 @@
             return blob.includes(q);
           });
         }
-        filtered.sort((a, b) =>
-          String(a.set_name || "").localeCompare(String(b.set_name || ""))
-          || cardNumberValue(a) - cardNumberValue(b)
-          || String(a.card || "").localeCompare(String(b.card || ""))
-        );
+        const sortVal = document.getElementById("sortWishlist")?.value || "set";
+        const priceOrLast = card => {
+          const n = Number(card.target_buy_gbp);
+          return Number.isFinite(n) && n > 0 ? n : null;
+        };
+        filtered.sort((a, b) => {
+          if (sortVal === "price-high" || sortVal === "price-low") {
+            const pa = priceOrLast(a);
+            const pb = priceOrLast(b);
+            if (pa === null && pb === null) {
+              return String(a.card || "").localeCompare(String(b.card || ""));
+            }
+            if (pa === null) return 1;
+            if (pb === null) return -1;
+            const diff = sortVal === "price-high" ? pb - pa : pa - pb;
+            if (diff) return diff;
+          }
+          return String(a.set_name || "").localeCompare(String(b.set_name || ""))
+            || cardNumberValue(a) - cardNumberValue(b)
+            || String(a.card || "").localeCompare(String(b.card || ""));
+        });
         const list = document.getElementById("listWishlist");
         if (!list) return;
         if (!filtered.length) {
@@ -3203,7 +3255,7 @@
                 ${renderCardImage(card) || '<div class="card-image" aria-hidden="true"></div>'}
                 <div class="wish-copy">
                   <h2>${escapeHtml(card.card || "Card")} <span style="color:var(--muted)">#${escapeHtml(card.number || "")}</span></h2>
-                  <p class="wish-set-line">${escapeHtml(card.set_name || "Unknown set")}</p>
+                  <p class="wish-set-line">${escapeHtml(card.set_name || "Unknown set")}${recommendationLabel(card)}</p>
                   <p class="pay-up"><span>Pay up to</span>${escapeHtml(price)}</p>
                   <p class="live-status" data-live-status="${escapeHtml(key)}" ${refreshing ? "" : "hidden"}>Refreshing the price…</p>
                 </div>
@@ -3242,6 +3294,8 @@
       const search = document.getElementById("searchWishlist");
       if (search) search.oninput = apply;
       if (setSelect) setSelect.onchange = apply;
+      const sortSelect = document.getElementById("sortWishlist");
+      if (sortSelect) sortSelect.onchange = apply;
       apply();
     }
 
@@ -3454,7 +3508,7 @@
 
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("service-worker.js?v=26").then(reg => {
+        navigator.serviceWorker.register("service-worker.js?v=27").then(reg => {
           if (reg.waiting) reg.waiting.postMessage({ type: "SKIP_WAITING" });
           reg.update().catch(() => {});
         }).catch(() => {});
