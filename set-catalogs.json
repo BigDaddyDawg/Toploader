@@ -1,5 +1,5 @@
 {
-  "updated_at_utc": "2026-08-24T19:04:56.862422+00:00",
+  "updated_at_utc": "2026-11-21T17:16:02.187947+00:00",
   "sets": {
     "30th Celebration": {
       "set_name": "30th Celebration",
@@ -190,916 +190,1360 @@
       "set_name": "Delta Reign",
       "aliases": [
         "delta reign",
-        "storm emeralda",
         "me06",
         "me06 delta reign"
       ],
       "group_id": 24831,
-      "note": "Working list from Japanese Storm Emeralda (113 cards) with JP card art. English numbers/art may shift at Delta Reign release.",
+      "note": "English Delta Reign, including the product promos.",
       "cards": [
         {
           "name": "Heracross",
           "number": "001",
           "rarity": "Common",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709157_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709157_400w.jpg",
-          "product_id": 709157
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/727563_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/727563_400w.jpg",
+          "product_id": 727563,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Surskit",
           "number": "002",
           "rarity": "Common",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709158_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709158_400w.jpg",
-          "product_id": 709158
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/727564_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/727564_400w.jpg",
+          "product_id": 727564,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Masquerain",
           "number": "003",
-          "rarity": "Uncommon",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709159_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709159_400w.jpg",
-          "product_id": 709159
+          "rarity": "Common",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726510_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726510_400w.jpg",
+          "product_id": 726510,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Cacnea",
           "number": "004",
           "rarity": "Common",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709160_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709160_400w.jpg",
-          "product_id": 709160
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/727565_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/727565_400w.jpg",
+          "product_id": 727565,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Cacturne",
           "number": "005",
-          "rarity": "Uncommon",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709161_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709161_400w.jpg",
-          "product_id": 709161
+          "rarity": "Rare",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/727566_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/727566_400w.jpg",
+          "product_id": 727566,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Combee",
           "number": "006",
           "rarity": "Common",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709162_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709162_400w.jpg",
-          "product_id": 709162
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/727567_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/727567_400w.jpg",
+          "product_id": 727567,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Vespiquen",
           "number": "007",
+          "rarity": "Common",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/727568_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/727568_400w.jpg",
+          "product_id": 727568,
+          "set_name": "Delta Reign"
+        },
+        {
+          "name": "Shaymin",
+          "number": "008",
           "rarity": "Uncommon",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709163_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709163_400w.jpg",
-          "product_id": 709163
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/727569_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/727569_400w.jpg",
+          "product_id": 727569,
+          "set_name": "Delta Reign"
+        },
+        {
+          "name": "Virizion",
+          "number": "009",
+          "rarity": "Uncommon",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726511_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726511_400w.jpg",
+          "product_id": 726511,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Wimpod",
-          "number": "008",
+          "number": "010",
           "rarity": "Common",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709164_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709164_400w.jpg",
-          "product_id": 709164
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/727570_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/727570_400w.jpg",
+          "product_id": 727570,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Mega Golisopod ex",
-          "number": "009",
+          "number": "011",
           "rarity": "Double Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709165_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709165_400w.jpg",
-          "product_id": 709165
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726512_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726512_400w.jpg",
+          "product_id": 726512,
+          "set_name": "Delta Reign"
+        },
+        {
+          "name": "Sprigatito",
+          "number": "012",
+          "rarity": "Common",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726513_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726513_400w.jpg",
+          "product_id": 726513,
+          "set_name": "Delta Reign"
+        },
+        {
+          "name": "Floragato",
+          "number": "013",
+          "rarity": "Uncommon",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726514_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726514_400w.jpg",
+          "product_id": 726514,
+          "set_name": "Delta Reign"
+        },
+        {
+          "name": "Meowscarada ex",
+          "number": "014",
+          "rarity": "Double Rare",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726515_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726515_400w.jpg",
+          "product_id": 726515,
+          "set_name": "Delta Reign"
+        },
+        {
+          "name": "Smoliv",
+          "number": "015",
+          "rarity": "Common",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/727571_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/727571_400w.jpg",
+          "product_id": 727571,
+          "set_name": "Delta Reign"
+        },
+        {
+          "name": "Dolliv",
+          "number": "016",
+          "rarity": "Common",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/727572_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/727572_400w.jpg",
+          "product_id": 727572,
+          "set_name": "Delta Reign"
+        },
+        {
+          "name": "Arboliva",
+          "number": "017",
+          "rarity": "Uncommon",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/727573_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/727573_400w.jpg",
+          "product_id": 727573,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Growlithe",
-          "number": "010",
+          "number": "018",
           "rarity": "Common",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709166_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709166_400w.jpg",
-          "product_id": 709166
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726516_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726516_400w.jpg",
+          "product_id": 726516,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Arcanine",
-          "number": "011",
-          "rarity": "Uncommon",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709167_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709167_400w.jpg",
-          "product_id": 709167
+          "number": "019",
+          "rarity": "Rare",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726517_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726517_400w.jpg",
+          "product_id": 726517,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Magmar",
-          "number": "012",
-          "rarity": "Common",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709168_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709168_400w.jpg",
-          "product_id": 709168
+          "number": "020",
+          "rarity": "Uncommon",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/727574_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/727574_400w.jpg",
+          "product_id": 727574,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Magmortar",
-          "number": "013",
-          "rarity": "Uncommon",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709169_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709169_400w.jpg",
-          "product_id": 709169
+          "number": "021",
+          "rarity": "Rare",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/727575_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/727575_400w.jpg",
+          "product_id": 727575,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Torkoal",
-          "number": "014",
+          "number": "022",
           "rarity": "Common",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709170_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709170_400w.jpg",
-          "product_id": 709170
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/727576_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/727576_400w.jpg",
+          "product_id": 727576,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Heat Rotom ex",
-          "number": "015",
+          "number": "023",
           "rarity": "Double Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709171_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709171_400w.jpg",
-          "product_id": 709171
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726518_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726518_400w.jpg",
+          "product_id": 726518,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Heatmor",
-          "number": "016",
-          "rarity": "Uncommon",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709172_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709172_400w.jpg",
-          "product_id": 709172
+          "number": "024",
+          "rarity": "Common",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/727577_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/727577_400w.jpg",
+          "product_id": 727577,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Mantine",
-          "number": "017",
+          "number": "025",
           "rarity": "Common",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709173_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709173_400w.jpg",
-          "product_id": 709173
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/727578_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/727578_400w.jpg",
+          "product_id": 727578,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Kyogre",
-          "number": "018",
+          "number": "026",
           "rarity": "Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709174_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709174_400w.jpg",
-          "product_id": 709174
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726519_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726519_400w.jpg",
+          "product_id": 726519,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Frillish",
-          "number": "019",
+          "number": "027",
           "rarity": "Common",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709175_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709175_400w.jpg",
-          "product_id": 709175
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/727579_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/727579_400w.jpg",
+          "product_id": 727579,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Jellicent",
-          "number": "020",
+          "number": "028",
           "rarity": "Uncommon",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709176_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709176_400w.jpg",
-          "product_id": 709176
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/727580_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/727580_400w.jpg",
+          "product_id": 727580,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Wishiwashi ex",
-          "number": "021",
+          "number": "029",
           "rarity": "Double Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709177_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709177_400w.jpg",
-          "product_id": 709177
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726520_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726520_400w.jpg",
+          "product_id": 726520,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Electabuzz",
-          "number": "022",
+          "number": "030",
           "rarity": "Common",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709178_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709178_400w.jpg",
-          "product_id": 709178
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/727581_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/727581_400w.jpg",
+          "product_id": 727581,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Electivire",
-          "number": "023",
+          "number": "031",
           "rarity": "Uncommon",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709179_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709179_400w.jpg",
-          "product_id": 709179
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726521_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726521_400w.jpg",
+          "product_id": 726521,
+          "set_name": "Delta Reign"
+        },
+        {
+          "name": "Jolteon",
+          "number": "032",
+          "rarity": "Uncommon",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726522_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726522_400w.jpg",
+          "product_id": 726522,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Raikou ex",
-          "number": "024",
+          "number": "033",
           "rarity": "Double Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709286_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709286_400w.jpg",
-          "product_id": 709286
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726523_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726523_400w.jpg",
+          "product_id": 726523,
+          "set_name": "Delta Reign"
+        },
+        {
+          "name": "Rotom",
+          "number": "034",
+          "rarity": "Common",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/727582_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/727582_400w.jpg",
+          "product_id": 727582,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Thundurus",
-          "number": "025",
-          "rarity": "Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709289_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709289_400w.jpg",
-          "product_id": 709289
+          "number": "035",
+          "rarity": "Uncommon",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726524_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726524_400w.jpg",
+          "product_id": 726524,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Pincurchin",
-          "number": "026",
+          "number": "036",
           "rarity": "Common",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709180_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709180_400w.jpg",
-          "product_id": 709180
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726525_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726525_400w.jpg",
+          "product_id": 726525,
+          "set_name": "Delta Reign"
+        },
+        {
+          "name": "Pawmi",
+          "number": "037",
+          "rarity": "Common",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/727583_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/727583_400w.jpg",
+          "product_id": 727583,
+          "set_name": "Delta Reign"
+        },
+        {
+          "name": "Pawmo",
+          "number": "038",
+          "rarity": "Common",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/727584_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/727584_400w.jpg",
+          "product_id": 727584,
+          "set_name": "Delta Reign"
+        },
+        {
+          "name": "Pawmot",
+          "number": "039",
+          "rarity": "Uncommon",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/727585_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/727585_400w.jpg",
+          "product_id": 727585,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Wattrel",
-          "number": "027",
+          "number": "040",
           "rarity": "Common",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709181_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709181_400w.jpg",
-          "product_id": 709181
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/727586_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/727586_400w.jpg",
+          "product_id": 727586,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Kilowattrel",
-          "number": "028",
+          "number": "041",
           "rarity": "Uncommon",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709182_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709182_400w.jpg",
-          "product_id": 709182
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/728021_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/728021_400w.jpg",
+          "product_id": 728021,
+          "set_name": "Delta Reign"
+        },
+        {
+          "name": "Miraidon",
+          "number": "042",
+          "rarity": "Uncommon",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/728022_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/728022_400w.jpg",
+          "product_id": 728022,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Drowzee",
-          "number": "029",
+          "number": "043",
           "rarity": "Common",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709183_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709183_400w.jpg",
-          "product_id": 709183
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/728023_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/728023_400w.jpg",
+          "product_id": 728023,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Hypno",
-          "number": "030",
-          "rarity": "Uncommon",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709184_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709184_400w.jpg",
-          "product_id": 709184
+          "number": "044",
+          "rarity": "Common",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726526_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726526_400w.jpg",
+          "product_id": 726526,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Giratina",
-          "number": "031",
+          "number": "045",
           "rarity": "Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709185_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709185_400w.jpg",
-          "product_id": 709185
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726527_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726527_400w.jpg",
+          "product_id": 726527,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Golett",
-          "number": "032",
+          "number": "046",
           "rarity": "Common",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709186_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709186_400w.jpg",
-          "product_id": 709186
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/728024_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/728024_400w.jpg",
+          "product_id": 728024,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Mega Golurk ex",
-          "number": "033",
+          "number": "047",
           "rarity": "Double Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709187_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709187_400w.jpg",
-          "product_id": 709187
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726528_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726528_400w.jpg",
+          "product_id": 726528,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Enamorus",
-          "number": "034",
-          "rarity": "Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709188_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709188_400w.jpg",
-          "product_id": 709188
+          "number": "048",
+          "rarity": "Uncommon",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/728025_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/728025_400w.jpg",
+          "product_id": 728025,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Sandshrew",
-          "number": "035",
+          "number": "049",
           "rarity": "Common",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709288_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709288_400w.jpg",
-          "product_id": 709288
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/728026_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/728026_400w.jpg",
+          "product_id": 728026,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Sandslash",
-          "number": "036",
-          "rarity": "Uncommon",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709189_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709189_400w.jpg",
-          "product_id": 709189
+          "number": "050",
+          "rarity": "Common",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/728027_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/728027_400w.jpg",
+          "product_id": 728027,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Onix",
-          "number": "037",
+          "number": "051",
           "rarity": "Common",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709190_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709190_400w.jpg",
-          "product_id": 709190
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/728028_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/728028_400w.jpg",
+          "product_id": 728028,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Steelix",
-          "number": "038",
-          "rarity": "Uncommon",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709191_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709191_400w.jpg",
-          "product_id": 709191
+          "number": "052",
+          "rarity": "Rare",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/728029_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/728029_400w.jpg",
+          "product_id": 728029,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Groudon",
-          "number": "039",
+          "number": "053",
           "rarity": "Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709192_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709192_400w.jpg",
-          "product_id": 709192
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726529_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726529_400w.jpg",
+          "product_id": 726529,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Landorus",
-          "number": "040",
-          "rarity": "Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709193_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709193_400w.jpg",
-          "product_id": 709193
+          "number": "054",
+          "rarity": "Uncommon",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726530_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726530_400w.jpg",
+          "product_id": 726530,
+          "set_name": "Delta Reign"
         },
         {
-          "name": "Nidoran\u2640",
-          "number": "041",
+          "name": "Nidoran F",
+          "number": "055",
           "rarity": "Common",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709194_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709194_400w.jpg",
-          "product_id": 709194
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726531_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726531_400w.jpg",
+          "product_id": 726531,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Nidorina",
-          "number": "042",
-          "rarity": "Uncommon",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709195_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709195_400w.jpg",
-          "product_id": 709195
+          "number": "056",
+          "rarity": "Common",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/728031_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/728031_400w.jpg",
+          "product_id": 728031,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Nidoqueen",
-          "number": "043",
+          "number": "057",
           "rarity": "Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709196_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709196_400w.jpg",
-          "product_id": 709196
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/728032_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/728032_400w.jpg",
+          "product_id": 728032,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Spinarak",
-          "number": "044",
+          "number": "058",
           "rarity": "Common",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709197_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709197_400w.jpg",
-          "product_id": 709197
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726532_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726532_400w.jpg",
+          "product_id": 726532,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Ariados",
-          "number": "045",
-          "rarity": "Uncommon",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709198_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709198_400w.jpg",
-          "product_id": 709198
+          "number": "059",
+          "rarity": "Common",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/728033_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/728033_400w.jpg",
+          "product_id": 728033,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Sableye",
-          "number": "046",
+          "number": "060",
+          "rarity": "Common",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726533_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726533_400w.jpg",
+          "product_id": 726533,
+          "set_name": "Delta Reign"
+        },
+        {
+          "name": "Carvanha",
+          "number": "061",
+          "rarity": "Common",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/728034_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/728034_400w.jpg",
+          "product_id": 728034,
+          "set_name": "Delta Reign"
+        },
+        {
+          "name": "Sharpedo",
+          "number": "062",
+          "rarity": "Common",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/728035_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/728035_400w.jpg",
+          "product_id": 728035,
+          "set_name": "Delta Reign"
+        },
+        {
+          "name": "Darkrai",
+          "number": "063",
           "rarity": "Uncommon",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709199_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709199_400w.jpg",
-          "product_id": 709199
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/728036_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/728036_400w.jpg",
+          "product_id": 728036,
+          "set_name": "Delta Reign"
+        },
+        {
+          "name": "Purrloin",
+          "number": "064",
+          "rarity": "Common",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/728037_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/728037_400w.jpg",
+          "product_id": 728037,
+          "set_name": "Delta Reign"
+        },
+        {
+          "name": "Liepard",
+          "number": "065",
+          "rarity": "Common",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/728038_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/728038_400w.jpg",
+          "product_id": 728038,
+          "set_name": "Delta Reign"
+        },
+        {
+          "name": "Zorua",
+          "number": "066",
+          "rarity": "Common",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/728039_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/728039_400w.jpg",
+          "product_id": 728039,
+          "set_name": "Delta Reign"
+        },
+        {
+          "name": "Zoroark ex",
+          "number": "067",
+          "rarity": "Double Rare",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/728040_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/728040_400w.jpg",
+          "product_id": 728040,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Inkay",
-          "number": "047",
+          "number": "068",
           "rarity": "Common",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709200_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709200_400w.jpg",
-          "product_id": 709200
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/728041_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/728041_400w.jpg",
+          "product_id": 728041,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Mega Malamar ex",
-          "number": "048",
+          "number": "069",
           "rarity": "Double Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709201_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709201_400w.jpg",
-          "product_id": 709201
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726534_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726534_400w.jpg",
+          "product_id": 726534,
+          "set_name": "Delta Reign"
+        },
+        {
+          "name": "Morpeko",
+          "number": "070",
+          "rarity": "Uncommon",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726535_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726535_400w.jpg",
+          "product_id": 726535,
+          "set_name": "Delta Reign"
+        },
+        {
+          "name": "Zarude",
+          "number": "071",
+          "rarity": "Uncommon",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726536_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726536_400w.jpg",
+          "product_id": 726536,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Druddigon",
-          "number": "049",
+          "number": "072",
           "rarity": "Uncommon",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709202_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709202_400w.jpg",
-          "product_id": 709202
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726537_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726537_400w.jpg",
+          "product_id": 726537,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Jangmo-o",
-          "number": "050",
+          "number": "073",
           "rarity": "Common",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709203_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709203_400w.jpg",
-          "product_id": 709203
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/728042_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/728042_400w.jpg",
+          "product_id": 728042,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Hakamo-o",
-          "number": "051",
-          "rarity": "Uncommon",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709204_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709204_400w.jpg",
-          "product_id": 709204
+          "number": "074",
+          "rarity": "Common",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/728043_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/728043_400w.jpg",
+          "product_id": 728043,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Kommo-o",
-          "number": "052",
+          "number": "075",
           "rarity": "Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709205_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709205_400w.jpg",
-          "product_id": 709205
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726538_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726538_400w.jpg",
+          "product_id": 726538,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Cyclizar",
-          "number": "053",
+          "number": "076",
+          "rarity": "Common",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/728044_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/728044_400w.jpg",
+          "product_id": 728044,
+          "set_name": "Delta Reign"
+        },
+        {
+          "name": "Tauros",
+          "number": "077",
+          "rarity": "Common",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/728045_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/728045_400w.jpg",
+          "product_id": 728045,
+          "set_name": "Delta Reign"
+        },
+        {
+          "name": "Eevee",
+          "number": "078",
+          "rarity": "Common",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726539_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726539_400w.jpg",
+          "product_id": 726539,
+          "set_name": "Delta Reign"
+        },
+        {
+          "name": "Delibird",
+          "number": "079",
           "rarity": "Uncommon",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709206_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709206_400w.jpg",
-          "product_id": 709206
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726540_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726540_400w.jpg",
+          "product_id": 726540,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Azurill",
-          "number": "054",
+          "number": "080",
           "rarity": "Common",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709207_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709207_400w.jpg",
-          "product_id": 709207
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726541_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726541_400w.jpg",
+          "product_id": 726541,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Swablu",
-          "number": "055",
+          "number": "081",
           "rarity": "Common",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709208_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709208_400w.jpg",
-          "product_id": 709208
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/728046_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/728046_400w.jpg",
+          "product_id": 728046,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Altaria",
-          "number": "056",
-          "rarity": "Uncommon",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709209_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709209_400w.jpg",
-          "product_id": 709209
+          "number": "082",
+          "rarity": "Rare",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/728047_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/728047_400w.jpg",
+          "product_id": 728047,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Kecleon",
-          "number": "057",
-          "rarity": "Uncommon",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709210_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709210_400w.jpg",
-          "product_id": 709210
+          "number": "083",
+          "rarity": "Common",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726542_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726542_400w.jpg",
+          "product_id": 726542,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Mega Rayquaza ex",
-          "number": "058",
+          "number": "084",
           "rarity": "Double Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709211_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709211_400w.jpg",
-          "product_id": 709211
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726543_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726543_400w.jpg",
+          "product_id": 726543,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Tornadus",
-          "number": "059",
-          "rarity": "Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709212_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709212_400w.jpg",
-          "product_id": 709212
+          "number": "085",
+          "rarity": "Uncommon",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726544_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726544_400w.jpg",
+          "product_id": 726544,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Fletchling",
-          "number": "060",
+          "number": "086",
           "rarity": "Common",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709213_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709213_400w.jpg",
-          "product_id": 709213
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/728048_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/728048_400w.jpg",
+          "product_id": 728048,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Fletchinder",
-          "number": "061",
-          "rarity": "Uncommon",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709214_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709214_400w.jpg",
-          "product_id": 709214
+          "number": "087",
+          "rarity": "Common",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/728049_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/728049_400w.jpg",
+          "product_id": 728049,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Talonflame ex",
-          "number": "062",
+          "number": "088",
           "rarity": "Double Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709215_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709215_400w.jpg",
-          "product_id": 709215
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/728050_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/728050_400w.jpg",
+          "product_id": 728050,
+          "set_name": "Delta Reign"
         },
         {
-          "name": "Delicious Onigiri",
-          "number": "063",
+          "name": "Aarune",
+          "number": "089",
           "rarity": "Uncommon",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709216_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709216_400w.jpg",
-          "product_id": 709216
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726545_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726545_400w.jpg",
+          "product_id": 726545,
+          "set_name": "Delta Reign"
+        },
+        {
+          "name": "Adventure Lantern",
+          "number": "090",
+          "rarity": "Uncommon",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726546_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726546_400w.jpg",
+          "product_id": 726546,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Custom Vest",
-          "number": "064",
+          "number": "091",
           "rarity": "Uncommon",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709217_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709217_400w.jpg",
-          "product_id": 709217
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726547_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726547_400w.jpg",
+          "product_id": 726547,
+          "set_name": "Delta Reign"
+        },
+        {
+          "name": "Emcee's Hype",
+          "number": "092",
+          "rarity": "Common",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726548_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726548_400w.jpg",
+          "product_id": 726548,
+          "set_name": "Delta Reign"
+        },
+        {
+          "name": "Grisham",
+          "number": "093",
+          "rarity": "Uncommon",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726549_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726549_400w.jpg",
+          "product_id": 726549,
+          "set_name": "Delta Reign"
+        },
+        {
+          "name": "Legendary Pyroduct - 094/103 (Left)",
+          "number": "094",
+          "rarity": "Uncommon",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726550_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726550_400w.jpg",
+          "product_id": 726550,
+          "set_name": "Delta Reign"
+        },
+        {
+          "name": "Legendary Pyroduct - 095/103 (Right)",
+          "number": "095",
+          "rarity": "Uncommon",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726722_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726722_400w.jpg",
+          "product_id": 726722,
+          "set_name": "Delta Reign"
+        },
+        {
+          "name": "Legendary Summit - 096/103 (Left)",
+          "number": "096",
+          "rarity": "Uncommon",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726551_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726551_400w.jpg",
+          "product_id": 726551,
+          "set_name": "Delta Reign"
+        },
+        {
+          "name": "Legendary Summit - 097/103 (Right)",
+          "number": "097",
+          "rarity": "Uncommon",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726721_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726721_400w.jpg",
+          "product_id": 726721,
+          "set_name": "Delta Reign"
+        },
+        {
+          "name": "Legendary Trench - 098/103 (Left)",
+          "number": "098",
+          "rarity": "Uncommon",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726786_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726786_400w.jpg",
+          "product_id": 726786,
+          "set_name": "Delta Reign"
+        },
+        {
+          "name": "Legendary Trench - 099/103 (Right)",
+          "number": "099",
+          "rarity": "Uncommon",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726552_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726552_400w.jpg",
+          "product_id": 726552,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Mega Rayquaza Cap",
-          "number": "065",
+          "number": "100",
           "rarity": "Uncommon",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709218_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709218_400w.jpg",
-          "product_id": 709218
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726553_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726553_400w.jpg",
+          "product_id": 726553,
+          "set_name": "Delta Reign"
         },
         {
-          "name": "Emcee's Hype",
-          "number": "066",
-          "rarity": "Uncommon",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709219_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709219_400w.jpg",
-          "product_id": 709219
-        },
-        {
-          "name": "Aarune",
-          "number": "067",
-          "rarity": "Uncommon",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709220_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709220_400w.jpg",
-          "product_id": 709220
-        },
-        {
-          "name": "Aarune",
-          "number": "068",
-          "rarity": "Uncommon",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709221_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709221_400w.jpg",
-          "product_id": 709221
-        },
-        {
-          "name": "Zinnia's Trust",
-          "number": "069",
-          "rarity": "Uncommon",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709222_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709222_400w.jpg",
-          "product_id": 709222
+          "name": "Tasty Rice Ball",
+          "number": "101",
+          "rarity": "Common",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726554_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726554_400w.jpg",
+          "product_id": 726554,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Tate & Liza's Training",
-          "number": "070",
+          "number": "102",
           "rarity": "Uncommon",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709223_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709223_400w.jpg",
-          "product_id": 709223
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726555_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726555_400w.jpg",
+          "product_id": 726555,
+          "set_name": "Delta Reign"
         },
         {
-          "name": "Legendary Marine Trench",
-          "number": "071",
+          "name": "Zinnia's Trust",
+          "number": "103",
           "rarity": "Uncommon",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709224_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709224_400w.jpg",
-          "product_id": 709224
-        },
-        {
-          "name": "Legendary Marine Trench",
-          "number": "072",
-          "rarity": "Uncommon",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709225_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709225_400w.jpg",
-          "product_id": 709225
-        },
-        {
-          "name": "Legendary Summit",
-          "number": "073",
-          "rarity": "Uncommon",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709226_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709226_400w.jpg",
-          "product_id": 709226
-        },
-        {
-          "name": "Legendary Lava Tube",
-          "number": "074",
-          "rarity": "Uncommon",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709227_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709227_400w.jpg",
-          "product_id": 709227
-        },
-        {
-          "name": "Legendary Lava Tube",
-          "number": "075",
-          "rarity": "Uncommon",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709228_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709228_400w.jpg",
-          "product_id": 709228
-        },
-        {
-          "name": "Legendary Lava Tube",
-          "number": "076",
-          "rarity": "Uncommon",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709229_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709229_400w.jpg",
-          "product_id": 709229
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726556_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726556_400w.jpg",
+          "product_id": 726556,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Masquerain",
-          "number": "077",
+          "number": "104",
           "rarity": "Illustration Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709230_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709230_400w.jpg",
-          "product_id": 709230
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726557_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726557_400w.jpg",
+          "product_id": 726557,
+          "set_name": "Delta Reign"
+        },
+        {
+          "name": "Sprigatito",
+          "number": "105",
+          "rarity": "Illustration Rare",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726558_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726558_400w.jpg",
+          "product_id": 726558,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Growlithe",
-          "number": "078",
+          "number": "106",
           "rarity": "Illustration Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709231_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709231_400w.jpg",
-          "product_id": 709231
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726559_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726559_400w.jpg",
+          "product_id": 726559,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Magmortar",
-          "number": "079",
+          "number": "107",
           "rarity": "Illustration Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709232_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709232_400w.jpg",
-          "product_id": 709232
-        },
-        {
-          "name": "Kyogre",
-          "number": "080",
-          "rarity": "Illustration Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709233_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709233_400w.jpg",
-          "product_id": 709233
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726560_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726560_400w.jpg",
+          "product_id": 726560,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Electivire",
-          "number": "081",
+          "number": "108",
           "rarity": "Illustration Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709234_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709234_400w.jpg",
-          "product_id": 709234
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/727587_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/727587_400w.jpg",
+          "product_id": 727587,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Pincurchin",
-          "number": "082",
+          "number": "109",
           "rarity": "Illustration Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709235_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709235_400w.jpg",
-          "product_id": 709235
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726561_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726561_400w.jpg",
+          "product_id": 726561,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Enamorus",
-          "number": "083",
+          "number": "110",
           "rarity": "Illustration Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709236_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709236_400w.jpg",
-          "product_id": 709236
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726562_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726562_400w.jpg",
+          "product_id": 726562,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Groudon",
-          "number": "084",
+          "number": "111",
           "rarity": "Illustration Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709237_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709237_400w.jpg",
-          "product_id": 709237
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726563_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726563_400w.jpg",
+          "product_id": 726563,
+          "set_name": "Delta Reign"
+        },
+        {
+          "name": "Zorua",
+          "number": "112",
+          "rarity": "Illustration Rare",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726564_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726564_400w.jpg",
+          "product_id": 726564,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Inkay",
-          "number": "085",
+          "number": "113",
           "rarity": "Illustration Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709238_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709238_400w.jpg",
-          "product_id": 709238
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/728051_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/728051_400w.jpg",
+          "product_id": 728051,
+          "set_name": "Delta Reign"
+        },
+        {
+          "name": "Eevee",
+          "number": "114",
+          "rarity": "Illustration Rare",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726565_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726565_400w.jpg",
+          "product_id": 726565,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Azurill",
-          "number": "086",
+          "number": "115",
           "rarity": "Illustration Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709239_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709239_400w.jpg",
-          "product_id": 709239
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726566_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726566_400w.jpg",
+          "product_id": 726566,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Altaria",
-          "number": "087",
+          "number": "116",
           "rarity": "Illustration Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709240_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709240_400w.jpg",
-          "product_id": 709240
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/728052_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/728052_400w.jpg",
+          "product_id": 728052,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Kecleon",
-          "number": "088",
+          "number": "117",
           "rarity": "Illustration Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709241_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709241_400w.jpg",
-          "product_id": 709241
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726567_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726567_400w.jpg",
+          "product_id": 726567,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Mega Golisopod ex",
-          "number": "089",
+          "number": "118",
           "rarity": "Ultra Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709242_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709242_400w.jpg",
-          "product_id": 709242
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/727588_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/727588_400w.jpg",
+          "product_id": 727588,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Heat Rotom ex",
-          "number": "090",
+          "number": "119",
           "rarity": "Ultra Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709243_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709243_400w.jpg",
-          "product_id": 709243
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/727589_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/727589_400w.jpg",
+          "product_id": 727589,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Wishiwashi ex",
-          "number": "091",
+          "number": "120",
           "rarity": "Ultra Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709244_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709244_400w.jpg",
-          "product_id": 709244
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/727590_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/727590_400w.jpg",
+          "product_id": 727590,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Raikou ex",
-          "number": "092",
+          "number": "121",
           "rarity": "Ultra Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709245_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709245_400w.jpg",
-          "product_id": 709245
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/727591_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/727591_400w.jpg",
+          "product_id": 727591,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Mega Golurk ex",
-          "number": "093",
+          "number": "122",
           "rarity": "Ultra Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709246_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709246_400w.jpg",
-          "product_id": 709246
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/728053_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/728053_400w.jpg",
+          "product_id": 728053,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Mega Malamar ex",
-          "number": "094",
+          "number": "123",
           "rarity": "Ultra Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709247_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709247_400w.jpg",
-          "product_id": 709247
-        },
-        {
-          "name": "Mega Rayquaza ex",
-          "number": "095",
-          "rarity": "Ultra Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709248_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709248_400w.jpg",
-          "product_id": 709248
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/728054_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/728054_400w.jpg",
+          "product_id": 728054,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Talonflame ex",
-          "number": "096",
+          "number": "124",
           "rarity": "Ultra Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709249_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709249_400w.jpg",
-          "product_id": 709249
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/728055_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/728055_400w.jpg",
+          "product_id": 728055,
+          "set_name": "Delta Reign"
         },
         {
-          "name": "Adventuring Lantern",
-          "number": "097",
+          "name": "Aarune",
+          "number": "125",
           "rarity": "Ultra Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709250_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709250_400w.jpg",
-          "product_id": 709250
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726568_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726568_400w.jpg",
+          "product_id": 726568,
+          "set_name": "Delta Reign"
         },
         {
-          "name": "Pok\u00e9mon Catcher",
-          "number": "098",
+          "name": "Adventure Lantern",
+          "number": "126",
           "rarity": "Ultra Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709251_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709251_400w.jpg",
-          "product_id": 709251
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726569_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726569_400w.jpg",
+          "product_id": 726569,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Custom Vest",
-          "number": "099",
+          "number": "127",
           "rarity": "Ultra Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709252_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709252_400w.jpg",
-          "product_id": 709252
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726570_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726570_400w.jpg",
+          "product_id": 726570,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Emcee's Hype",
-          "number": "100",
+          "number": "128",
           "rarity": "Ultra Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709253_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709253_400w.jpg",
-          "product_id": 709253
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726571_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726571_400w.jpg",
+          "product_id": 726571,
+          "set_name": "Delta Reign"
         },
         {
-          "name": "Aarune",
-          "number": "101",
+          "name": "Pokemon Catcher",
+          "number": "129",
           "rarity": "Ultra Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709254_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709254_400w.jpg",
-          "product_id": 709254
-        },
-        {
-          "name": "Zinnia's Trust",
-          "number": "102",
-          "rarity": "Ultra Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709255_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709255_400w.jpg",
-          "product_id": 709255
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/728056_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/728056_400w.jpg",
+          "product_id": 728056,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Tate & Liza's Training",
-          "number": "103",
+          "number": "130",
           "rarity": "Ultra Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709256_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709256_400w.jpg",
-          "product_id": 709256
-        },
-        {
-          "name": "Aromatic Grass Energy",
-          "number": "104",
-          "rarity": "Ultra Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709257_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709257_400w.jpg",
-          "product_id": 709257
-        },
-        {
-          "name": "Nitro Fire Energy",
-          "number": "105",
-          "rarity": "Ultra Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709258_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709258_400w.jpg",
-          "product_id": 709258
-        },
-        {
-          "name": "Bubbly Water Energy",
-          "number": "106",
-          "rarity": "Ultra Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709259_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709259_400w.jpg",
-          "product_id": 709259
-        },
-        {
-          "name": "Mega Golisopod ex",
-          "number": "107",
-          "rarity": "Special Illustration Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709260_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709260_400w.jpg",
-          "product_id": 709260
-        },
-        {
-          "name": "Raikou ex",
-          "number": "108",
-          "rarity": "Special Illustration Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709261_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709261_400w.jpg",
-          "product_id": 709261
-        },
-        {
-          "name": "Mega Golurk ex",
-          "number": "109",
-          "rarity": "Special Illustration Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709262_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709262_400w.jpg",
-          "product_id": 709262
-        },
-        {
-          "name": "Mega Rayquaza ex",
-          "number": "110",
-          "rarity": "Special Illustration Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709264_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709264_400w.jpg",
-          "product_id": 709264
-        },
-        {
-          "name": "Aarune",
-          "number": "111",
-          "rarity": "Special Illustration Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709265_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709265_400w.jpg",
-          "product_id": 709265
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726572_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726572_400w.jpg",
+          "product_id": 726572,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Zinnia's Trust",
-          "number": "112",
+          "number": "131",
+          "rarity": "Ultra Rare",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726573_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726573_400w.jpg",
+          "product_id": 726573,
+          "set_name": "Delta Reign"
+        },
+        {
+          "name": "Bubbly W Energy",
+          "number": "132",
+          "rarity": "Ultra Rare",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/728057_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/728057_400w.jpg",
+          "product_id": 728057,
+          "set_name": "Delta Reign"
+        },
+        {
+          "name": "Growing G Energy",
+          "number": "133",
+          "rarity": "Ultra Rare",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/728058_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/728058_400w.jpg",
+          "product_id": 728058,
+          "set_name": "Delta Reign"
+        },
+        {
+          "name": "Nitro R Energy",
+          "number": "134",
+          "rarity": "Ultra Rare",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/728059_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/728059_400w.jpg",
+          "product_id": 728059,
+          "set_name": "Delta Reign"
+        },
+        {
+          "name": "Mega Golisopod ex",
+          "number": "135",
           "rarity": "Special Illustration Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709266_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709266_400w.jpg",
-          "product_id": 709266
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/727592_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/727592_400w.jpg",
+          "product_id": 727592,
+          "set_name": "Delta Reign"
+        },
+        {
+          "name": "Raikou ex",
+          "number": "136",
+          "rarity": "Special Illustration Rare",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726574_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726574_400w.jpg",
+          "product_id": 726574,
+          "set_name": "Delta Reign"
+        },
+        {
+          "name": "Mega Golurk ex",
+          "number": "137",
+          "rarity": "Special Illustration Rare",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/728060_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/728060_400w.jpg",
+          "product_id": 728060,
+          "set_name": "Delta Reign"
         },
         {
           "name": "Mega Rayquaza ex",
+          "number": "138",
+          "rarity": "Special Illustration Rare",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/728061_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/728061_400w.jpg",
+          "product_id": 728061,
+          "set_name": "Delta Reign"
+        },
+        {
+          "name": "Aarune",
+          "number": "139",
+          "rarity": "Special Illustration Rare",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726575_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726575_400w.jpg",
+          "product_id": 726575,
+          "set_name": "Delta Reign"
+        },
+        {
+          "name": "Zinnia's Trust",
+          "number": "140",
+          "rarity": "Special Illustration Rare",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/726576_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/726576_400w.jpg",
+          "product_id": 726576,
+          "set_name": "Delta Reign"
+        },
+        {
+          "name": "Mega Rayquaza ex",
+          "number": "141",
+          "rarity": "Mega Hyper Rare",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/728062_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/728062_400w.jpg",
+          "product_id": 728062,
+          "set_name": "Delta Reign"
+        },
+        {
+          "name": "Masquerain",
+          "number": "111",
+          "rarity": "Promo",
+          "set_name": "Delta Reign",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/730455_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/730455_400w.jpg",
+          "product_id": 730455,
+          "promo_note": "Delta Reign promo MEP 111"
+        },
+        {
+          "name": "Magmortar",
+          "number": "112",
+          "rarity": "Promo",
+          "set_name": "Delta Reign",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/730453_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/730453_400w.jpg",
+          "product_id": 730453,
+          "promo_note": "Delta Reign promo MEP 112"
+        },
+        {
+          "name": "Enamorus",
           "number": "113",
-          "rarity": "Mega Ultra Rare",
-          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/709267_200w.jpg",
-          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/709267_400w.jpg",
-          "product_id": 709267
+          "rarity": "Promo",
+          "set_name": "Delta Reign",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/730451_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/730451_400w.jpg",
+          "product_id": 730451,
+          "promo_note": "Delta Reign promo MEP 113"
+        },
+        {
+          "name": "Kommo-o",
+          "number": "114",
+          "rarity": "Promo",
+          "set_name": "Delta Reign",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/730130_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/730130_400w.jpg",
+          "product_id": 730130,
+          "promo_note": "Delta Reign promo MEP 114"
+        },
+        {
+          "name": "Spritzee",
+          "number": "115",
+          "rarity": "Promo",
+          "set_name": "Delta Reign",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/732591_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/732591_400w.jpg",
+          "product_id": 732591,
+          "promo_note": "Delta Reign promo MEP 115"
+        },
+        {
+          "name": "Seel",
+          "number": "116",
+          "rarity": "Promo",
+          "set_name": "Delta Reign",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/731807_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/731807_400w.jpg",
+          "product_id": 731807,
+          "promo_note": "Delta Reign promo MEP 116"
+        },
+        {
+          "name": "Kyogre",
+          "number": "117",
+          "rarity": "Promo",
+          "set_name": "Delta Reign",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/731799_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/731799_400w.jpg",
+          "product_id": 731799,
+          "promo_note": "Delta Reign promo MEP 117"
+        },
+        {
+          "name": "Kyogre (Pokemon Center)",
+          "number": "117",
+          "rarity": "Promo",
+          "set_name": "Delta Reign",
+          "image_small_url": "https://tcgplayer-cdn.tcgplayer.com/product/732872_200w.jpg",
+          "image_large_url": "https://tcgplayer-cdn.tcgplayer.com/product/732872_400w.jpg",
+          "product_id": 732872,
+          "promo_note": "Delta Reign promo MEP 117"
         }
       ]
     },
