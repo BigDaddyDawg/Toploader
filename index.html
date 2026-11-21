@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#3b82f6">
-  <meta name="description" content="Chase — daily buy checks and wishlist tracking for Pokemon TCG card shows.">
+  <meta name="description" content="Chase — the cards you want, the price to pay, and a button when you buy one.">
   <title>Chase</title>
   <link rel="manifest" href="manifest.webmanifest?v=20">
   <link rel="icon" href="icon.svg?v=20" type="image/svg+xml">
@@ -38,6 +38,7 @@
       --radius: 18px;
     }
     *, *::before, *::after { box-sizing: border-box; }
+    [hidden] { display: none !important; }
     html { scroll-behavior: smooth; }
     body {
       position: relative;
@@ -46,7 +47,7 @@
       background: var(--arena);
       color: var(--text);
       min-height: 100vh;
-      padding: 12px 12px calc(92px + env(safe-area-inset-bottom, 0px));
+      padding: 12px 12px calc(132px + env(safe-area-inset-bottom, 0px));
       overflow-x: hidden;
       z-index: 0;
     }
@@ -209,8 +210,10 @@
       bottom: 0;
       z-index: 50;
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      background: rgba(255, 255, 255, 0.92);
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      padding: 8px 10px calc(8px + env(safe-area-inset-bottom, 0px));
+      background: rgba(255, 255, 255, 0.96);
       border-top: 1px solid rgba(26, 39, 68, 0.08);
       backdrop-filter: blur(16px);
       box-shadow: 0 -12px 32px rgba(26, 39, 68, 0.1);
@@ -218,11 +221,11 @@
     .tab {
       border: 2px solid transparent;
       border-radius: 16px;
-      background: transparent;
-      color: var(--muted);
-      padding: 10px 4px 8px;
-      font-size: 0.68rem;
-      font-weight: 800;
+      background: #f3f7ff;
+      color: var(--ink);
+      padding: 14px 8px;
+      font-size: 1.05rem;
+      font-weight: 700;
       letter-spacing: 0.01em;
       cursor: pointer;
       font-family: var(--font-brand);
@@ -798,17 +801,69 @@
       right: 12px;
       z-index: 60;
       margin: 0;
-      padding: 12px 14px 10px;
+      padding: 14px 16px 12px;
       border-radius: 16px;
       background: rgba(255, 255, 255, 0.97);
-      border: 2px solid rgba(59, 130, 246, 0.28);
+      border: 2px solid rgba(59, 130, 246, 0.45);
       box-shadow: 0 14px 36px rgba(26, 39, 68, 0.16);
       backdrop-filter: blur(12px);
-      cursor: pointer;
+      cursor: default;
       text-align: left;
       font: inherit;
       color: inherit;
       width: auto;
+    }
+    .pay-up {
+      margin: 8px 0 0;
+      font-family: var(--font-brand);
+      font-size: 1.45rem;
+      font-weight: 700;
+      line-height: 1.1;
+      color: var(--ink);
+    }
+    .pay-up span {
+      display: block;
+      margin-bottom: 2px;
+      font-family: var(--font-body);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .live-status {
+      margin: 8px 0 0;
+      font-weight: 800;
+      color: #1d4ed8;
+      font-size: 0.95rem;
+    }
+    .live-status[hidden] { display: none; }
+    .card-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .card-actions button {
+      border: 0;
+      border-radius: 14px;
+      padding: 14px 8px;
+      font-family: var(--font-brand);
+      font-size: 1rem;
+      font-weight: 700;
+      color: #fff;
+      cursor: pointer;
+    }
+    .card-actions .btn-refresh { background: #2563eb; }
+    .card-actions .btn-bought { background: #1fad6a; }
+    .card-actions button:disabled { opacity: 0.55; cursor: wait; }
+    .big-primary {
+      width: 100%;
+      padding: 16px 12px !important;
+      font-size: 1.05rem !important;
+      background: #2563eb !important;
+      color: #fff !important;
+      border-color: #2563eb !important;
     }
     @media (min-width: 720px) {
       .price-check-bar {
@@ -1121,6 +1176,8 @@
     .add-set-quick .add-set-chip {
       flex: 1 1 auto;
       min-width: 42%;
+      min-height: 52px;
+      font-size: 1rem;
     }
     #listAddSet .add-set-card {
       cursor: pointer;
@@ -1136,8 +1193,8 @@
       width: 72px;
     }
     #listAddSet input[type="checkbox"] {
-      width: 1.25rem;
-      height: 1.25rem;
+      width: 1.75rem;
+      height: 1.75rem;
     }
     #addSetStatus.error {
       color: #fca5a5;
@@ -1574,10 +1631,10 @@
       body {
         max-width: 560px;
         margin: 0 auto;
-        padding: 20px 16px calc(88px + env(safe-area-inset-bottom, 0px));
+        padding: 20px 16px calc(132px + env(safe-area-inset-bottom, 0px));
       }
       .tabs {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: 1fr 1fr;
         max-width: 560px;
         left: 50%;
         transform: translateX(-50%);
@@ -1643,20 +1700,18 @@
     <div class="brand-lockup">
       <div class="brand-mark" aria-hidden="true"></div>
       <div>
-        <div class="brand-title">Chase</div>
-        <div class="brand-sub">Your card-show wishlist</div>
+        <div class="brand-title" id="brandTitle">My cards</div>
+        <div class="brand-sub" id="brandSub">Cards I want to buy</div>
       </div>
     </div>
-    <p class="meta" id="meta">Loading snapshot…</p>
+    <p class="meta" id="meta">Loading your cards…</p>
   </header>
 
-  <button type="button" id="priceCheckBar" class="price-check-bar" hidden aria-live="polite"></button>
+  <div id="priceCheckBar" class="price-check-bar" hidden aria-live="polite"></div>
 
   <nav class="tabs" aria-label="Main">
-    <button type="button" class="tab active" id="tabBuyList" data-view="buy-list"><span class="tab-icon" aria-hidden="true">●</span>Today</button>
-    <button type="button" class="tab" id="tabWishlist" data-view="wishlist"><span class="tab-icon" aria-hidden="true">◇</span>Wishlist</button>
-    <button type="button" class="tab" id="tabChecks" data-view="checks"><span class="tab-icon" aria-hidden="true">⟳</span>Checks<span class="tab-badge" id="tabChecksBadge" hidden>0</span></button>
-    <button type="button" class="tab" id="tabAddSet" data-view="add-set"><span class="tab-icon" aria-hidden="true">＋</span>Add set</button>
+    <button type="button" class="tab active" id="tabWishlist" data-view="wishlist">My cards</button>
+    <button type="button" class="tab" id="tabAddSet" data-view="add-set">Add cards</button>
   </nav>
 
   <div id="viewHome" class="view" hidden aria-hidden="true">
@@ -1666,7 +1721,7 @@
     <div id="homeUpdated" hidden>—</div>
   </div>
 
-  <div id="viewBuyList" class="view active">
+  <div id="viewBuyList" class="view" hidden>
     <section class="view-intro">
       <h2>Should I buy today?</h2>
       <p>Buy-now cards from your wishlist. Tap a card, then Check price if you want a live max buy. Hit Purchased when you get it.</p>
@@ -1690,7 +1745,7 @@
     <div id="homeError"></div>
   </div>
 
-  <div id="viewFloors" class="view">
+  <div id="viewFloors" class="view" hidden>
     <section class="view-intro">
       <h2>Floor checker</h2>
       <p>Compare asking prices against floor and max buy. Use this when you need a deeper price check.</p>
@@ -1712,37 +1767,24 @@
     <div id="listFloors" class="list"></div>
   </div>
 
-  <div id="viewWishlist" class="view">
+  <div id="viewWishlist" class="view active">
     <section class="view-intro">
-      <h2>Wishlist</h2>
-      <p>Tap a card, then Check price for a live max buy. Hit Purchased when you buy it.</p>
+      <h2>Cards I want</h2>
+      <p>Pay up to the price shown. Refresh it if you want a new one. Tap I bought this when you get the card.</p>
       <span class="intro-count" id="wishlistIntroCount">Loading…</span>
     </section>
     <div class="toolbar">
-      <input type="search" id="searchWishlist" placeholder="Search wishlist…" autocomplete="off">
-      <div class="segmented" role="group" aria-label="Signal filter">
-        <button type="button" class="toggle-btn active" id="signalFilterAll" data-signal="">All</button>
-        <button type="button" class="toggle-btn" id="signalFilterBuy" data-signal="buy">Buy now</button>
-        <button type="button" class="toggle-btn" id="signalFilterHold" data-signal="hold">Hold</button>
-      </div>
+      <input type="search" id="searchWishlist" placeholder="Find a card" autocomplete="off">
       <div class="filters wishlist-filters">
-        <select id="setFilterWishlist" aria-label="Filter by set">
+        <select id="setFilterWishlist" aria-label="Which set">
           <option value="">All sets</option>
         </select>
-        <select id="sortWishlist" aria-label="Sort wishlist">
-          <option value="priority">Buy now first</option>
-          <option value="cheapest">Cheapest first</option>
-          <option value="expensive">Most expensive first</option>
-          <option value="set">Set order</option>
-        </select>
       </div>
-      <div class="set-buttons" id="setButtonsWishlist" aria-label="Wishlist set shortcuts"></div>
-      <p class="stats" id="statsWishlist"></p>
     </div>
     <div id="listWishlist" class="list"></div>
   </div>
 
-  <div id="viewChecks" class="view">
+  <div id="viewChecks" class="view" hidden>
     <section class="view-intro">
       <h2>Price checks</h2>
       <p>Cards you tap Check price on show up here. Leave anytime — progress keeps updating.</p>
@@ -1753,26 +1795,23 @@
 
   <div id="viewAddSet" class="view">
     <section class="view-intro">
-      <h2>Add a set</h2>
-      <p>Tap a set, tick the cards you want, then Add to wishlist. Nothing is added until you choose.</p>
+      <h2>Add cards</h2>
+      <p>Tap a set, or type a set name. Tick the cards you want, then tap Add these cards.</p>
     </section>
     <div class="toolbar">
-      <div class="add-set-quick" id="addSetQuick" aria-label="Quick sets"></div>
-      <input type="search" id="addSetQuery" placeholder="Or type another set name…" autocomplete="off">
-      <button type="button" class="toggle-btn active" id="addSetFindBtn">Find set</button>
+      <div class="add-set-quick" id="addSetQuick" aria-label="Sets"></div>
+      <input type="search" id="addSetQuery" placeholder="Type a set name" autocomplete="off">
+      <button type="button" class="toggle-btn active big-primary" id="addSetFindBtn">Find this set</button>
       <p class="stats" id="addSetStatus"></p>
       <div class="filters wishlist-filters" id="addSetFilters" hidden>
-        <label class="toggle-btn" style="display:inline-flex;align-items:center;gap:0.4rem">
-          <input type="checkbox" id="addSetChaseOnly">
-          Chase only
-        </label>
-        <input type="search" id="addSetCardSearch" placeholder="Filter cards…" autocomplete="off">
+        <input type="checkbox" id="addSetChaseOnly" hidden>
+        <input type="search" id="addSetCardSearch" placeholder="Find a card in this set" autocomplete="off">
       </div>
       <div class="filters wishlist-filters" id="addSetActions" hidden>
-        <span class="stats" id="addSetSelectedCount">0 selected</span>
-        <button type="button" class="toggle-btn" id="addSetSelectVisible">Select visible</button>
-        <button type="button" class="toggle-btn" id="addSetClearSel">Clear</button>
-        <button type="button" class="toggle-btn active" id="addSetAddBtn">Add to wishlist</button>
+        <span class="stats" id="addSetSelectedCount">0 ticked</span>
+        <button type="button" class="toggle-btn" id="addSetSelectVisible" hidden>Tick all shown</button>
+        <button type="button" class="toggle-btn" id="addSetClearSel">Untick all</button>
+        <button type="button" class="toggle-btn active big-primary" id="addSetAddBtn">Add these cards</button>
       </div>
     </div>
     <div id="listAddSet" class="list"></div>
@@ -1783,7 +1822,7 @@
     <div id="listOwned" class="list"></div>
   </div>
 
-  <div id="viewHelper" class="view">
+  <div id="viewHelper" class="view" hidden>
     <section class="guide-hero">
       <h2>Wishlist helper mode</h2>
       <p>Match the picture, check the exact card number, and use the target as the ceiling for a clean raw copy.</p>
@@ -1808,7 +1847,7 @@
     <div id="listHelper" class="list"></div>
   </div>
 
-  <div id="viewBuyingGuide" class="view">
+  <div id="viewBuyingGuide" class="view" hidden>
     <section class="guide-hero">
       <h2>Before you buy a raw card</h2>
       <p>Open every listing photo and check these 4 things. This is a quick raw-card condition guide, not grading advice.</p>
@@ -1878,7 +1917,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="supabase-config.js?v=20"></script>
   <script src="show-sync.js?v=21"></script>
-  <script src="set-intake.js?v=20"></script>
+  <script src="set-intake.js?v=26"></script>
   <script>
     function initEnergySparks() {
       const canvas = document.getElementById("energy-sparks");
@@ -2061,7 +2100,7 @@
     }
 
     let snapshotData = null;
-    let activeView = "buy-list";
+    let activeView = "wishlist";
     let selectedCardSlug = "";
     let wishlistSignalFilter = "";
     let showImages = loadPreference(PREF_IMAGES_KEY, true);
@@ -2263,7 +2302,9 @@
         }
         renderPriceCheckBar();
         updateChecksTabBadge();
+        refreshLiveStatus();
         if (activeView === "checks") renderChecks();
+        else if (activeView === "wishlist") updateMeta();
       }, 1000);
     }
 
@@ -2333,20 +2374,16 @@
       const pct = summary.total ? Math.round((finished / summary.total) * 100) : 0;
       const current = summary.current?.job;
       const label = current
-        ? `Pricing · ${current.name}${current.number ? ` #${current.number}` : ""}`
-        : "Queued · worker starting soon";
-      const sub = [
-        `${summary.queued} queued`,
-        summary.failed ? `${summary.failed} failed` : "",
-        "tap for each card",
-      ].filter(Boolean).join(" · ");
+        ? `Refreshing ${current.name}${current.number ? ` #${current.number}` : ""}`
+        : "Refreshing prices";
+      const waiting = summary.queued ? `${summary.queued} still waiting` : "Looking up the latest price";
       const html = `
         <div class="price-check-top">
           <div class="price-check-copy">
             <strong>${escapeHtml(label)}</strong>
-            <span>${escapeHtml(sub)}</span>
+            <span>${escapeHtml(waiting)}</span>
           </div>
-          <div class="price-check-elapsed">${finished} of ${summary.total} done</div>
+          <div class="price-check-elapsed">${finished} of ${summary.total}</div>
         </div>
         <div class="price-check-track" aria-hidden="true"><div class="price-check-fill" style="width:${pct}%;animation:none;transform:none"></div></div>
       `;
@@ -2482,6 +2519,7 @@
       rememberPriceCheckStart(card, "checking");
       renderWishlistActionBar();
       renderPriceCheckBar();
+      if (activeView === "wishlist") renderWishlist();
       if (activeView === "checks") renderChecks();
       try {
         const result = await showSync.requestPriceCheck(card, { force: true });
@@ -2500,6 +2538,7 @@
       } catch (_) {}
       renderWishlistActionBar();
       renderPriceCheckBar();
+      if (activeView === "wishlist") renderWishlist();
       if (activeView === "checks") renderChecks();
     }
 
@@ -2655,86 +2694,65 @@
     }
 
     function setView(view) {
-      // Phone surface: Today / Wishlist / Checks / Add set.
-      if (view === "home" || view === "floors" || view === "helper" || view === "buying-guide" || view === "owned") {
-        view = view === "helper" ? "wishlist" : "buy-list";
-      }
+      // Phone surface: My cards, or Add cards. Older pages land on My cards.
+      if (view !== "add-set") view = "wishlist";
       activeView = view;
       document.body.classList.remove("home-view");
-      const route = view === "buy-list" ? "buy-list"
-        : view === "wishlist" ? "wishlist"
-        : view === "checks" ? "checks"
-        : view === "add-set" ? "add-set"
-        : "buy-list";
-      const hash = `#${route}${selectedCardSlug && view !== "checks" ? `?card=${encodeURIComponent(selectedCardSlug)}` : ""}`;
+      const hash = `#${view}`;
       if (location.hash !== hash) {
         history.replaceState(null, "", hash);
       }
-      document.getElementById("viewHome").classList.remove("active");
-      document.getElementById("viewBuyList").classList.toggle("active", view === "buy-list");
-      document.getElementById("viewFloors").classList.remove("active");
-      document.getElementById("viewWishlist").classList.toggle("active", view === "wishlist");
-      document.getElementById("viewChecks")?.classList.toggle("active", view === "checks");
+      document.getElementById("viewHome")?.classList.remove("active");
+      document.getElementById("viewBuyList")?.classList.remove("active");
+      document.getElementById("viewFloors")?.classList.remove("active");
+      document.getElementById("viewWishlist")?.classList.toggle("active", view === "wishlist");
+      document.getElementById("viewChecks")?.classList.remove("active");
       document.getElementById("viewAddSet")?.classList.toggle("active", view === "add-set");
       document.getElementById("viewOwned")?.classList.remove("active");
-      document.getElementById("viewHelper").classList.remove("active");
-      document.getElementById("viewBuyingGuide").classList.remove("active");
-      document.getElementById("tabBuyList").classList.toggle("active", view === "buy-list");
-      document.getElementById("tabWishlist").classList.toggle("active", view === "wishlist");
-      document.getElementById("tabChecks")?.classList.toggle("active", view === "checks");
+      document.getElementById("viewHelper")?.classList.remove("active");
+      document.getElementById("viewBuyingGuide")?.classList.remove("active");
+      document.getElementById("tabWishlist")?.classList.toggle("active", view === "wishlist");
       document.getElementById("tabAddSet")?.classList.toggle("active", view === "add-set");
-      document.title = view === "buy-list" ? "Chase — Today"
-        : view === "wishlist" ? "Chase — Wishlist"
-        : view === "checks" ? "Chase — Checks"
-        : view === "add-set" ? "Chase — Add set"
-        : "Chase";
-      if (snapshotData) updateMeta();
-      if (view === "buy-list") renderBuyList();
-      else if (view === "wishlist") renderWishlist();
-      else if (view === "checks") renderChecks();
-      else if (view === "add-set") {
-        document.getElementById("addSetFilters")?.removeAttribute("hidden");
-        document.getElementById("addSetActions")?.removeAttribute("hidden");
+      const title = document.getElementById("brandTitle");
+      const sub = document.getElementById("brandSub");
+      if (view === "add-set") {
+        document.title = "Chase — Add cards";
+        if (title) title.textContent = "Add cards";
+        if (sub) sub.textContent = "Pick a set, then tick cards";
+      } else {
+        document.title = "Chase — My cards";
+        if (title) title.textContent = "My cards";
+        if (sub) sub.textContent = "Cards I want to buy";
+        renderWishlist();
       }
+      if (snapshotData) updateMeta();
       renderWishlistActionBar();
       renderPriceCheckBar();
     }
 
     function parseHash() {
       const parsed = parseHashParts();
-      selectedCardSlug = parsed.card;
-      if (parsed.route === "wishlist" || parsed.route === "helper") return "wishlist";
-      if (parsed.route === "checks") return "checks";
+      selectedCardSlug = "";
       if (parsed.route === "add-set") return "add-set";
-      if (parsed.route === "owned") return "buy-list";
-      return "buy-list";
+      return "wishlist";
     }
 
     function updateMeta() {
-      const when = snapshotData.generated_at_utc || snapshotData.local_date || "";
-      const updated = formatSnapshotDateTime(when);
-      const cacheNote = snapshotData._from_cache ? " · offline cache" : "";
-      const errNote = snapshotData._load_error ? " · fetch issue" : "";
-      const syncNote = syncStatusHtml();
+      const meta = document.getElementById("meta");
+      if (!meta || !snapshotData) return;
       const wish = activeWishlistCards();
-      const buy = buildBuyCandidates(wish);
       const checking = activeCheckJobs().length;
-      if (activeView === "buy-list") {
-        document.getElementById("meta").innerHTML =
-          `${buy.length} to check today · updated ${updated}${cacheNote}${errNote}${syncNote}`;
-      } else if (activeView === "wishlist") {
-        document.getElementById("meta").innerHTML =
-          `${wish.length} on wishlist · updated ${updated}${cacheNote}${errNote}${syncNote}`;
-      } else if (activeView === "checks") {
-        document.getElementById("meta").innerHTML =
-          `${checking} price check${checking === 1 ? "" : "s"} running · ${updated}${cacheNote}${errNote}${syncNote}`;
-      } else if (activeView === "add-set") {
-        document.getElementById("meta").innerHTML =
-          `Add cards to wishlist · ${updated}${cacheNote}${errNote}${syncNote}`;
-      } else {
-        document.getElementById("meta").innerHTML =
-          `${wish.length} wishlist · ${buy.length} buy now · updated ${updated}${cacheNote}${errNote}${syncNote}`;
+      if (activeView === "add-set") {
+        meta.textContent = "Pick a set, then tick the cards you want";
+        return;
       }
+      if (checking) {
+        meta.textContent = checking === 1
+          ? "Refreshing 1 price"
+          : `Refreshing ${checking} prices`;
+        return;
+      }
+      meta.textContent = wish.length === 1 ? "1 card" : `${wish.length} cards`;
     }
 
     function fillSetOptions(selectEl, cards) {
@@ -3102,97 +3120,128 @@
       });
     }
 
+    function cardIsRefreshing(card) {
+      const key = cardKeyOf(card);
+      if (!key) return false;
+      if (isLiveWorkerJob(key)) return true;
+      return resolvedCheckStatus(priceChecks.get(key) || { key, status: "done", startedAt: 0 }) === "checking";
+    }
+
+    function refreshLiveStatus() {
+      document.querySelectorAll("[data-live-status]").forEach(el => {
+        const key = el.dataset.liveStatus || "";
+        const job = priceChecks.get(key);
+        const checking = isLiveWorkerJob(key)
+          || (job && resolvedCheckStatus(job) === "checking");
+        const failed = !checking && job && resolvedCheckStatus(job) === "error";
+        const text = checking
+          ? "Refreshing the price…"
+          : failed
+            ? "Could not refresh. Tap Refresh price."
+            : "";
+        el.hidden = !text;
+        if (text && el.textContent !== text) el.textContent = text;
+      });
+      document.querySelectorAll("[data-refresh]").forEach(btn => {
+        const key = btn.dataset.refresh || "";
+        const job = priceChecks.get(key);
+        const checking = isLiveWorkerJob(key)
+          || (job && resolvedCheckStatus(job) === "checking");
+        btn.disabled = checking;
+        const label = checking ? "Refreshing…" : (btn.dataset.idleLabel || "Refresh price");
+        if (btn.textContent !== label) btn.textContent = label;
+      });
+    }
+
     function renderWishlist() {
       const cards = activeWishlistCards();
       const setSelect = document.getElementById("setFilterWishlist");
-      const setButtons = document.getElementById("setButtonsWishlist");
-      const buyCount = cards.filter(isBuyNow).length;
       const intro = document.getElementById("wishlistIntroCount");
       if (intro) {
         intro.textContent = cards.length
-          ? `${cards.length} left · ${buyCount} Buy now`
-          : "Wishlist empty";
+          ? `${cards.length} card${cards.length === 1 ? "" : "s"}`
+          : "No cards yet";
       }
-      syncWishlistSignalButtons();
-      fillSetOptions(setSelect, cards);
-      renderSetButtons(setButtons, cards, setName => {
-        setSelect.value = setName;
-        apply();
-      });
+      if (setSelect) fillSetOptions(setSelect, cards);
 
       function apply() {
-        const q = document.getElementById("searchWishlist").value.trim().toLowerCase();
-        const setVal = setSelect.value;
-        const sortVal = document.getElementById("sortWishlist").value;
+        const q = (document.getElementById("searchWishlist")?.value || "").trim().toLowerCase();
+        const setVal = setSelect ? setSelect.value : "";
         let filtered = cards.slice();
-        if (wishlistSignalFilter === "buy") filtered = filtered.filter(isBuyNow);
-        if (wishlistSignalFilter === "hold") filtered = filtered.filter(c => !isBuyNow(c));
         if (setVal) filtered = filtered.filter(c => c.set_name === setVal);
         if (q) {
           filtered = filtered.filter(c => {
-            const blob = [c.card, c.number, c.set_name, c.scrape_query, c.advisor_decision].join(" ").toLowerCase();
+            const blob = [c.card, c.number, c.set_name].join(" ").toLowerCase();
             return blob.includes(q);
           });
         }
-        filtered.sort((a, b) => {
-          if (sortVal === "expensive") return priceValue(b) - priceValue(a);
-          if (sortVal === "cheapest") return priceValue(a) - priceValue(b);
-          if (sortVal === "set") {
-            return String(a.set_name || "").localeCompare(String(b.set_name || ""))
-              || cardNumberValue(a) - cardNumberValue(b)
-              || String(a.card || "").localeCompare(String(b.card || ""));
-          }
-          return buyRank(b) - buyRank(a) || priceValue(a) - priceValue(b);
-        });
-        document.getElementById("statsWishlist").textContent =
-          `Showing ${filtered.length} of ${cards.length}`;
-        updateSetButtons(setButtons, setVal);
+        filtered.sort((a, b) =>
+          String(a.set_name || "").localeCompare(String(b.set_name || ""))
+          || cardNumberValue(a) - cardNumberValue(b)
+          || String(a.card || "").localeCompare(String(b.card || ""))
+        );
         const list = document.getElementById("listWishlist");
+        if (!list) return;
         if (!filtered.length) {
           list.innerHTML = cards.length
-            ? '<div class="empty">No wishlist cards match that filter.</div>'
-            : '<div class="empty">No wishlist cards right now. Snapshot chase cards will reappear here, or use <strong>Add set</strong> to pick more.</div>';
-          renderWishlistActionBar();
+            ? '<div class="empty">No cards match that search.</div>'
+            : '<div class="empty">No cards yet. Tap <strong>Add cards</strong> at the bottom.</div>';
           return;
         }
+        const ready = window.showSync && showSync.isConfigured()
+          && typeof showSync.isReady === "function" && showSync.isReady();
         list.innerHTML = filtered.map(card => {
-          const slug = cardSlug(card);
-          const buy = isBuyNow(card);
-          const why = String(card.floor_justification || card.card_show_price_note || "").trim();
-          const openClass = slug === selectedCardSlug ? "is-open" : "";
+          const key = cardKeyOf(card);
+          const refreshing = cardIsRefreshing(card);
+          const priceNumber = Number(card.target_buy_gbp);
+          const hasPrice = Number.isFinite(priceNumber) && priceNumber > 0;
+          const price = hasPrice ? moneyWishlist(priceNumber) : "No price yet";
+          const refreshLabel = refreshing ? "Refreshing…" : (hasPrice ? "Refresh price" : "Get price");
           return `
-            <article class="${cardArticleClass(card, `selectable ${openClass}`)}" data-select-wishlist="${escapeHtml(slug)}" tabindex="0" role="button" aria-label="Select ${escapeHtml(card.card || "card")}">
+            <article class="${cardArticleClass(card)}">
               <div class="wish-row">
                 ${renderCardImage(card) || '<div class="card-image" aria-hidden="true"></div>'}
                 <div class="wish-copy">
-                  <h2>${escapeHtml(card.card || "")} <span style="color:var(--muted)">#${escapeHtml(card.number || "")}</span></h2>
+                  <h2>${escapeHtml(card.card || "Card")} <span style="color:var(--muted)">#${escapeHtml(card.number || "")}</span></h2>
                   <p class="wish-set-line">${escapeHtml(card.set_name || "Unknown set")}</p>
-                  <div class="wish-meta">
-                    ${signalBadge(card)}
-                    ${buy ? '<span class="buy-cta">Check today</span>' : ""}
-                    ${isStale(card) ? '<span class="badge watch">stale</span>' : ""}
-                  </div>
-                  <div class="wish-prices">
-                    <div class="price"><span class="label">Max buy</span><span class="value">${moneyWishlist(card.target_buy_gbp)}</span></div>
-                    <div class="price"><span class="label">Floor</span><span class="value">${money(card.floor_gbp)}</span></div>
-                  </div>
+                  <p class="pay-up"><span>Pay up to</span>${escapeHtml(price)}</p>
+                  <p class="live-status" data-live-status="${escapeHtml(key)}" ${refreshing ? "" : "hidden"}>Refreshing the price…</p>
                 </div>
               </div>
-              <div class="wish-extra">
-                ${why ? `<p class="why">${escapeHtml(why)}</p>` : ""}
-                ${buy ? "" : '<p class="timing">Hold for now — tap Purchased only if you already bought it.</p>'}
+              <div class="card-actions">
+                <button type="button" class="btn-refresh" data-refresh="${escapeHtml(key)}" data-idle-label="${hasPrice ? "Refresh price" : "Get price"}"${refreshing || !ready ? " disabled" : ""}>${ready ? refreshLabel : "Connecting…"}</button>
+                <button type="button" class="btn-bought" data-bought="${escapeHtml(key)}"${!ready ? " disabled" : ""}>I bought this</button>
               </div>
             </article>
           `;
         }).join("");
-        wireWishlistSelection(list);
-        scrollHighlightedCard();
-        renderWishlistActionBar();
+        list.querySelectorAll("[data-refresh]").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const card = filtered.find(c => cardKeyOf(c) === btn.dataset.refresh);
+            if (card) startPriceCheck(card);
+          });
+        });
+        list.querySelectorAll("[data-bought]").forEach(btn => {
+          btn.addEventListener("click", async () => {
+            const card = filtered.find(c => cardKeyOf(c) === btn.dataset.bought);
+            if (!card || !window.showSync) return;
+            const name = card.card || "this card";
+            if (!window.confirm(`Mark ${name} as bought? It will come off this list.`)) return;
+            btn.disabled = true;
+            const result = await showSync.markPurchased(card);
+            if (!result.ok && result.error) {
+              btn.disabled = false;
+              window.alert(result.error);
+              return;
+            }
+            renderWishlist();
+          });
+        });
       }
 
-      document.getElementById("searchWishlist").oninput = apply;
-      setSelect.onchange = apply;
-      document.getElementById("sortWishlist").onchange = apply;
+      const search = document.getElementById("searchWishlist");
+      if (search) search.oninput = apply;
+      if (setSelect) setSelect.onchange = apply;
       apply();
     }
 
@@ -3376,11 +3425,8 @@
       apply();
     }
 
-    document.getElementById("tabBuyList").addEventListener("click", () => setView("buy-list"));
-    document.getElementById("tabWishlist").addEventListener("click", () => setView("wishlist"));
-    document.getElementById("tabChecks")?.addEventListener("click", () => setView("checks"));
+    document.getElementById("tabWishlist")?.addEventListener("click", () => setView("wishlist"));
     document.getElementById("tabAddSet")?.addEventListener("click", () => setView("add-set"));
-    document.getElementById("priceCheckBar")?.addEventListener("click", () => setView("checks"));
     document.querySelectorAll("[data-signal]").forEach(btn => {
       btn.addEventListener("click", () => {
         wishlistSignalFilter = btn.dataset.signal || "";
@@ -3408,7 +3454,7 @@
 
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("service-worker.js?v=25").then(reg => {
+        navigator.serviceWorker.register("service-worker.js?v=26").then(reg => {
           if (reg.waiting) reg.waiting.postMessage({ type: "SKIP_WAITING" });
           reg.update().catch(() => {});
         }).catch(() => {});

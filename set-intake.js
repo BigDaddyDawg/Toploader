@@ -109,9 +109,8 @@
     }
     document.getElementById("addSetFilters")?.removeAttribute("hidden");
     document.getElementById("addSetActions")?.removeAttribute("hidden");
-    const note = result.note ? ` ${result.note}` : "";
     setStatus(
-      `${result.set_name}: ${result.card_count} cards. Tick what you want on wishlist.${note}`
+      `${result.set_name}: ${result.card_count} cards. Tick the ones you want, then tap Add these cards.`
     );
     renderPicker();
   }
@@ -150,7 +149,7 @@
   function renderPicker() {
     const list = listEl();
     if (!list || !lastResult) return;
-    const chaseOnly = document.getElementById("addSetChaseOnly")?.checked !== false;
+    const chaseOnly = document.getElementById("addSetChaseOnly")?.checked === true;
     const q = (document.getElementById("addSetCardSearch")?.value || "").trim().toLowerCase();
     let cards = lastResult.cards || [];
     if (chaseOnly) cards = cards.filter(c => isChase(c.rarity));
@@ -162,7 +161,7 @@
 
     if (!cards.length) {
       list.innerHTML =
-        '<div class="empty">No cards match that filter. Try turning off “Chase only”.</div>';
+        '<div class="empty">No cards match that search.</div>';
       return;
     }
 
@@ -206,7 +205,7 @@
 
   function updateSelectedCount() {
     const el = document.getElementById("addSetSelectedCount");
-    if (el) el.textContent = `${selected.size} selected`;
+    if (el) el.textContent = selected.size === 1 ? "1 card ticked" : `${selected.size} cards ticked`;
   }
 
   async function resolveFromCatalogFallback(q) {
@@ -227,10 +226,10 @@
     const input = document.getElementById("addSetQuery");
     const q = (input?.value || "").trim();
     if (!q) {
-      setStatus("Tap a set below, or type a set name / paste a link.", true);
+      setStatus("Tap a set, or type a set name.", true);
       return;
     }
-    setStatus("Looking up set…");
+    setStatus("Finding that set…");
     selected = new Set();
     lastResult = null;
 
@@ -312,7 +311,7 @@
       return;
     }
     if (!selected.size) {
-      setStatus("Select at least one card.", true);
+      setStatus("Tick at least one card.", true);
       return;
     }
     const byKey = new Map();
@@ -337,14 +336,14 @@
       })
       .filter(Boolean);
 
-    setStatus(`Adding ${rows.length} card(s) to wishlist…`);
+    setStatus(`Adding ${rows.length} card${rows.length === 1 ? "" : "s"}…`);
     const result = await showSync.addWishlistCards(rows);
     if (!result.ok) {
       setStatus(result.error || "Could not save wishlist.", true);
       return;
     }
     setStatus(
-      `Added ${result.count} card(s). They’re on Wishlist now — tap a card, then Check price, when you want a live max buy.`
+      `Added ${result.count} card${result.count === 1 ? "" : "s"}. They’re on My cards now.`
     );
     selected = new Set();
     updateSelectedCount();
@@ -355,7 +354,7 @@
 
   function selectAllVisible() {
     if (!lastResult) return;
-    const chaseOnly = document.getElementById("addSetChaseOnly")?.checked !== false;
+    const chaseOnly = document.getElementById("addSetChaseOnly")?.checked === true;
     const q = (document.getElementById("addSetCardSearch")?.value || "").trim().toLowerCase();
     (lastResult.cards || []).forEach(card => {
       if (chaseOnly && !isChase(card.rarity)) return;
